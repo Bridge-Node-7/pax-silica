@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.2.0 — Live Intelligence Foundation
+
+- Add AI-enabled public-source discovery through the OpenAI Responses API with web search and strict structured output.
+- Keep the model outside the publication authority boundary: deterministic Python policy decides no-change, human-review, or tightly bounded auto-publication.
+- Add a dedicated GitHub App publication path, disabled until credentials and activation are explicitly completed.
+- Add scheduled bounded scans, daily discovery scans, on-demand dispatch, auditable candidate/decision artifacts, and fail-closed exception handling.
+- Harden the closed evidence drawer so hidden controls cannot enter keyboard navigation.
+- Reduce mobile declaration-network and evidence traversal while preserving complete evidence through the drawer.
+- Distinguish automated source blocking and temporary failures from genuinely unavailable sources in Intelligence Watch.
+- Verify Python 3.11 and 3.12 on Ubuntu and Windows and move CodeQL to a SHA-pinned v4 revision.
+- Extend Browser UAT and repository tests for the v0.2.0 contracts.
+
 ## 0.1.2 — Credibility and accessibility
 
 - Restore the complete standard MIT license text so repository licensing matches the stated MIT license.

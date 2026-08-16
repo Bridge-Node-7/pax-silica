@@ -47,6 +47,8 @@ Sources and claims are separate records. Counts are derived. High-volatility fac
 
 Requires Python 3.11+.
 
+CI verifies Python 3.11 and 3.12 on Ubuntu and Windows.
+
 ```bash
 python scripts/check_repo.py
 ```
@@ -115,3 +117,13 @@ docs/       intelligence model, maintenance, visual and release contracts
 ## License
 
 Software and documentation are MIT licensed unless otherwise noted. Bridge Node 7 names, marks, website copy, and visual identity are not granted under that license.
+
+## Live Intelligence v0.2.0
+
+Pax Silica v0.2.0 adds an evidence-governed automation layer. The AI discovery model may search and propose a strict candidate record, but it cannot authorize publication. Deterministic policy evaluates every candidate as `no_change`, `human_review`, or `auto_publish`.
+
+The initial autonomous publication scope is deliberately narrow: a known official `P-001` program-status transition from `open` to `closed`, supported by the existing official `S-06` record and an exact canonical old-value match. New actors, new domains, draft reporting, contradictions, deletions, evidence-strength changes, and new BN7 analysis remain human-reviewed.
+
+The workflow is committed **disabled by default**. Activation requires repository-scoped OpenAI and GitHub App credentials plus explicit post-V&V enablement. No credential belongs in Git, browser JavaScript, canonical intelligence, or Actions artifacts.
+
+See [`docs/LIVE_INTELLIGENCE.md`](docs/LIVE_INTELLIGENCE.md).

@@ -1,0 +1,32 @@
+{
+  "version": "1.0.0",
+  "default_model": "gpt-5.6-terra",
+  "bounded_allowed_domains": [
+    "state.gov",
+    "whitehouse.gov",
+    "simpler.grants.gov",
+    "grants.gov",
+    "federalregister.gov",
+    "comune.brindisi.it",
+    "reuters.com"
+  ],
+  "broad_mode_auto_publish": false,
+  "autonomous_change_file_allowlist": [
+    "data/pax-silica.json",
+    "data/sources.json"
+  ],
+  "auto_publish_rules": [
+    {
+      "id": "P001_OPEN_TO_CLOSED",
+      "record_type": "programs",
+      "record_id": "P-001",
+      "field": "status",
+      "old_value": "open",
+      "new_value": "closed",
+      "evidence_state": "official",
+      "required_source_id": "S-06",
+      "required_source_url": "https://simpler.grants.gov/opportunity/f17beda0-bcb7-400b-af32-f0ab508a9f13",
+      "required_confidence": "high"
+    }
+  ]
+}

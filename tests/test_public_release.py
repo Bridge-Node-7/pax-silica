@@ -104,5 +104,20 @@ class PublicReleaseTests(unittest.TestCase):
             normalized,
         )
 
+    def test_v020_live_intelligence_contract(self):
+        template = (ROOT / 'web/index.template.html').read_text(encoding='utf-8')
+        app = (ROOT / 'web/app.js').read_text(encoding='utf-8')
+        styles = (ROOT / 'web/styles.css').read_text(encoding='utf-8')
+        workflow = (ROOT / '.github/workflows/live-intelligence.yml').read_text(encoding='utf-8')
+        policy = json.loads((ROOT / 'automation/live-intelligence-policy.json').read_text(encoding='utf-8'))
+        self.assertIn('aria-hidden="true" inert', template)
+        self.assertIn('drawer.removeAttribute("inert")', app)
+        self.assertIn('drawer.setAttribute("inert","")', app)
+        self.assertIn('PAX-V020-MOBILE-DENSITY', styles)
+        self.assertIn('PAX_LIVE_INTELLIGENCE_ENABLED', workflow)
+        self.assertIn('17 */2 * * *', workflow)
+        self.assertFalse(policy['broad_mode_auto_publish'])
+        self.assertEqual(policy['auto_publish_rules'][0]['id'], 'P001_OPEN_TO_CLOSED')
+
 if __name__ == '__main__':
     unittest.main()

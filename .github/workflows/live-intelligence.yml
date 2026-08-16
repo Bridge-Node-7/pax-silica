@@ -1,0 +1,168 @@
+name: Live Intelligence
+on:
+  schedule:
+    - cron: "17 */2 * * *"
+    - cron: "47 7 * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Discovery mode
+        required: true
+        default: bounded
+        type: choice
+        options: [bounded, broad]
+      fixture:
+        description: Optional synthetic fixture; leave blank for a real scan
+        required: false
+        default: ""
+        type: string
+  repository_dispatch:
+    types: [pax_intelligence_scan]
+permissions:
+  contents: read
+  issues: write
+  actions: read
+concurrency:
+  group: pax-silica-live-intelligence
+  cancel-in-progress: false
+jobs:
+  scan:
+    if: ${{ vars.PAX_LIVE_INTELLIGENCE_ENABLED == 'true' || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+      - name: Resolve scan mode
+        id: scan-mode
+        shell: bash
+        env:
+          EVENT: ${{ github.event_name }}
+          SCHEDULE: ${{ github.event.schedule }}
+          INPUT_MODE: ${{ inputs.mode }}
+          INPUT_FIXTURE: ${{ inputs.fixture }}
+          DISPATCH_MODE: ${{ github.event.client_payload.mode }}
+        run: |
+          set -euo pipefail
+          mode="bounded"
+          fixture=""
+          if [ "$EVENT" = "schedule" ] && [ "$SCHEDULE" = "47 7 * * *" ]; then mode="broad"; fi
+          if [ "$EVENT" = "workflow_dispatch" ]; then mode="${INPUT_MODE:-bounded}"; fixture="${INPUT_FIXTURE:-}"; fi
+          if [ "$EVENT" = "repository_dispatch" ]; then mode="${DISPATCH_MODE:-bounded}"; fi
+          case "$mode" in bounded|broad) ;; *) echo "Invalid mode: $mode" >&2; exit 1;; esac
+          case "$fixture" in ""|no-change|safe-status|reported|contradiction|unknown-domain|stale-old) ;; *) echo "Invalid fixture: $fixture" >&2; exit 1;; esac
+          echo "mode=$mode" >> "$GITHUB_OUTPUT"
+          echo "fixture=$fixture" >> "$GITHUB_OUTPUT"
+      - name: Discover and evaluate
+        id: policy
+        shell: bash
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PAX_OPENAI_MODEL: ${{ vars.PAX_OPENAI_MODEL }}
+          MODE: ${{ steps.scan-mode.outputs.mode }}
+          FIXTURE: ${{ steps.scan-mode.outputs.fixture }}
+        run: |
+          set -euo pipefail
+          mkdir -p build/live-intelligence
+          args=(--mode "$MODE" --candidate-output build/live-intelligence/candidate.json --decision-output build/live-intelligence/decision.json --audit-output build/live-intelligence/audit.json --apply)
+          if [ -n "$FIXTURE" ]; then args+=(--fixture "$FIXTURE"); fi
+          python scripts/live_intelligence.py "${args[@]}"
+          disposition="$(python -c 'import json; print(json.load(open("build/live-intelligence/decision.json"))["disposition"])')"
+          echo "disposition=$disposition" >> "$GITHUB_OUTPUT"
+          echo "fixture=$FIXTURE" >> "$GITHUB_OUTPUT"
+      - name: Create or update human-review issue
+        if: steps.policy.outputs.disposition == 'human_review' && steps.policy.outputs.fixture == ''
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          c=json.loads(Path("build/live-intelligence/candidate.json").read_text())
+          d=json.loads(Path("build/live-intelligence/decision.json").read_text())
+          lines=["# Pax Silica Live Intelligence — human review", "", f"**Candidate:** `{c['candidate_id']}`", f"**Change type:** `{c['change_type']}`", f"**Evidence state:** `{c['evidence_state']}`", f"**Decision:** `{d['disposition']}`", "", c['summary'], "", "## Deterministic reason", d['reason'], "", "## Sources"]
+          lines += [f"- {u}" for u in c['source_urls']] or ["- No source URL returned"]
+          lines += ["", "Canonical intelligence was not changed."]
+          Path("build/live-intelligence/review.md").write_text("\n".join(lines)+"\n", encoding="utf-8")
+          PY
+          title="Pax Silica Live Intelligence — human review"
+          number="$(gh issue list --state open --search "$title in:title" --json number,title --jq '.[] | select(.title=="'"$title"'") | .number' | head -n1)"
+          if [ -n "$number" ]; then gh issue edit "$number" --body-file build/live-intelligence/review.md; else gh issue create --title "$title" --body-file build/live-intelligence/review.md; fi
+      - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1
+        if: steps.policy.outputs.disposition == 'auto_publish' && steps.policy.outputs.fixture == ''
+        id: app-token
+        with:
+          client-id: ${{ vars.PAX_BOT_CLIENT_ID }}
+          private-key: ${{ secrets.PAX_BOT_PRIVATE_KEY }}
+          permission-actions: read
+          permission-checks: read
+          permission-contents: write
+          permission-issues: write
+          permission-pull-requests: write
+      - name: Publish bounded autonomous update
+        if: steps.policy.outputs.disposition == 'auto_publish' && steps.policy.outputs.fixture == ''
+        shell: bash
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
+        run: |
+          set -euo pipefail
+          base_sha="$(git rev-parse HEAD)"
+          changed="$(git status --porcelain | sed 's/^...//' | sort)"
+          expected="$(printf '%s\n' data/pax-silica.json data/sources.json | sort)"
+          [ "$changed" = "$expected" ] || { echo "Unexpected autonomous file scope" >&2; printf '%s\n' "$changed"; exit 1; }
+          bot_id="$(gh api "/users/${APP_SLUG}[bot]" --jq .id)"
+          branch="bot/pax-live-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          git config user.name "${APP_SLUG}[bot]"
+          git config user.email "${bot_id}+${APP_SLUG}[bot]@users.noreply.github.com"
+          git config commit.gpgsign false
+          gh auth setup-git
+          git switch -c "$branch"
+          git add data/pax-silica.json data/sources.json
+          git diff --cached --check
+          git commit -m "chore: update Pax Silica live intelligence"
+          head_sha="$(git rev-parse HEAD)"
+          git push -u origin "$branch"
+          pr="$(gh pr create --base main --head "$branch" --title "Pax Silica Live Intelligence update" --body "Automated bounded public-source update. Deterministic policy matched an explicitly authorized routine transition. Canonical scope is limited to data/pax-silica.json and data/sources.json. CI, Browser UAT, and CodeQL must pass before merge.")"
+          pr_number="$(gh pr view "$pr" --json number --jq .number)"
+          watch_pr_workflow(){
+            local workflow="$1" run_id=""
+            for _ in $(seq 1 180); do
+              run_id="$(gh run list --branch "$branch" --workflow "$workflow" --event pull_request --limit 1 --json databaseId --jq '.[0].databaseId // empty' 2>/dev/null || true)"
+              [ -n "$run_id" ] && break
+              sleep 5
+            done
+            [ -n "$run_id" ] || { echo "Missing PR workflow: $workflow" >&2; exit 1; }
+            gh run watch "$run_id" --compact --exit-status
+          }
+          watch_pr_workflow "CI"
+          watch_pr_workflow "Browser UAT"
+          watch_pr_workflow "CodeQL"
+          [ "$(gh pr view "$pr_number" --json headRefOid --jq .headRefOid)" = "$head_sha" ] || { echo "PR head moved" >&2; exit 1; }
+          [ "$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .sha)" = "$base_sha" ] || { echo "main moved during autonomous review" >&2; exit 1; }
+          files="$(gh pr diff "$pr_number" --name-only | sort)"
+          [ "$files" = "$expected" ] || { echo "PR scope changed" >&2; exit 1; }
+          gh pr merge "$pr_number" --squash --match-head-commit "$head_sha"
+          merged="$(gh pr view "$pr_number" --json mergeCommit --jq .mergeCommit.oid)"
+          run_id=""
+          for _ in $(seq 1 180); do
+            run_id="$(gh run list --commit "$merged" --workflow 'Deploy Pages' --limit 1 --json databaseId --jq '.[0].databaseId // empty' 2>/dev/null || true)"
+            [ -n "$run_id" ] && break
+            sleep 5
+          done
+          [ -n "$run_id" ] || { echo "Deploy Pages run not found" >&2; exit 1; }
+          gh run watch "$run_id" --compact --exit-status
+          git push origin --delete "$branch"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: pax-silica-live-intelligence-${{ github.run_id }}
+          path: build/live-intelligence/
+          if-no-files-found: warn
+          retention-days: 30
