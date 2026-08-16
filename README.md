@@ -2,13 +2,11 @@
 
 **Independent public-source intelligence on trusted technology ecosystems from critical materials to advanced computing, AI, quantum-enabling systems, qualification, and resilient supply.**
 
-Live experience: **https://bridgenode7.com/pax-silica/**
+**Explore:** [Live experience](https://bridgenode7.com/pax-silica/) · [Public data](data/) · [Credibility](docs/CREDIBILITY.md) · [Source correction](https://github.com/Bridge-Node-7/pax-silica/issues/new?template=public-source-correction.yml)
 
 Verified public-source snapshot: **2026-08-15**
 
 Published by **Bridge Node 7**. Not affiliated with or endorsed by the U.S. Department of State, the U.S. Government, or the Pax Silica initiative.
-
-Pax Silica Intelligence complements [Materials-to-Mission](https://github.com/Bridge-Node-7/materials-to-mission), [Frontier Decision Engine](https://github.com/Bridge-Node-7/frontier-decision-engine), [Frontier Intelligence Workflows](https://github.com/Bridge-Node-7/frontier-intelligence-workflows), and [BridgeNode7.com](https://bridgenode7.com/).
 
 ## Scope
 
@@ -38,7 +36,7 @@ REFERENCE           CHANGE INTELLIGENCE          BN7 ANALYSIS
                bridgenode7.com/pax-silica/
 ```
 
-Sources and claims are separate records. Counts are derived. High-volatility facts carry freshness metadata. Historical states are superseded rather than silently erased.
+Sources and claims are separate records. Counts are derived. Time-sensitive facts include review dates. Historical states are superseded rather than silently erased.
 
 ## Validate
 
@@ -89,6 +87,10 @@ scripts/    validation, build, preview, UAT, and production verification
 tests/      repository and data tests
 docs/       public intelligence, credibility, maintenance, and visual contracts
 ```
+
+## Related public work
+
+[Materials-to-Mission](https://github.com/Bridge-Node-7/materials-to-mission) · [Frontier Decision Engine](https://github.com/Bridge-Node-7/frontier-decision-engine) · [Frontier Intelligence Workflows](https://github.com/Bridge-Node-7/frontier-intelligence-workflows) · [BridgeNode7.com](https://bridgenode7.com/)
 
 ## License
 

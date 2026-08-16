@@ -1,12 +1,6 @@
 name: Browser UAT
 on:
   pull_request:
-    paths:
-      - "web/**"
-      - "data/**"
-      - "scripts/browser_uat.py"
-      - "scripts/build_web.py"
-      - ".github/workflows/browser-uat.yml"
   push:
     branches: [main]
   workflow_dispatch:
@@ -53,3 +47,12 @@ jobs:
             build/http.log
           if-no-files-found: error
           retention-days: 14
+  required:
+    name: Browser UAT required
+    if: always()
+    needs: chromium
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require Browser UAT
+        run: |
+          test "${{ needs.chromium.result }}" = "success"

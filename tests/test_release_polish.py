@@ -46,4 +46,34 @@ class ReleasePolishTests(unittest.TestCase):
         self.assertIn("min-height:44px",css)
         self.assertIn("min-width:44px",css)
 
+    def test_readme_front_door_closeout_contract(self):
+        text=(ROOT/"README.md").read_text(encoding="utf-8")
+        self.assertIn("**Explore:**",text)
+        self.assertIn("[Public data](data/)",text)
+        self.assertIn("[Credibility](docs/CREDIBILITY.md)",text)
+        self.assertIn("Source correction",text)
+        self.assertIn("Time-sensitive facts include review dates.",text)
+        self.assertIn("## Related public work",text)
+
+    def test_issue_intake_is_correction_only(self):
+        config=(ROOT/".github/ISSUE_TEMPLATE/config.yml").read_text(encoding="utf-8")
+        self.assertEqual(config.strip(),"blank_issues_enabled: false")
+        form=(ROOT/".github/ISSUE_TEMPLATE/public-source-correction.yml").read_text(encoding="utf-8")
+        self.assertIn('labels: ["source-correction"]',form)
+
+    def test_browser_uat_has_stable_required_check(self):
+        text=(ROOT/".github/workflows/browser-uat.yml").read_text(encoding="utf-8")
+        self.assertIn("  pull_request:\n",text)
+        self.assertNotIn("  pull_request:\n    paths:",text)
+        self.assertIn("name: Browser UAT required",text)
+        self.assertIn("needs: chromium",text)
+
+    def test_codeql_checkout_does_not_persist_credentials(self):
+        text=(ROOT/".github/workflows/codeql.yml").read_text(encoding="utf-8")
+        self.assertIn("persist-credentials: false",text)
+
+    def test_public_boundary_has_public_surface_policy(self):
+        text=(ROOT/"scripts/check_public_boundary.py").read_text(encoding="utf-8")
+        self.assertIn("PUBLIC_SURFACE",text)
+        self.assertIn("NONPUBLIC_DISCLOSURE_PATTERNS",text)
 if __name__=='__main__':unittest.main()

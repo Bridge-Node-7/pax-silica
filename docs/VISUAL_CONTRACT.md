@@ -29,4 +29,4 @@ Pax Silica-specific information visualization may be denser than a corporate pag
 
 At 390–480 px, declaration members may use two columns when readability is preserved. Long evidence notes may use progressive disclosure on narrow screens only when complete source detail remains keyboard-accessible through the evidence drawer. At 320 px, legibility takes priority over density.
 
-Live Intelligence should feel quiet rather than animated: the interface exposes verified evidence state, not background-agent activity. A scan timestamp is operational telemetry and must not be presented as equivalent to `Verified through`.
+Verified evidence state should remain quiet, legible, and visually distinct.

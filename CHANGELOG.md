@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.2 — Repository assurance
+
+- Improve repository navigation and public-source correction intake.
+- Make browser validation a stable pull-request check and harden workflow checkout behavior.
+- Strengthen repository invariants and public-boundary validation.
+
 ## 0.2.1 — Documentation and maintenance
 
 - Refine public documentation and repository maintenance boundaries.
