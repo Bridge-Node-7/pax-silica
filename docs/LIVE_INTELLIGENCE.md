@@ -19,6 +19,8 @@ DETERMINISTIC POLICY
 
 The model never receives the GitHub App installation token and never chooses repository paths, shell commands, merge policy, or publication authority.
 
+Model-reported source IDs and URLs are not accepted as proof. Before an autonomous rule can publish, deterministic code independently re-fetches the authoritative source and confirms the expected source state. An unavailable, blocked, ambiguous, contradictory, or still-open authoritative record fails closed to human review.
+
 ## Initial autonomous scope
 
 v0.2.0 intentionally permits one routine autonomous transition:
@@ -61,6 +63,10 @@ The workflow is committed disabled by default and should remain disabled until c
 ## Audit evidence
 
 Every scan uploads candidate, deterministic decision, and bounded API metadata. No secrets or raw private data are included. No-change scans do not modify the repository.
+
+Field-level automated verification updates only the records actually reverified. It does not advance the global `snapshot.verified_through` baseline; that baseline moves only after a whole-snapshot review.
+
+Human-review candidates are preserved in a deduplicated review queue keyed by a deterministic candidate fingerprint.
 
 ## Human review examples
 

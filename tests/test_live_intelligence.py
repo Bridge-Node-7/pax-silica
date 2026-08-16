@@ -46,6 +46,145 @@ class LiveIntelligenceTests(unittest.TestCase):
     def test_broad_mode_never_auto_publishes(self):
         self.assertEqual(self.decision("safe-status", mode="broad")["disposition"], "human_review")
 
+    def test_no_change_contradiction_escalates(self):
+        candidate = live.fixture(
+            "no-change",
+            self.policy,
+        )
+        candidate["contradiction"] = True
+        live.validate_candidate_shape(
+            candidate,
+            self.schema,
+        )
+        decision = live.evaluate_candidate(
+            candidate,
+            "bounded",
+            self.data,
+            self.sources,
+            self.policy,
+        )
+        self.assertEqual(
+            decision["disposition"],
+            "human_review",
+        )
+
+    def test_inconsistent_no_change_escalates(self):
+        candidate = live.fixture(
+            "no-change",
+            self.policy,
+        )
+        candidate["change_type"] = "program_status"
+        candidate["target"] = {
+            "record_type": "programs",
+            "record_id": "P-001",
+            "field": "status",
+            "old_value": "open",
+            "new_value": "closed",
+        }
+        live.validate_candidate_shape(
+            candidate,
+            self.schema,
+        )
+        decision = live.evaluate_candidate(
+            candidate,
+            "bounded",
+            self.data,
+            self.sources,
+            self.policy,
+        )
+        self.assertEqual(
+            decision["disposition"],
+            "human_review",
+        )
+
+    def test_authoritative_verifier_accepts_only_closed(self):
+        rule = self.policy[
+            "auto_publish_rules"
+        ][0]
+
+        closed = (
+            "Status Closed "
+            "Pax Silica Artificial Intelligence "
+            "Assistance Project "
+            "Number: DFOP0019193"
+        )
+
+        opened = (
+            "Status Open "
+            "Pax Silica Artificial Intelligence "
+            "Assistance Project "
+            "Number: DFOP0019193"
+        )
+
+        missing = "No matching opportunity"
+
+        self.assertTrue(
+            live.verify_authoritative_rule(
+                rule,
+                fetcher=lambda _: closed,
+            )["verified"]
+        )
+
+        self.assertFalse(
+            live.verify_authoritative_rule(
+                rule,
+                fetcher=lambda _: opened,
+            )["verified"]
+        )
+
+        self.assertFalse(
+            live.verify_authoritative_rule(
+                rule,
+                fetcher=lambda _: missing,
+            )["verified"]
+        )
+
+    def test_autonomous_source_locator_is_canonical(self):
+        rule = self.policy[
+            "auto_publish_rules"
+        ][0]
+
+        source = next(
+            item
+            for item in self.sources
+            if item["id"] == "S-06"
+        )
+
+        self.assertEqual(
+            source["url"],
+            rule["required_source_url"],
+        )
+        self.assertEqual(
+            source["url"],
+            rule["verification"]["url"],
+        )
+        self.assertNotIn(
+            "reuters.com",
+            self.policy[
+                "bounded_allowed_domains"
+            ],
+        )
+
+    def test_candidate_fingerprint_ignores_prose_variation(self):
+        first = live.fixture(
+            "reported",
+            self.policy,
+        )
+        second = json.loads(
+            json.dumps(first)
+        )
+        second["summary"] = (
+            "Different model wording."
+        )
+        second["reasoning"] = (
+            "Different model rationale."
+        )
+
+        self.assertEqual(
+            live.candidate_fingerprint(first),
+            live.candidate_fingerprint(second),
+        )
+
     def test_safe_application_changes_only_expected_semantics(self):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
@@ -65,7 +204,8 @@ class LiveIntelligenceTests(unittest.TestCase):
             self.assertNotIn("review_by", program)
             self.assertNotIn("review_by", claim)
             self.assertNotIn("review_by", source)
-            self.assertEqual(data["snapshot"]["verified_through"], "2026-08-20")
+            self.assertEqual(data["snapshot"]["verified_through"], "2026-08-15")
+            self.assertEqual(program["verified_at"], "2026-08-20")
 
 
 if __name__ == "__main__":

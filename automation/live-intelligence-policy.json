@@ -7,8 +7,7 @@
     "simpler.grants.gov",
     "grants.gov",
     "federalregister.gov",
-    "comune.brindisi.it",
-    "reuters.com"
+    "comune.brindisi.it"
   ],
   "broad_mode_auto_publish": false,
   "autonomous_change_file_allowlist": [
@@ -25,8 +24,20 @@
       "new_value": "closed",
       "evidence_state": "official",
       "required_source_id": "S-06",
-      "required_source_url": "https://simpler.grants.gov/opportunity/f17beda0-bcb7-400b-af32-f0ab508a9f13",
-      "required_confidence": "high"
+      "required_source_url": "https://simpler.grants.gov/search?query=DFOP0019193",
+      "required_confidence": "high",
+      "verification": {
+        "type": "official_html_status",
+        "url": "https://simpler.grants.gov/search?query=DFOP0019193",
+        "record_token": "DFOP0019193",
+        "open_markers": [
+          "Status Open"
+        ],
+        "closed_markers": [
+          "Status Closed",
+          "Closed:"
+        ]
+      }
     }
   ]
 }

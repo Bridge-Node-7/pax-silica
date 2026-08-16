@@ -74,7 +74,7 @@ jobs:
           disposition="$(python -c 'import json; print(json.load(open("build/live-intelligence/decision.json"))["disposition"])')"
           echo "disposition=$disposition" >> "$GITHUB_OUTPUT"
           echo "fixture=$FIXTURE" >> "$GITHUB_OUTPUT"
-      - name: Create or update human-review issue
+      - name: Preserve human-review queue
         if: steps.policy.outputs.disposition == 'human_review' && steps.policy.outputs.fixture == ''
         shell: bash
         env:
@@ -83,17 +83,102 @@ jobs:
           set -euo pipefail
           python - <<'PY'
           import json
+          import os
           from pathlib import Path
-          c=json.loads(Path("build/live-intelligence/candidate.json").read_text())
-          d=json.loads(Path("build/live-intelligence/decision.json").read_text())
-          lines=["# Pax Silica Live Intelligence — human review", "", f"**Candidate:** `{c['candidate_id']}`", f"**Change type:** `{c['change_type']}`", f"**Evidence state:** `{c['evidence_state']}`", f"**Decision:** `{d['disposition']}`", "", c['summary'], "", "## Deterministic reason", d['reason'], "", "## Sources"]
-          lines += [f"- {u}" for u in c['source_urls']] or ["- No source URL returned"]
-          lines += ["", "Canonical intelligence was not changed."]
-          Path("build/live-intelligence/review.md").write_text("\n".join(lines)+"\n", encoding="utf-8")
+
+          c = json.loads(
+              Path(
+                  "build/live-intelligence/candidate.json"
+              ).read_text()
+          )
+          d = json.loads(
+              Path(
+                  "build/live-intelligence/decision.json"
+              ).read_text()
+          )
+
+          run_url = (
+              "https://github.com/"
+              + os.environ["GITHUB_REPOSITORY"]
+              + "/actions/runs/"
+              + os.environ["GITHUB_RUN_ID"]
+          )
+
+          lines = [
+              "## Review candidate",
+              "",
+              f"**Fingerprint:** `{d['fingerprint']}`",
+              f"**Candidate:** `{c['candidate_id']}`",
+              f"**Change type:** `{c['change_type']}`",
+              f"**Evidence state:** `{c['evidence_state']}`",
+              f"**Decision:** `{d['disposition']}`",
+              f"**Run:** {run_url}",
+              "",
+              c["summary"],
+              "",
+              "### Deterministic reason",
+              d["reason"],
+              "",
+              "### Sources",
+          ]
+
+          lines += [
+              f"- {url}"
+              for url in c["source_urls"]
+          ] or [
+              "- No source URL returned"
+          ]
+
+          lines += [
+              "",
+              "Canonical intelligence was not changed.",
+          ]
+
+          Path(
+              "build/live-intelligence/review.md"
+          ).write_text(
+              "\n".join(lines) + "\n",
+              encoding="utf-8",
+          )
           PY
+
           title="Pax Silica Live Intelligence — human review"
-          number="$(gh issue list --state open --search "$title in:title" --json number,title --jq '.[] | select(.title=="'"$title"'") | .number' | head -n1)"
-          if [ -n "$number" ]; then gh issue edit "$number" --body-file build/live-intelligence/review.md; else gh issue create --title "$title" --body-file build/live-intelligence/review.md; fi
+
+          number="$(
+            gh issue list \
+              --state open \
+              --search "$title in:title" \
+              --json number,title \
+              --jq \
+                '.[] | select(.title=="'"$title"'") | .number' \
+            | head -n1
+          )"
+
+          fingerprint="$(
+            python -c \
+              'import json; print(json.load(open("build/live-intelligence/decision.json"))["fingerprint"])'
+          )"
+
+          if [ -z "$number" ]; then
+            gh issue create \
+              --title "$title" \
+              --body-file build/live-intelligence/review.md
+          else
+            history="$(
+              gh issue view "$number" \
+                --json body,comments \
+                --jq \
+                  '([.body] + [.comments[].body]) | join("\n")'
+            )"
+
+            if printf '%s' "$history" |
+              grep -Fq "$fingerprint"; then
+              echo "PASS · review candidate already queued"
+            else
+              gh issue comment "$number" \
+                --body-file build/live-intelligence/review.md
+            fi
+          fi
       - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1
         if: steps.policy.outputs.disposition == 'auto_publish' && steps.policy.outputs.fixture == ''
         id: app-token

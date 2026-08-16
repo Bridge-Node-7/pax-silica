@@ -18,6 +18,8 @@ Do not edit generated public files.
 
 High-volatility active records use `review_by`. Validation fails when `review_by` is earlier than the snapshot's `verified_through` date.
 
+An automated field-level verification must not advance the global `snapshot.verified_through` date. Only a whole-snapshot review may advance that baseline.
+
 ## UI changes
 
 Changes to `web/`, build logic, or interaction logic require full browser UAT.
@@ -45,6 +47,7 @@ The v0.2.0 automation layer separates AI discovery from publication authority.
 - Model output must match `automation/candidate.schema.json`.
 - Deterministic Python policy decides `no_change`, `human_review`, or `auto_publish`.
 - Autonomous publication is limited to explicitly enumerated rules in `automation/live-intelligence-policy.json`.
+- A model-returned source identity is never publication proof; an autonomous rule must independently re-fetch and verify the authoritative record before application.
 - Human-review candidates do not alter canonical intelligence.
 - No-change scans create audit evidence without repository commits.
 

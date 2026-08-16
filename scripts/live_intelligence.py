@@ -2,8 +2,11 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
+import html
 import json
 import os
+import re
 import urllib.request
 from datetime import date
 from pathlib import Path
@@ -46,65 +49,382 @@ def find_record(data: dict, record_type: str, record_id: str):
 def validate_candidate_shape(candidate: dict, schema: dict) -> None:
     required = schema["required"]
     if set(candidate) != set(required):
-        raise ValueError(f"candidate keys differ from strict contract: {sorted(candidate)}")
+        raise ValueError(
+            f"candidate keys differ from strict contract: "
+            f"{sorted(candidate)}"
+        )
+
     target_required = schema["properties"]["target"]["required"]
     if set(candidate["target"]) != set(target_required):
-        raise ValueError("candidate target keys differ from strict contract")
-    enum_fields = ("disposition", "change_type", "evidence_state", "confidence")
+        raise ValueError(
+            "candidate target keys differ from strict contract"
+        )
+
+    string_fields = (
+        "candidate_id",
+        "disposition",
+        "change_type",
+        "summary",
+        "evidence_state",
+        "confidence",
+        "reasoning",
+    )
+    for key in string_fields:
+        if not isinstance(candidate[key], str):
+            raise ValueError(f"{key} must be a string")
+
+    for key, value in candidate["target"].items():
+        if not isinstance(value, str):
+            raise ValueError(
+                f"target.{key} must be a string"
+            )
+
+    enum_fields = (
+        "disposition",
+        "change_type",
+        "evidence_state",
+        "confidence",
+    )
     for key in enum_fields:
-        allowed = schema["properties"][key].get("enum", [])
+        allowed = schema["properties"][key].get(
+            "enum", []
+        )
         if candidate[key] not in allowed:
-            raise ValueError(f"invalid {key}: {candidate[key]}")
+            raise ValueError(
+                f"invalid {key}: {candidate[key]}"
+            )
+
     if not isinstance(candidate["contradiction"], bool):
-        raise ValueError("contradiction must be boolean")
+        raise ValueError(
+            "contradiction must be boolean"
+        )
+
     for key in ("source_ids", "source_urls"):
-        if not isinstance(candidate[key], list) or not all(isinstance(x, str) for x in candidate[key]):
-            raise ValueError(f"{key} must be string array")
+        if (
+            not isinstance(candidate[key], list)
+            or not all(
+                isinstance(x, str)
+                for x in candidate[key]
+            )
+        ):
+            raise ValueError(
+                f"{key} must be string array"
+            )
+
     for url in candidate["source_urls"]:
         if not url.startswith("https://"):
-            raise ValueError(f"non-HTTPS candidate source: {url}")
+            raise ValueError(
+                f"non-HTTPS candidate source: {url}"
+            )
 
 
-def evaluate_candidate(candidate: dict, mode: str, data: dict, sources: list[dict], policy: dict) -> dict:
-    if candidate["disposition"] == "no_change":
-        return {"disposition": "no_change", "rule_id": None, "reason": "No material change proposed."}
+def candidate_fingerprint(candidate: dict) -> str:
+    stable = {
+        "change_type": candidate["change_type"],
+        "target": candidate["target"],
+        "evidence_state": candidate["evidence_state"],
+        "source_ids": sorted(candidate["source_ids"]),
+        "source_urls": sorted(candidate["source_urls"]),
+    }
+    encoded = json.dumps(
+        stable,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()[:16]
+
+
+def evaluate_candidate(
+    candidate: dict,
+    mode: str,
+    data: dict,
+    sources: list[dict],
+    policy: dict,
+) -> dict:
     if candidate["contradiction"]:
-        return {"disposition": "human_review", "rule_id": None, "reason": "Candidate reports contradictory evidence."}
-    if mode == "broad" and not policy.get("broad_mode_auto_publish", False):
-        return {"disposition": "human_review", "rule_id": None, "reason": "Broad discovery is never autonomous."}
+        return {
+            "disposition": "human_review",
+            "rule_id": None,
+            "reason":
+                "Candidate reports contradictory evidence.",
+        }
 
-    source_map = {s["id"]: s for s in sources}
     target = candidate["target"]
-    record = find_record(data, target["record_type"], target["record_id"])
-    if record is None:
-        return {"disposition": "human_review", "rule_id": None, "reason": "Target record is not canonical."}
-    current = str(record.get(target["field"], ""))
-    if current != target["old_value"]:
-        return {"disposition": "human_review", "rule_id": None, "reason": "Canonical old value does not match candidate."}
 
-    for rule in policy.get("auto_publish_rules", []):
-        exact = (
-            target["record_type"] == rule["record_type"]
-            and target["record_id"] == rule["record_id"]
-            and target["field"] == rule["field"]
-            and target["old_value"] == rule["old_value"]
-            and target["new_value"] == rule["new_value"]
-            and candidate["evidence_state"] == rule["evidence_state"]
-            and candidate["confidence"] == rule["required_confidence"]
-            and rule["required_source_id"] in candidate["source_ids"]
-            and rule["required_source_url"] in candidate["source_urls"]
+    if candidate["disposition"] == "no_change":
+        if (
+            candidate["change_type"] != "none"
+            or any(target.values())
+        ):
+            return {
+                "disposition": "human_review",
+                "rule_id": None,
+                "reason":
+                    "No-change candidate contains change semantics.",
+            }
+        return {
+            "disposition": "no_change",
+            "rule_id": None,
+            "reason": "No material change proposed.",
+        }
+
+    if (
+        mode == "broad"
+        and not policy.get(
+            "broad_mode_auto_publish",
+            False,
         )
+    ):
+        return {
+            "disposition": "human_review",
+            "rule_id": None,
+            "reason":
+                "Broad discovery is never autonomous.",
+        }
+
+    source_map = {
+        s["id"]: s for s in sources
+    }
+
+    record = find_record(
+        data,
+        target["record_type"],
+        target["record_id"],
+    )
+
+    if record is None:
+        return {
+            "disposition": "human_review",
+            "rule_id": None,
+            "reason":
+                "Target record is not canonical.",
+        }
+
+    current = str(
+        record.get(target["field"], "")
+    )
+
+    if current != target["old_value"]:
+        return {
+            "disposition": "human_review",
+            "rule_id": None,
+            "reason":
+                "Canonical old value does not match candidate.",
+        }
+
+    for rule in policy.get(
+        "auto_publish_rules", []
+    ):
+        exact = (
+            target["record_type"]
+                == rule["record_type"]
+            and target["record_id"]
+                == rule["record_id"]
+            and target["field"]
+                == rule["field"]
+            and target["old_value"]
+                == rule["old_value"]
+            and target["new_value"]
+                == rule["new_value"]
+            and candidate["evidence_state"]
+                == rule["evidence_state"]
+            and candidate["confidence"]
+                == rule["required_confidence"]
+            and set(candidate["source_ids"])
+                == {rule["required_source_id"]}
+            and set(candidate["source_urls"])
+                == {rule["required_source_url"]}
+        )
+
         if not exact:
             continue
-        source = source_map.get(rule["required_source_id"])
-        if not source or source.get("state") != "official" or source.get("url") != rule["required_source_url"]:
-            return {"disposition": "human_review", "rule_id": rule["id"], "reason": "Canonical required source no longer matches policy."}
-        allowed = set(policy["bounded_allowed_domains"])
-        if any(hostname(url) not in allowed and not any(hostname(url).endswith("." + d) for d in allowed) for url in candidate["source_urls"]):
-            return {"disposition": "human_review", "rule_id": rule["id"], "reason": "Candidate includes an unapproved source domain."}
-        return {"disposition": "auto_publish", "rule_id": rule["id"], "reason": "Exact deterministic autonomous rule matched."}
 
-    return {"disposition": "human_review", "rule_id": None, "reason": "Change is outside the autonomous allowlist."}
+        source = source_map.get(
+            rule["required_source_id"]
+        )
+
+        if (
+            not source
+            or source.get("state") != "official"
+            or source.get("url")
+                != rule["required_source_url"]
+        ):
+            return {
+                "disposition": "human_review",
+                "rule_id": rule["id"],
+                "reason":
+                    "Canonical required source no longer "
+                    "matches policy.",
+            }
+
+        allowed = set(
+            policy["bounded_allowed_domains"]
+        )
+
+        if any(
+            hostname(url) not in allowed
+            and not any(
+                hostname(url).endswith("." + d)
+                for d in allowed
+            )
+            for url in candidate["source_urls"]
+        ):
+            return {
+                "disposition": "human_review",
+                "rule_id": rule["id"],
+                "reason":
+                    "Candidate includes an unapproved "
+                    "source domain.",
+            }
+
+        return {
+            "disposition": "auto_publish",
+            "rule_id": rule["id"],
+            "reason":
+                "Exact deterministic autonomous rule matched; "
+                "fresh authoritative verification still required.",
+        }
+
+    return {
+        "disposition": "human_review",
+        "rule_id": None,
+        "reason":
+            "Change is outside the autonomous allowlist.",
+    }
+
+
+def fetch_public_text(url: str) -> str:
+    req = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent":
+                "BridgeNode7-PaxSilica-AuthoritativeVerifier/2.0"
+        },
+    )
+    with urllib.request.urlopen(
+        req,
+        timeout=30,
+    ) as resp:
+        status = int(resp.status)
+        if not 200 <= status < 400:
+            raise RuntimeError(
+                f"authoritative source returned HTTP {status}"
+            )
+        return resp.read().decode(
+            "utf-8",
+            errors="replace",
+        )
+
+
+def visible_text(raw: str) -> str:
+    without_tags = re.sub(
+        r"<[^>]+>",
+        " ",
+        raw,
+    )
+    return " ".join(
+        html.unescape(without_tags).split()
+    )
+
+
+def verify_authoritative_rule(
+    rule: dict,
+    fetcher=None,
+) -> dict:
+    spec = rule.get("verification")
+
+    if not isinstance(spec, dict):
+        return {
+            "verified": False,
+            "reason":
+                "Autonomous rule has no authoritative verifier.",
+        }
+
+    if spec.get("type") != "official_html_status":
+        return {
+            "verified": False,
+            "reason":
+                "Unsupported authoritative verifier type.",
+        }
+
+    url = spec.get("url", "")
+    token = spec.get("record_token", "")
+    open_markers = spec.get(
+        "open_markers", []
+    )
+    closed_markers = spec.get(
+        "closed_markers", []
+    )
+
+    if (
+        not url.startswith("https://")
+        or not token
+        or not closed_markers
+    ):
+        return {
+            "verified": False,
+            "reason":
+                "Authoritative verifier configuration is incomplete.",
+        }
+
+    try:
+        raw = (
+            fetcher(url)
+            if fetcher
+            else fetch_public_text(url)
+        )
+    except Exception as exc:
+        return {
+            "verified": False,
+            "reason":
+                "Authoritative source could not be "
+                f"independently read: {exc}",
+        }
+
+    text = visible_text(raw)
+    folded = text.casefold()
+    token_folded = token.casefold()
+    pos = folded.find(token_folded)
+
+    if pos < 0:
+        return {
+            "verified": False,
+            "reason":
+                "Authoritative record token was not found.",
+        }
+
+    start = max(0, pos - 1200)
+    end = min(len(text), pos + 1200)
+    window = text[start:end].casefold()
+
+    if any(
+        marker.casefold() in window
+        for marker in open_markers
+    ):
+        return {
+            "verified": False,
+            "reason":
+                "Authoritative record still reports Open.",
+        }
+
+    if not any(
+        marker.casefold() in window
+        for marker in closed_markers
+    ):
+        return {
+            "verified": False,
+            "reason":
+                "Authoritative record does not "
+                "deterministically confirm Closed.",
+        }
+
+    return {
+        "verified": True,
+        "reason":
+            "Authoritative record independently confirms Closed.",
+        "url": url,
+        "record_token": token,
+    }
 
 
 def apply_auto_publish(root: Path, candidate: dict, decision: dict, as_of: str) -> list[str]:
@@ -130,7 +450,6 @@ def apply_auto_publish(root: Path, candidate: dict, decision: dict, as_of: str) 
         raise ValueError("S-06 missing")
     source["verified_at"] = as_of
     source.pop("review_by", None)
-    data["snapshot"]["verified_through"] = as_of
     data_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
     sources_path.write_text(json.dumps(source_doc, indent=2) + "\n", encoding="utf-8")
     return ["data/pax-silica.json", "data/sources.json"]
@@ -241,19 +560,93 @@ def main() -> None:
         candidate, api_meta = call_openai(args.mode, model, data, sources, schema, policy)
 
     validate_candidate_shape(candidate, schema)
-    decision = evaluate_candidate(candidate, args.mode, data, sources, policy)
+
+    fingerprint = candidate_fingerprint(
+        candidate
+    )
+
+    decision = evaluate_candidate(
+        candidate,
+        args.mode,
+        data,
+        sources,
+        policy,
+    )
+    decision["fingerprint"] = fingerprint
+
+    verification = None
+
+    if decision["disposition"] == "auto_publish":
+        if args.fixture:
+            verification = {
+                "verified": True,
+                "reason":
+                    "Synthetic fixture authoritative "
+                    "verification.",
+                "fixture": True,
+            }
+        else:
+            rule = next(
+                (
+                    item
+                    for item
+                    in policy["auto_publish_rules"]
+                    if item["id"]
+                    == decision["rule_id"]
+                ),
+                None,
+            )
+
+            if rule is None:
+                verification = {
+                    "verified": False,
+                    "reason":
+                        "Matched autonomous rule could "
+                        "not be resolved.",
+                }
+            else:
+                verification = (
+                    verify_authoritative_rule(rule)
+                )
+
+            if not verification["verified"]:
+                decision = {
+                    "disposition": "human_review",
+                    "rule_id":
+                        decision.get("rule_id"),
+                    "reason":
+                        "Independent authoritative "
+                        "verification failed: "
+                        + verification["reason"],
+                    "fingerprint": fingerprint,
+                }
+
     changed_files = []
-    if args.apply and decision["disposition"] == "auto_publish" and not args.fixture:
-        changed_files = apply_auto_publish(ROOT, candidate, decision, args.as_of)
+
+    if (
+        args.apply
+        and decision["disposition"]
+            == "auto_publish"
+        and not args.fixture
+    ):
+        changed_files = apply_auto_publish(
+            ROOT,
+            candidate,
+            decision,
+            args.as_of,
+        )
 
     audit = {
         "as_of": args.as_of,
         "mode": args.mode,
         "candidate": candidate,
         "decision": decision,
+        "authoritative_verification":
+            verification,
         "changed_files": changed_files,
         "api": api_meta,
     }
+
     dump_json(args.candidate_output, candidate)
     dump_json(args.decision_output, decision)
     dump_json(args.audit_output, audit)

@@ -4,6 +4,7 @@
 
 - Add AI-enabled public-source discovery through the OpenAI Responses API with web search and strict structured output.
 - Keep the model outside the publication authority boundary: deterministic Python policy decides no-change, human-review, or tightly bounded auto-publication.
+- Require an independent authoritative-source re-fetch before any autonomous publication, preserve the global verification baseline during field-level updates, and maintain a deduplicated human-review queue.
 - Add a dedicated GitHub App publication path, disabled until credentials and activation are explicitly completed.
 - Add scheduled bounded scans, daily discovery scans, on-demand dispatch, auditable candidate/decision artifacts, and fail-closed exception handling.
 - Harden the closed evidence drawer so hidden controls cannot enter keyboard navigation.
