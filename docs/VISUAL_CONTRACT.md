@@ -34,3 +34,11 @@ Verified evidence state should remain quiet, legible, and visually distinct.
 ## Accessibility resilience
 
 The Pax Silica title, active controls, evidence states, and navigation must remain legible when forced colors are active. User text-spacing overrides must not create document-level horizontal overflow. Opening the evidence drawer must not cause a page-width jump.
+
+## First-time learning contract
+
+Design for an intelligent visitor encountering Pax Silica for the first time. The page must answer the next natural question in order: what it is, what changed, how the system fits together, who participates, who creates capability, how the Philippines case applies, when an alternative becomes usable, and how to verify the record.
+
+Every visible sentence must orient, teach, distinguish evidence, enable action, or be removed. Every interaction must produce understanding rather than decoration. Public record, reported developments, BN7 analysis, and illustrative models must remain visually distinct at the point of use.
+
+The experience should support two depths without a mode switch: a clear learning surface and an inspectable evidence layer. Section forms may differ by meaning: chronology for Signals, connected architecture for system layers, filtered roster for Network, role model for Ecosystem, pathway for Philippines, instrument for Qualification, and documentary rows for Evidence.

@@ -16,6 +16,8 @@ def main():
                 el=page.locator(sel);sw=el.evaluate("e=>e.scrollWidth");cw=el.evaluate("e=>e.clientWidth");assert sw<=cw+1,(width,sel,sw,cw)
             results.append({"test":f"flows-{width}","pass":True});page.screenshot(path=str(out/f"{width}.png"),full_page=True);page.close()
         page=browser.new_page(viewport={"width":1280,"height":900});page.goto(args.base_url,wait_until="networkidle")
+        order=page.locator(".section").evaluate_all("els=>els.map(e=>e.id)");assert order==["overview","signals","architecture","network","ecosystem","philippines","qualification","evidence"],order;results.append({"test":"first-time-learning-order","pass":True})
+        assert "Select a layer to explore its role, dependencies, and evidence boundary." in page.locator("#architecture").inner_text();assert page.locator("#layerDepends").is_visible();results.append({"test":"architecture-learning-cue","pass":True})
         nodes=page.locator("[data-layer]");assert nodes.count()==7
         for i in range(7): nodes.nth(i).click();assert nodes.nth(i).get_attribute("aria-pressed")=="true"
         results.append({"test":"strategic-stack","pass":True})
@@ -23,8 +25,8 @@ def main():
         results += [{"test":"regional-filter","pass":True,"europe_visible":visible},{"test":"member-semantics","pass":True}]
         assert page.locator("#ttsTotal").inner_text()=="202";assert page.locator("#ttsModelState").inner_text()=="BASELINE"
         page.locator("#in0").fill("0");assert page.locator("#ttsTotal").inner_text()=="199";assert page.locator("#ttsModelState").inner_text()=="MODIFIED"
-        page.locator("#prequalify").click();assert page.locator("#ttsTotal").inner_text()=="109";assert page.locator("#ttsModelState").inner_text()=="PREQUALIFIED"
-        page.locator("#resetTTS").click();assert page.locator("#ttsTotal").inner_text()=="202";assert page.locator("#ttsModelState").inner_text()=="BASELINE";results.append({"test":"time-to-switch-state-machine","pass":True})
+        page.locator("#prequalify").click();assert page.locator("#ttsTotal").inner_text()=="109";assert page.locator("#ttsModelState").inner_text()=="PREQUALIFIED";assert page.locator("#scenarioName").inner_text()=="Prequalified";assert "−93 days" in page.locator("#deltaValue").inner_text();assert "Ramp" in page.locator("#largestDelay").inner_text()
+        page.locator("#resetTTS").click();assert page.locator("#ttsTotal").inner_text()=="202";assert page.locator("#ttsModelState").inner_text()=="BASELINE";assert page.locator("#scenarioName").inner_text()=="Baseline";results.append({"test":"time-to-switch-state-machine","pass":True})
         groups=page.locator("[data-evidence-group]");assert groups.count()>=3;assert groups.nth(0).get_attribute("data-evidence-group")=="official";assert groups.nth(1).get_attribute("data-evidence-group")=="secondary";assert groups.nth(2).get_attribute("data-evidence-group")=="reported_draft";results.append({"test":"evidence-group-order","pass":True})
         official_ids=page.locator('[data-evidence-group="official"] .evidence-card code').all_inner_texts();assert official_ids[:4]==["S-01","S-05","S-11","S-04"],official_ids;results.append({"test":"evidence-official-order","pass":True})
         s06=page.locator("#source-S-06");assert "Review by" in s06.inner_text();assert "Aug 20, 2026" in s06.inner_text();results.append({"test":"evidence-dates","pass":True})

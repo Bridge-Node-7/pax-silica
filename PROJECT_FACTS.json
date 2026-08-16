@@ -2,7 +2,7 @@
   "project": "pax-silica",
   "public_name": "Pax Silica Intelligence",
   "owner": "Bridge-Node-7",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "production_url": "https://bridgenode7.com/pax-silica/",
   "public_source_only": true,
   "telemetry_enabled": false,
