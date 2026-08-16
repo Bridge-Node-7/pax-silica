@@ -2,7 +2,7 @@
   "project": "pax-silica",
   "public_name": "Pax Silica Intelligence",
   "owner": "Bridge-Node-7",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "production_url": "https://bridgenode7.com/pax-silica/",
   "public_source_only": true,
   "telemetry_enabled": false,
@@ -11,10 +11,5 @@
   "validation_command": "python scripts/check_repo.py",
   "browser_uat_required": true,
   "snapshot_verified_through": "2026-08-15",
-  "credibility_contract": "docs/CREDIBILITY.md",
-  "intelligence_watch": "live_ai_plus_daily_freshness",
-  "canonical_auto_publish": true,
-  "auto_publish_scope": "deterministic_policy_bounded_routine_changes",
-  "live_intelligence_policy": "automation/live-intelligence-policy.json",
-  "live_intelligence_enabled_by_default": false
+  "credibility_contract": "docs/CREDIBILITY.md"
 }

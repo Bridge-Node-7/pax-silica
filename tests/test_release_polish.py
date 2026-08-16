@@ -22,10 +22,6 @@ class ReleasePolishTests(unittest.TestCase):
         tpl=(ROOT/'web/index.template.html').read_text(encoding="utf-8");js=(ROOT/'web/app.js').read_text(encoding="utf-8")
         self.assertIn('id="ttsModelState">BASELINE',tpl)
         for state in ('BASELINE','MODIFIED','PREQUALIFIED'): self.assertIn(state,js)
-    def test_intelligence_watch_is_human_gated(self):
-        wf=(ROOT/'.github/workflows/intelligence-watch.yml').read_text(encoding="utf-8")
-        self.assertIn('contents: read',wf);self.assertIn('issues: write',wf);self.assertNotIn('contents: write',wf)
-        self.assertTrue((ROOT/'scripts/intelligence_watch.py').exists())
     def test_spoken_audit_is_in_gate(self):
         gate=(ROOT/'scripts/check_repo.py').read_text(encoding="utf-8");self.assertIn('audit_readability.py',gate)
 
