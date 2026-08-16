@@ -61,6 +61,28 @@ def main():
         assert source.evaluate("el=>el===document.activeElement")
         results.append({"test":"drawer-focus-return","pass":True})
         page2=browser.new_page(viewport={"width":1280,"height":900},reduced_motion="reduce");page2.goto(args.base_url,wait_until="networkidle");page2.keyboard.press("Tab");assert page2.evaluate("document.activeElement && document.activeElement.getAttribute('href')")=="#main";page2.close();results.append({"test":"keyboard-entry","pass":True})
+        forced=browser.new_page(viewport={"width":1280,"height":900},forced_colors="active",reduced_motion="reduce")
+        forced.goto(args.base_url,wait_until="networkidle")
+        assert forced.evaluate("matchMedia('(forced-colors: active)').matches")
+        hero_color=forced.locator(".gradient-text").evaluate("el=>getComputedStyle(el).color")
+        assert hero_color not in ("rgba(0, 0, 0, 0)","transparent"),hero_color
+        assert forced.locator(".gradient-text").is_visible()
+        forced.screenshot(path=str(out/"forced-colors.png"),full_page=True)
+        forced.close()
+        results.append({"test":"forced-colors-resilience","pass":True,"hero_color":hero_color})
+
+        # Text-spacing overrides represent user/user-agent styles. CSP is bypassed only
+        # in this isolated test page so the production policy remains strict.
+        spacing=browser.new_page(viewport={"width":390,"height":844},reduced_motion="reduce",bypass_csp=True)
+        spacing.goto(args.base_url,wait_until="networkidle")
+        spacing.add_style_tag(content="*{line-height:1.5!important;letter-spacing:.12em!important;word-spacing:.16em!important}p{margin-bottom:2em!important}")
+        spacing_width=spacing.evaluate("document.documentElement.scrollWidth")
+        assert spacing_width<=390,(spacing_width,390)
+        assert spacing.locator("h1").is_visible()
+        assert spacing.locator("#evidence").is_visible()
+        spacing.screenshot(path=str(out/"text-spacing-390.png"),full_page=True)
+        spacing.close()
+        results.append({"test":"text-spacing-reflow","pass":True,"observed":spacing_width})
         mobile=browser.new_page(viewport={"width":390,"height":844},reduced_motion="reduce");mobile.goto(args.base_url,wait_until="networkidle")
         cols=mobile.locator(".members").evaluate("el=>getComputedStyle(el).gridTemplateColumns.split(' ').filter(Boolean).length")
         assert cols==2,cols

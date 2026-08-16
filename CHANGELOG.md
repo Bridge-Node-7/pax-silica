@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.3 — Public UX closeout
+
+- Preserve the Pax Silica hero and active-state legibility in forced-colors / Windows High Contrast.
+- Stabilize page width when evidence-drawer scroll locking changes.
+- Extend Browser UAT with forced-colors and WCAG text-spacing stress coverage.
+- Preserve reviewed public-source intelligence and the public/private information boundary unchanged.
+
 ## 0.2.2 — Repository assurance
 
 - Improve repository navigation and public-source correction intake.

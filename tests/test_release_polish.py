@@ -76,4 +76,40 @@ class ReleasePolishTests(unittest.TestCase):
         text=(ROOT/"scripts/check_public_boundary.py").read_text(encoding="utf-8")
         self.assertIn("PUBLIC_SURFACE",text)
         self.assertIn("NONPUBLIC_DISCLOSURE_PATTERNS",text)
+
+    def test_accessibility_resilience_closeout_contract(self):
+        css=(ROOT/"web/styles.css").read_text(encoding="utf-8")
+        uat=(ROOT/"scripts/browser_uat.py").read_text(encoding="utf-8")
+
+        self.assertIn(
+            "scrollbar-gutter:stable",
+            css,
+        )
+
+        self.assertIn(
+            ".gradient-text{background:none;color:CanvasText;"
+            "-webkit-text-fill-color:CanvasText}",
+            css,
+        )
+
+        self.assertIn(
+            'forced_colors="active"',
+            uat,
+        )
+
+        self.assertIn(
+            "forced-colors-resilience",
+            uat,
+        )
+
+        self.assertIn(
+            "text-spacing-reflow",
+            uat,
+        )
+
+        self.assertIn(
+            "bypass_csp=True",
+            uat,
+        )
+
 if __name__=='__main__':unittest.main()
