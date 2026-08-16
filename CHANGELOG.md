@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.4 — First-time learning luxury UX
+
+- Reorder the public journey around first-time understanding: Overview, Signals, Architecture, Network, Ecosystem, Philippines, Qualification, Evidence.
+- Sharpen visible language so each section answers one natural question and public evidence remains distinct from BN7 analysis.
+- Make Architecture a connected learning interaction with role, dependency, and evidence-boundary detail.
+- Turn Qualification into a self-explanatory Time-to-Switch lesson with action labels and a live Scenario Summary.
+- Keep canonical public intelligence and source records unchanged while extending Browser UAT and the visual contract.
+
 ## 0.2.3 — Public UX closeout
 
 - Preserve the Pax Silica hero and active-state legibility in forced-colors / Windows High Contrast.

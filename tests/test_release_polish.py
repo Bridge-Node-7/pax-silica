@@ -112,4 +112,28 @@ class ReleasePolishTests(unittest.TestCase):
             uat,
         )
 
+    def test_first_time_learning_luxury_contract(self):
+        tpl=(ROOT/"web/index.template.html").read_text(encoding="utf-8")
+        order=[tpl.index(f'id="{sid}"') for sid in ("overview","signals","architecture","network","ecosystem","philippines","qualification","evidence")]
+        self.assertEqual(order,sorted(order))
+        for phrase in (
+            "Explore the intelligence",
+            "What Pax Silica is.",
+            "What changed.",
+            "How the system fits together.",
+            "Who is participating.",
+            "Who makes capability real.",
+            "From participation to capability.",
+            "When does an alternative become usable?",
+            "Traceable public record.",
+            "Compare prequalified scenario",
+            "Reset to baseline",
+            "Scenario summary",
+            "Public evidence · Analysis identified · Human judgment retained",
+        ):
+            self.assertIn(phrase,tpl)
+        self.assertIn('id="layerDepends"',tpl)
+        self.assertIn('id="scenarioName"',tpl)
+        self.assertNotIn("frontier-decision-engine",tpl)
+
 if __name__=='__main__':unittest.main()

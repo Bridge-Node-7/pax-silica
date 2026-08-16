@@ -1,21 +1,37 @@
 (()=>{"use strict";
 const $=(s,p=document)=>p.querySelector(s),$$=(s,p=document)=>[...p.querySelectorAll(s)];
 const layers=[
-["Critical Materials","Physical inputs used across semiconductors, electronics, magnets, energy systems, sensing, and advanced manufacturing.","Origin alone is insufficient. Capacity, quality, ownership, processing dependency, substitution, and application specifications remain material."],
-["Processing & Manufacturing","Transforms feedstocks into engineered materials, chemicals, substrates, components, and industrial output.","A diversified source base can still share one processor, precursor, toolchain, energy source, or process dependency."],
-["Semiconductors","Connects materials, fabrication, packaging, test, electronics, and the compute stack.","Fab geography does not establish independence from vulnerable gases, chemicals, equipment, packaging, firmware, or test capacity."],
-["Energy & Infrastructure","Power, water, logistics, communications, ports, and physical infrastructure convert nominal capacity into usable capacity.","Industrial resilience depends on throughput, permits, transmission, continuity, utilities, and physical chokepoints."],
-["Compute & Networks","Chips, storage, networking, data centers, cooling, connectivity, and trusted systems create accessible computing capacity.","Installed hardware is not equivalent to dependable compute without power, cooling, networks, security, utilization, and continuity."],
-["AI & Software","Models, software, data, deployment systems, and services convert compute into economic and strategic applications.","Model access remains bounded by data, integration, evaluation, reliability, security, governance, skills, and application fitness."],
-["Critical Systems","Defense, sensing, communications, space, energy, healthcare, transport, and other end uses create mission pull.","Upstream availability does not establish successful insertion, certification, reliability, procurement acceptance, or system performance."]
+["Critical Materials","Physical inputs used across semiconductors, electronics, magnets, energy systems, sensing, and advanced manufacturing.","Mining, refining, separation, processing, quality control, logistics, and application specifications.","Origin alone is insufficient. Capacity, quality, ownership, processing dependency, substitution, and application specifications remain material."],
+["Processing & Manufacturing","Transforms feedstocks into engineered materials, chemicals, substrates, components, and industrial output.","Feedstock quality, process know-how, equipment, energy, water, chemicals, standards, and qualified operators.","A diversified source base can still share one processor, precursor, toolchain, energy source, or process dependency."],
+["Semiconductors","Connects materials, fabrication, packaging, test, electronics, and the compute stack.","Materials, chemicals, gases, equipment, packaging, test, energy, firmware, logistics, and skilled production.","Fab geography does not establish independence from vulnerable gases, chemicals, equipment, packaging, firmware, or test capacity."],
+["Energy & Infrastructure","Power, water, logistics, communications, ports, and physical infrastructure convert nominal capacity into usable capacity.","Permits, generation, transmission, water, communications, transport, maintenance, and physical continuity.","Industrial resilience depends on throughput, permits, transmission, continuity, utilities, and physical chokepoints."],
+["Compute & Networks","Chips, storage, networking, data centers, cooling, connectivity, and trusted systems create accessible computing capacity.","Chips, power, cooling, storage, networks, security, software, data centers, and operations.","Installed hardware is not equivalent to dependable compute without power, cooling, networks, security, utilization, and continuity."],
+["AI & Software","Models, software, data, deployment systems, and services convert compute into economic and strategic applications.","Compute, data, models, evaluation, integration, security, governance, skills, and application context.","Model access remains bounded by data, integration, evaluation, reliability, security, governance, skills, and application fitness."],
+["Critical Systems","Defense, sensing, communications, space, energy, healthcare, transport, and other end uses create mission pull.","Qualified components, integration, certification, reliability, procurement acceptance, sustainment, and mission requirements.","Upstream availability does not establish successful insertion, certification, reliability, procurement acceptance, or system performance."]
 ];
-$$("[data-layer]").forEach((b,i)=>b.addEventListener("click",()=>{$$("[data-layer]").forEach(x=>x.setAttribute("aria-pressed","false"));b.setAttribute("aria-pressed","true");$("#layerTitle").textContent=layers[i][0];$("#layerFunction").textContent=layers[i][1];$("#layerEvidence").textContent=layers[i][2]}));
+$$(`[data-layer]`).forEach((b,i)=>b.addEventListener("click",()=>{$$(`[data-layer]`).forEach(x=>x.setAttribute("aria-pressed","false"));b.setAttribute("aria-pressed","true");$("#layerTitle").textContent=layers[i][0];$("#layerFunction").textContent=layers[i][1];$("#layerDepends").textContent=layers[i][2];$("#layerEvidence").textContent=layers[i][3]}));
 $$(".filters [data-region]").forEach(b=>b.addEventListener("click",()=>{$$(".filters [data-region]").forEach(x=>x.setAttribute("aria-pressed","false"));b.setAttribute("aria-pressed","true");const r=b.dataset.region;$$(".member").forEach(m=>m.hidden=!(r==="All"||m.dataset.region===r))}));
-const sliders=$$(".control input"),labels=["Detect","Decide","Contract","Tooling","Qualify","Regulatory","Logistics","Ramp"],baseline=[3,5,14,30,75,20,10,45];
-const prequalified=[1,3,7,12,25,18,8,35];let ttsMode="BASELINE";
+const sliders=$$(".control input"),stageLabels=["Detect","Decide","Contract","Tooling","Qualification","Regulatory","Logistics","Ramp"],baseline=[3,5,14,30,75,20,10,45];
+const prequalified=[1,3,7,12,25,18,8,35],baselineTotal=baseline.reduce((a,b)=>a+b,0);let ttsMode="BASELINE";
 function same(a,b){return a.every((v,i)=>v===b[i])}
-function tts(){const v=sliders.map(s=>+s.value);v.forEach((n,i)=>$("#out"+i).textContent=n+"d");$("#ttsTotal").textContent=v.reduce((a,b)=>a+b,0);if(same(v,baseline))ttsMode="BASELINE";else if(same(v,prequalified))ttsMode="PREQUALIFIED";else ttsMode="MODIFIED";$("#ttsModelState").textContent=ttsMode;const mx=Math.max(...v),i=v.indexOf(mx);$("#largestDelay").textContent=labels[i].toUpperCase();$("#delayNote").textContent=(i===4?"Application qualification dominates the modeled state.":labels[i]+" dominates the modeled state.")}
-sliders.forEach(s=>s.addEventListener("input",tts));$("#prequalify").addEventListener("click",()=>{prequalified.forEach((v,i)=>sliders[i].value=v);tts()});$("#resetTTS").addEventListener("click",()=>{baseline.forEach((v,i)=>sliders[i].value=v);tts()});tts();
+function tts(){
+  const v=sliders.map(s=>+s.value),total=v.reduce((a,b)=>a+b,0);
+  v.forEach((n,i)=>$("#out"+i).textContent=n+"d");
+  $("#ttsTotal").textContent=total;
+  if(same(v,baseline))ttsMode="BASELINE";else if(same(v,prequalified))ttsMode="PREQUALIFIED";else ttsMode="MODIFIED";
+  $("#ttsModelState").textContent=ttsMode;
+  $("#scenarioName").textContent=ttsMode==="BASELINE"?"Baseline":ttsMode==="PREQUALIFIED"?"Prequalified":"Modified";
+  $("#summaryTotal").textContent=total+" days";
+  const delta=total-baselineTotal,pct=Math.round(Math.abs(delta)/baselineTotal*100);
+  $("#deltaValue").textContent=delta===0?"—":`${delta<0?"−":"+"}${Math.abs(delta)} days · ${delta<0?"−":"+"}${pct}%`;
+  const mx=Math.max(...v),i=v.indexOf(mx);
+  $("#largestDelay").textContent=`${stageLabels[i]} · ${mx} days`;
+  $("#delayNote").textContent=(i===4?"Application qualification is the largest modeled constraint.":`${stageLabels[i]} is the largest modeled constraint.`);
+}
+sliders.forEach(s=>s.addEventListener("input",tts));
+$("#prequalify").addEventListener("click",()=>{prequalified.forEach((v,i)=>sliders[i].value=v);tts()});
+$("#resetTTS").addEventListener("click",()=>{baseline.forEach((v,i)=>sliders[i].value=v);tts()});
+tts();
 const drawer=$("#drawer"),back=$("#backdrop"),close=$("#drawerClose");let prior=null;
 const inertTargets=[$(".site-nav"),$("#main"),$(".bn7"),$(".footer")].filter(Boolean);
 function setModalState(on){
