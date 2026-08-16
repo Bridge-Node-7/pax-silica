@@ -28,8 +28,12 @@ def main():
         groups=page.locator("[data-evidence-group]");assert groups.count()>=3;assert groups.nth(0).get_attribute("data-evidence-group")=="official";assert groups.nth(1).get_attribute("data-evidence-group")=="secondary";assert groups.nth(2).get_attribute("data-evidence-group")=="reported_draft";results.append({"test":"evidence-group-order","pass":True})
         official_ids=page.locator('[data-evidence-group="official"] .evidence-card code').all_inner_texts();assert official_ids[:4]==["S-01","S-05","S-11","S-04"],official_ids;results.append({"test":"evidence-official-order","pass":True})
         s06=page.locator("#source-S-06");assert "Review by" in s06.inner_text();assert "Aug 20, 2026" in s06.inner_text();results.append({"test":"evidence-dates","pass":True})
-        source=page.locator('[data-source="S-01"]').first;source.click()
+        source=page.locator('[data-source="S-01"]').first
         drawer=page.locator("#drawer")
+        assert drawer.get_attribute("inert") is not None
+        assert page.evaluate("""() => { const b=document.querySelector('#drawerClose'); b.focus(); return document.activeElement !== b; }""")
+        source.click()
+        assert drawer.get_attribute("inert") is None
         assert drawer.get_attribute("role")=="dialog"
         assert drawer.get_attribute("aria-modal")=="true"
         assert drawer.get_attribute("aria-hidden")=="false"
@@ -51,12 +55,26 @@ def main():
         ]
         page.keyboard.press("Escape")
         assert drawer.get_attribute("aria-hidden")=="true"
+        assert drawer.get_attribute("inert") is not None
         assert page.locator("#main").get_attribute("inert") is None
         assert "drawer-open" not in (page.locator("body").get_attribute("class") or "")
         assert source.evaluate("el=>el===document.activeElement")
         results.append({"test":"drawer-focus-return","pass":True})
         page2=browser.new_page(viewport={"width":1280,"height":900},reduced_motion="reduce");page2.goto(args.base_url,wait_until="networkidle");page2.keyboard.press("Tab");assert page2.evaluate("document.activeElement && document.activeElement.getAttribute('href')")=="#main";page2.close();results.append({"test":"keyboard-entry","pass":True})
         mobile=browser.new_page(viewport={"width":390,"height":844},reduced_motion="reduce");mobile.goto(args.base_url,wait_until="networkidle")
+        cols=mobile.locator(".members").evaluate("el=>getComputedStyle(el).gridTemplateColumns.split(' ').filter(Boolean).length")
+        assert cols==2,cols
+        details=mobile.locator(".evidence-details").first
+        assert details.is_visible()
+        assert mobile.locator(".evidence-note").first.is_hidden()
+        assert mobile.locator(".evidence-supports").first.is_hidden()
+        details.click()
+        assert mobile.locator("#drawer").get_attribute("inert") is None
+        assert mobile.locator("#drawerSupports").inner_text().strip()
+        assert mobile.locator("#drawerNote").inner_text().strip()
+        mobile.keyboard.press("Escape")
+        assert mobile.locator("#drawer").get_attribute("inert") is not None
+        results += [{"test":"mobile-network-density","pass":True},{"test":"mobile-evidence-progressive-disclosure","pass":True},{"test":"closed-drawer-inert","pass":True}]
         for selector in (".filters button",".source",".tts button","#drawerClose"):
             loc=mobile.locator(selector)
             for i in range(loc.count()):

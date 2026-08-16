@@ -1,0 +1,110 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "candidate_id",
+    "disposition",
+    "change_type",
+    "summary",
+    "target",
+    "evidence_state",
+    "source_ids",
+    "source_urls",
+    "confidence",
+    "contradiction",
+    "reasoning"
+  ],
+  "properties": {
+    "candidate_id": {
+      "type": "string"
+    },
+    "disposition": {
+      "type": "string",
+      "enum": [
+        "no_change",
+        "change"
+      ]
+    },
+    "change_type": {
+      "type": "string",
+      "enum": [
+        "none",
+        "program_status",
+        "new_signatory",
+        "new_source",
+        "reported_development",
+        "official_update",
+        "correction",
+        "other"
+      ]
+    },
+    "summary": {
+      "type": "string"
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "record_type",
+        "record_id",
+        "field",
+        "old_value",
+        "new_value"
+      ],
+      "properties": {
+        "record_type": {
+          "type": "string"
+        },
+        "record_id": {
+          "type": "string"
+        },
+        "field": {
+          "type": "string"
+        },
+        "old_value": {
+          "type": "string"
+        },
+        "new_value": {
+          "type": "string"
+        }
+      }
+    },
+    "evidence_state": {
+      "type": "string",
+      "enum": [
+        "official",
+        "secondary",
+        "reported_draft",
+        "bn7_analysis",
+        "unknown",
+        "superseded"
+      ]
+    },
+    "source_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "source_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "confidence": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ]
+    },
+    "contradiction": {
+      "type": "boolean"
+    },
+    "reasoning": {
+      "type": "string"
+    }
+  }
+}

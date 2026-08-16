@@ -4,10 +4,41 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
+
+class ScriptBodyParser(HTMLParser):
+    """Collect inline script bodies without regex-parsing HTML."""
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self._in_script = False
+        self._attrs = []
+        self._body = []
+        self.scripts = []
+
+    def handle_starttag(self, tag, attrs):
+        if tag.lower() == "script":
+            self._in_script = True
+            self._attrs = list(attrs)
+            self._body = []
+
+    def handle_data(self, data):
+        if self._in_script:
+            self._body.append(data)
+
+    def handle_endtag(self, tag):
+        if tag.lower() == "script" and self._in_script:
+            self.scripts.append(
+                (self._attrs, "".join(self._body))
+            )
+            self._in_script = False
+            self._attrs = []
+            self._body = []
+
 
 class PublicReleaseTests(unittest.TestCase):
     @classmethod
@@ -65,9 +96,14 @@ class PublicReleaseTests(unittest.TestCase):
             self.build(d)
             text = (Path(d) / 'index.html').read_text(encoding='utf-8')
             self.assertNotIn('id="sourceData"', text)
-            scripts = re.findall(r'<script([^>]*)>(.*?)</script>', text, re.I | re.S)
-            for attrs, body in scripts:
-                self.assertFalse(body.strip(), f'inline script body present: {attrs}')
+            parser = ScriptBodyParser()
+            parser.feed(text)
+            parser.close()
+            for attrs, body in parser.scripts:
+                self.assertFalse(
+                    body.strip(),
+                    f'inline script body present: {attrs}',
+                )
 
     def test_public_page_avoids_self_promotional_leadership_claims(self):
         with tempfile.TemporaryDirectory() as d:
@@ -103,6 +139,21 @@ class PublicReleaseTests(unittest.TestCase):
             'IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM',
             normalized,
         )
+
+    def test_v020_live_intelligence_contract(self):
+        template = (ROOT / 'web/index.template.html').read_text(encoding='utf-8')
+        app = (ROOT / 'web/app.js').read_text(encoding='utf-8')
+        styles = (ROOT / 'web/styles.css').read_text(encoding='utf-8')
+        workflow = (ROOT / '.github/workflows/live-intelligence.yml').read_text(encoding='utf-8')
+        policy = json.loads((ROOT / 'automation/live-intelligence-policy.json').read_text(encoding='utf-8'))
+        self.assertIn('aria-hidden="true" inert', template)
+        self.assertIn('drawer.removeAttribute("inert")', app)
+        self.assertIn('drawer.setAttribute("inert","")', app)
+        self.assertIn('PAX-V020-MOBILE-DENSITY', styles)
+        self.assertIn('PAX_LIVE_INTELLIGENCE_ENABLED', workflow)
+        self.assertIn('17 */2 * * *', workflow)
+        self.assertFalse(policy['broad_mode_auto_publish'])
+        self.assertEqual(policy['auto_publish_rules'][0]['id'], 'P001_OPEN_TO_CLOSED')
 
 if __name__ == '__main__':
     unittest.main()

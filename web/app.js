@@ -37,6 +37,7 @@ function openSource(id){
   $("#drawerSupports").textContent=supports?supports.textContent.replace(/^Supports:\s*/,""):"";
   $("#drawerNote").textContent=note?note.textContent:"";
   $("#drawerLink").href=link?link.href:"#";
+  drawer.removeAttribute("inert");
   back.hidden=false;
   drawer.classList.add("open");
   drawer.setAttribute("aria-hidden","false");
@@ -49,6 +50,7 @@ function shut(){
   back.hidden=true;
   setModalState(false);
   if(prior&&document.contains(prior))prior.focus();
+  drawer.setAttribute("inert","");
 }
 $$(`[data-source]`).forEach(b=>b.addEventListener("click",()=>openSource(b.dataset.source)));
 close.addEventListener("click",shut);

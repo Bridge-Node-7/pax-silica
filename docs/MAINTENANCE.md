@@ -18,6 +18,8 @@ Do not edit generated public files.
 
 High-volatility active records use `review_by`. Validation fails when `review_by` is earlier than the snapshot's `verified_through` date.
 
+An automated field-level verification must not advance the global `snapshot.verified_through` date. Only a whole-snapshot review may advance that baseline.
+
 ## UI changes
 
 Changes to `web/`, build logic, or interaction logic require full browser UAT.
@@ -35,3 +37,25 @@ The watch never changes canonical intelligence and never publishes claims. Exter
 ## Cross-platform text encoding
 
 All repository Python text I/O is explicitly UTF-8. The CI gate runs on Ubuntu and Windows so platform-default encoding cannot silently change generated or tested text.
+
+## Live Intelligence v0.2.0
+
+The v0.2.0 automation layer separates AI discovery from publication authority.
+
+- The model receives canonical public records and a bounded monitoring policy.
+- Web content is untrusted input and cannot supply instructions to the automation.
+- Model output must match `automation/candidate.schema.json`.
+- Deterministic Python policy decides `no_change`, `human_review`, or `auto_publish`.
+- Autonomous publication is limited to explicitly enumerated rules in `automation/live-intelligence-policy.json`.
+- A model-returned source identity is never publication proof; an autonomous rule must independently re-fetch and verify the authoritative record before application.
+- Human-review candidates do not alter canonical intelligence.
+- No-change scans create audit evidence without repository commits.
+
+### Automated source-health states
+
+- `ok` — automated retrieval returned a usable response.
+- `manual_verification` — automation was blocked or rate-limited; this is not evidence that the source disappeared.
+- `temporary_error` — a transient network or server condition prevented an automated determination.
+- `unavailable` — a strong removal signal such as HTTP 404 or 410 requires human review.
+
+Review deadlines and `unavailable` sources require review. Automated blocking or temporary transport failure alone must not silently invalidate canonical evidence.

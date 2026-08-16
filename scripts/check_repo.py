@@ -8,7 +8,7 @@ REQUIRED={
 "data/pax-silica.json","data/sources.json","web/index.template.html","web/styles.css","web/app.js",
 "scripts/build_web.py","scripts/validate_data.py","scripts/check_public_boundary.py","scripts/browser_uat.py","scripts/verify_production.py",
 ".github/workflows/ci.yml",".github/workflows/browser-uat.yml",".github/workflows/pages.yml",".github/workflows/intelligence-watch.yml",
-"docs/BRIDGENODE7_INTEGRATION.md","docs/CREDIBILITY.md","tests/test_bn7_synergy.py","tests/test_release_polish.py","scripts/audit_readability.py","scripts/intelligence_watch.py","Makefile",".editorconfig",".gitattributes"
+"docs/BRIDGENODE7_INTEGRATION.md","docs/CREDIBILITY.md","docs/LIVE_INTELLIGENCE.md","tests/test_bn7_synergy.py","tests/test_release_polish.py","tests/test_live_intelligence.py","tests/test_intelligence_watch.py","scripts/audit_readability.py","scripts/intelligence_watch.py","scripts/live_intelligence.py","automation/live-intelligence-policy.json","automation/candidate.schema.json",".github/workflows/live-intelligence.yml","Makefile",".editorconfig",".gitattributes"
 }
 def files_digest(root):
     root=Path(root)

@@ -75,7 +75,8 @@ def main():
                 f'<div class="evidence-dates">{evidence_dates(s)}</div>'
                 f'<p class="evidence-note">{html.escape(s["note"])}</p>'
                 f'<p class="evidence-supports"><strong>Supports:</strong> {html.escape("; ".join(s["supports"]))}</p>'
-                f'<a href="{html.escape(s["url"])}" target="_blank" rel="noopener">Open source ↗</a></div></article>'
+                f'<div class="evidence-actions"><a href="{html.escape(s["url"])}" target="_blank" rel="noopener">Open source ↗</a>'
+                f'<button class="source evidence-details" data-source="{html.escape(s["id"])}" aria-label="Evidence details for {html.escape(s["id"])}">Details</button></div></div></article>'
             )
         evidence_groups.append(f'<section class="evidence-group" data-evidence-group="{html.escape(state)}"><div class="evidence-group-head"><h3>{label}</h3><span>{len(group)}</span></div>{"".join(rows)}</section>')
     t=(ROOT/"web/index.template.html").read_text(encoding="utf-8")
