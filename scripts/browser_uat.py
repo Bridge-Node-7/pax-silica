@@ -71,7 +71,9 @@ def main():
         forced.close()
         results.append({"test":"forced-colors-resilience","pass":True,"hero_color":hero_color})
 
-        spacing=browser.new_page(viewport={"width":390,"height":844},reduced_motion="reduce")
+        # Text-spacing overrides represent user/user-agent styles. CSP is bypassed only
+        # in this isolated test page so the production policy remains strict.
+        spacing=browser.new_page(viewport={"width":390,"height":844},reduced_motion="reduce",bypass_csp=True)
         spacing.goto(args.base_url,wait_until="networkidle")
         spacing.add_style_tag(content="*{line-height:1.5!important;letter-spacing:.12em!important;word-spacing:.16em!important}p{margin-bottom:2em!important}")
         spacing_width=spacing.evaluate("document.documentElement.scrollWidth")

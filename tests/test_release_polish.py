@@ -107,4 +107,9 @@ class ReleasePolishTests(unittest.TestCase):
             uat,
         )
 
+        self.assertIn(
+            "bypass_csp=True",
+            uat,
+        )
+
 if __name__=='__main__':unittest.main()
