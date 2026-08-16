@@ -28,7 +28,33 @@ def main():
         groups=page.locator("[data-evidence-group]");assert groups.count()>=3;assert groups.nth(0).get_attribute("data-evidence-group")=="official";assert groups.nth(1).get_attribute("data-evidence-group")=="secondary";assert groups.nth(2).get_attribute("data-evidence-group")=="reported_draft";results.append({"test":"evidence-group-order","pass":True})
         official_ids=page.locator('[data-evidence-group="official"] .evidence-card code').all_inner_texts();assert official_ids[:4]==["S-01","S-05","S-11","S-04"],official_ids;results.append({"test":"evidence-official-order","pass":True})
         s06=page.locator("#source-S-06");assert "Review by" in s06.inner_text();assert "Aug 20, 2026" in s06.inner_text();results.append({"test":"evidence-dates","pass":True})
-        source=page.locator('[data-source="S-01"]').first;source.click();assert page.locator("#drawer").get_attribute("aria-hidden")=="false";assert "Verified" in page.locator("#drawerDates").inner_text();page.keyboard.press("Escape");assert page.locator("#drawer").get_attribute("aria-hidden")=="true";assert source.evaluate("el=>el===document.activeElement");results += [{"test":"evidence-drawer-dates","pass":True},{"test":"drawer-focus-return","pass":True}]
+        source=page.locator('[data-source="S-01"]').first;source.click()
+        drawer=page.locator("#drawer")
+        assert drawer.get_attribute("role")=="dialog"
+        assert drawer.get_attribute("aria-modal")=="true"
+        assert drawer.get_attribute("aria-hidden")=="false"
+        assert "Verified" in page.locator("#drawerDates").inner_text()
+        assert page.locator("#main").get_attribute("inert") is not None
+        assert page.locator(".site-nav").get_attribute("inert") is not None
+        assert "drawer-open" in (page.locator("body").get_attribute("class") or "")
+        assert page.locator("#drawerClose").evaluate("el=>el===document.activeElement")
+        page.keyboard.press("Shift+Tab")
+        assert page.locator("#drawerLink").evaluate("el=>el===document.activeElement")
+        page.keyboard.press("Tab")
+        assert page.locator("#drawerClose").evaluate("el=>el===document.activeElement")
+        results += [
+            {"test":"evidence-drawer-dates","pass":True},
+            {"test":"drawer-modal-semantics","pass":True},
+            {"test":"drawer-background-inert","pass":True},
+            {"test":"drawer-focus-trap","pass":True},
+            {"test":"drawer-scroll-lock","pass":True},
+        ]
+        page.keyboard.press("Escape")
+        assert drawer.get_attribute("aria-hidden")=="true"
+        assert page.locator("#main").get_attribute("inert") is None
+        assert "drawer-open" not in (page.locator("body").get_attribute("class") or "")
+        assert source.evaluate("el=>el===document.activeElement")
+        results.append({"test":"drawer-focus-return","pass":True})
         page2=browser.new_page(viewport={"width":1280,"height":900},reduced_motion="reduce");page2.goto(args.base_url,wait_until="networkidle");page2.keyboard.press("Tab");assert page2.evaluate("document.activeElement && document.activeElement.getAttribute('href')")=="#main";page2.close();results.append({"test":"keyboard-entry","pass":True})
         mobile=browser.new_page(viewport={"width":390,"height":844},reduced_motion="reduce");mobile.goto(args.base_url,wait_until="networkidle")
         for selector in (".filters button",".source",".tts button","#drawerClose"):
