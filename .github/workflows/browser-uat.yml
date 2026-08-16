@@ -1,0 +1,55 @@
+name: Browser UAT
+on:
+  pull_request:
+    paths:
+      - "web/**"
+      - "data/**"
+      - "scripts/browser_uat.py"
+      - "scripts/build_web.py"
+      - ".github/workflows/browser-uat.yml"
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: browser-uat-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  chromium:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+      - name: Install browser dependency
+        run: |
+          python -m pip install -r requirements-browser.lock
+          python -m playwright install --with-deps chromium
+      - name: Build
+        run: python scripts/build_web.py --output build/web
+      - name: Serve and test
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/serve_preview.py --directory build/web --port 8765 >build/http.log 2>&1 &
+          pid=$!
+          trap 'kill "$pid" 2>/dev/null || true' EXIT
+          for i in $(seq 1 30); do
+            curl -fsS http://127.0.0.1:8765/ >/dev/null && break
+            sleep 1
+          done
+          python scripts/browser_uat.py --base-url http://127.0.0.1:8765/ --evidence build/browser-uat
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: pax-silica-browser-uat
+          path: |
+            build/browser-uat/
+            build/http.log
+          if-no-files-found: error
+          retention-days: 14

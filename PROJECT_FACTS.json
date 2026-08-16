@@ -1,0 +1,17 @@
+{
+  "project": "pax-silica",
+  "public_name": "Pax Silica Intelligence",
+  "owner": "Bridge-Node-7",
+  "version": "0.1.0",
+  "production_url": "https://bridgenode7.com/pax-silica/",
+  "public_source_only": true,
+  "telemetry_enabled": false,
+  "human_authority_required": true,
+  "generated_site": true,
+  "validation_command": "python scripts/check_repo.py",
+  "browser_uat_required": true,
+  "snapshot_verified_through": "2026-08-15",
+  "credibility_contract": "docs/CREDIBILITY.md",
+  "intelligence_watch": "daily_human_gated",
+  "canonical_auto_publish": false
+}

@@ -1,0 +1,79 @@
+name: Deploy Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+      - name: Validate and build
+        run: |
+          set -euo pipefail
+          python scripts/check_repo.py
+          python scripts/build_web.py --output _site
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          root=Path("_site")
+          expected={"index.html","styles.css","app.js","data/pax-silica.json","data/sources.json","WEB_MANIFEST.sha256"}
+          observed={p.relative_to(root).as_posix() for p in root.rglob("*") if p.is_file()}
+          assert observed==expected,(sorted(observed),sorted(expected))
+          for line in (root/"WEB_MANIFEST.sha256").read_text().splitlines():
+              digest,rel=line.split("  ",1)
+              assert hashlib.sha256((root/rel).read_bytes()).hexdigest()==digest
+          print("PASS - exact deterministic Pages artifact")
+          PY
+      - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9
+        with:
+          path: _site
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128
+  verify-production:
+    runs-on: ubuntu-latest
+    needs: deploy
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+      - name: Build expected bytes
+        run: python scripts/build_web.py --output _site
+      - name: Verify public bytes
+        run: |
+          python scripts/verify_production.py \
+            --expected-dir _site \
+            --base-url "https://bridgenode7.com/pax-silica/" \
+            --output production-attestation.json
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: pax-silica-production-attestation
+          path: production-attestation.json
+          if-no-files-found: error
+          retention-days: 30

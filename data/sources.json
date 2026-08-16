@@ -1,0 +1,159 @@
+{
+  "sources": [
+    {
+      "id": "S-01",
+      "state": "official",
+      "publisher": "U.S. Department of State",
+      "title": "Pax Silica",
+      "url": "https://www.state.gov/pax-silica",
+      "verified_at": "2026-08-15",
+      "supports": [
+        "initiative framing",
+        "declaration architecture",
+        "strategic technology stacks",
+        "signatory network"
+      ],
+      "note": "Primary initiative source. Public availability may vary; BN7 preserves source identity and supported claims.",
+      "standing_reference": true
+    },
+    {
+      "id": "S-02",
+      "state": "official",
+      "publisher": "U.S. Department of State",
+      "title": "Outcomes of the Second Pax Silica Summit",
+      "url": "https://www.state.gov/releases/office-of-the-spokesperson/2026/06/outcomes-of-the-second-pax-silica-summit",
+      "published": "2026-06-26",
+      "verified_at": "2026-08-15",
+      "supports": [
+        "second summit",
+        "24 declaration signatories at June summit"
+      ],
+      "note": "Primary summit record."
+    },
+    {
+      "id": "S-03",
+      "state": "official",
+      "publisher": "The White House",
+      "title": "Ushering in the Next Frontier of Quantum Innovation",
+      "url": "https://www.whitehouse.gov/presidential-actions/2026/06/ushering-in-the-next-frontier-of-quantum-innovation/",
+      "published": "2026-06-22",
+      "verified_at": "2026-08-15",
+      "supports": [
+        "quantum-enabling technology",
+        "QIST supply chains",
+        "manufacturing",
+        "Pax Silica alignment"
+      ],
+      "note": "Executive Order 14413."
+    },
+    {
+      "id": "S-04",
+      "state": "official",
+      "publisher": "The White House",
+      "title": "Securing America's Defense Supply Chains and Ensuring Domestic Acquisition of Critical Materials",
+      "url": "https://www.whitehouse.gov/presidential-actions/2026/07/securing-americas-defense-supply-chains-and-ensuring-domestic-acquisition-of-critical-materials/",
+      "published": "2026-07-20",
+      "verified_at": "2026-08-15",
+      "supports": [
+        "raw-material-to-end-use supply-chain illumination",
+        "qualification of alternative sources",
+        "accelerated testing and qualification strategy"
+      ],
+      "note": "Executive Order 14415."
+    },
+    {
+      "id": "S-05",
+      "state": "official",
+      "publisher": "U.S. Department of State",
+      "title": "Pax Silica AI Assistance Project NOFO",
+      "url": "https://www.state.gov/releases/office-of-the-spokesperson/2026/08/pax-silica-ai-assistance-project-nofo",
+      "verified_at": "2026-08-15",
+      "supports": [
+        "Silicon Highway",
+        "supply-chain credentialing",
+        "provenance infrastructure"
+      ],
+      "note": "Primary State Department funding announcement.",
+      "published": "2026-08-12"
+    },
+    {
+      "id": "S-06",
+      "state": "official",
+      "publisher": "Simpler.Grants.gov",
+      "title": "DFOP0019193 — Pax Silica Artificial Intelligence Assistance Project",
+      "url": "https://simpler.grants.gov/opportunity/f17beda0-bcb7-400b-af32-f0ab508a9f13",
+      "published": "2026-07-17",
+      "verified_at": "2026-08-15",
+      "review_by": "2026-08-20",
+      "volatility": "high",
+      "supports": [
+        "opportunity status",
+        "close date",
+        "award minimum",
+        "award maximum",
+        "expected awards",
+        "eligibility"
+      ],
+      "note": "Federal opportunity listing. Time-sensitive fields must be reverified by the review date."
+    },
+    {
+      "id": "S-07",
+      "state": "official",
+      "publisher": "U.S. Department of State",
+      "title": "United States and Philippines Launch Plans for Economic Security Zone",
+      "url": "https://www.state.gov/releases/office-of-the-spokesperson/2026/04/the-united-states-and-the-philippines-launch-plans-for-4000-acre-economic-security-zone-to-shore-up-supply-chains-first-ai-native-industrial-acceleration-hub-under-pax-silica",
+      "published": "2026-04-16",
+      "verified_at": "2026-08-15",
+      "supports": [
+        "Philippines accession",
+        "planned roughly 4,000-acre Economic Security Zone",
+        "New Clark City AI-native industrial acceleration hub"
+      ],
+      "note": "Primary public announcement. Announcement is not equivalent to built, operating, financed, or qualified capacity."
+    },
+    {
+      "id": "S-09",
+      "state": "reported_draft",
+      "publisher": "Reuters",
+      "title": "US to tell partners they must pick sides in AI race with China",
+      "url": "https://www.reuters.com/world/china/us-tell-partners-they-must-pick-sides-ai-race-with-china-2026-08-14/",
+      "published": "2026-08-14",
+      "verified_at": "2026-08-15",
+      "review_by": "2026-08-22",
+      "volatility": "high",
+      "supports": [
+        "reported draft technology-bloc alignment approach"
+      ],
+      "note": "Credible reporting on a development not established here as settled final public policy."
+    },
+    {
+      "id": "S-10",
+      "state": "secondary",
+      "publisher": "Reuters",
+      "title": "Philippines, US to build industrial hub to strengthen supply chain security",
+      "url": "https://www.reuters.com/world/asia-pacific/philippines-us-build-industrial-hub-supply-chain-security-2026-04-17/",
+      "published": "2026-04-17",
+      "verified_at": "2026-08-15",
+      "supports": [
+        "New Clark City location",
+        "4,000-acre industrial hub",
+        "Philippines as 13th Pax Silica signatory"
+      ],
+      "note": "Independent reporting used for the New Clark City location. The State Department primary announcement establishes the Luzon Economic Corridor hub and Philippine accession."
+    },
+    {
+      "id": "S-11",
+      "state": "official",
+      "publisher": "Comune di Brindisi",
+      "title": "Sottoscritta a Brindisi la dichiarazione congiunta Italia-USA sulla Pax Silica",
+      "url": "https://www.comune.brindisi.it/novita/pax-silica/",
+      "published": "2026-07-31",
+      "verified_at": "2026-08-15",
+      "supports": [
+        "formalization of Italy accession to Pax Silica on July 31, 2026",
+        "signature in Brindisi by Italian and U.S. ambassadors"
+      ],
+      "note": "Official local-government record of the signing event that formalized Italy’s accession."
+    }
+  ]
+}

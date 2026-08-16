@@ -1,0 +1,459 @@
+{
+  "project": "pax-silica",
+  "public_name": "Pax Silica Intelligence",
+  "snapshot": {
+    "verified_through": "2026-08-15",
+    "status": "reviewed_public_snapshot"
+  },
+  "evidence_states": [
+    "official",
+    "secondary",
+    "reported_draft",
+    "bn7_analysis",
+    "unknown",
+    "superseded"
+  ],
+  "workflow_states": [
+    "candidate",
+    "reviewed",
+    "approved",
+    "published",
+    "retired"
+  ],
+  "signatories": [
+    {
+      "name": "Argentina",
+      "region": "Americas",
+      "status": "active",
+      "source_ids": [
+        "S-01"
+      ],
+      "evidence_state": "official"
+    },
+    {
+      "name": "Australia",
+      "region": "Indo-Pacific",
+      "status": "active",
+      "founding": true,
+      "source_ids": [
+        "S-01"
+      ],
+      "evidence_state": "official"
+    },
+    {
+      "name": "Chile",
+      "region": "Americas",
+      "status": "active",
+      "source_ids": [
+        "S-01"
+      ],
+      "evidence_state": "official"
+    },
+    {
+      "name": "Costa Rica",
+      "region": "Americas",
+      "status": "active",
+      "source_ids": [
+        "S-01"
+      ],
+      "evidence_state": "official"
+    },
+    {
+      "name": "El Salvador",
+      "region": "Americas",
+      "status": "active",
+      "source_ids": [
+        "S-01"
+      ],
+      "evidence_state": "official"
+    },
+    {
+      "name": "European Union",
+      "region": "Europe",
+      "status": "active",
+      "entity_type": "institution",
+      "source_ids": [
+        "S-01"
+      ],
+      "evidence_state": "official"
+    },
+    {
+      "name": "Finland",
+      "region": "Europe",
+      "status": "active",
+      "joined": "2026-04-16",
+      "source_ids": [
+        "S-01"
+      ],
+      "evidence_state": "official"
+    },
+    {
+      "name": "Germany",
+      "region": "Europe",
+      "status": "active",
+      "source_ids": [
+        "S-01"
+      ],
+      "evidence_state": "official"
+    },
+    {
+      "name": "Greece",
+      "region": "Europe",
+      "status": "active",
+      "source_ids": [
+        "S-01"
+      ],
+      "evidence_state": "official"
+    },
+    {
+      "name": "India",
+      "region": "Indo-Pacific",
+      "status": "active",
+      "joined": "2026-02-20",
+      "source_ids": [
+        "S-01"
+      ],
+      "evidence_state": "official"
+    },
+    {
+      "name": "Israel",
+      "region": "Middle East",
+      "status": "active",
+      "founding": true,
+      "source_ids": [
+        "S-01"
+      ],
+      "evidence_state": "official"
+    },
+    {
+      "name": "Italy",
+      "region": "Europe",
+      "status": "active",
+      "joined": "2026-07-31",
+      "source_ids": [
+        "S-01",
+        "S-11"
+      ],
+      "evidence_state": "official"
+    },
+    {
+      "name": "Japan",
+      "region": "Indo-Pacific",
+      "status": "active",
+      "founding": true,
+      "source_ids": [
+        "S-01"
+      ],
+      "evidence_state": "official"
+    },
+    {
+      "name": "Kazakhstan",
+      "region": "Central Asia",
+      "status": "active",
+      "source_ids": [
+        "S-01"
+      ],
+      "evidence_state": "official"
+    },
+    {
+      "name": "Netherlands",
+      "region": "Europe",
+      "status": "active",
+      "source_ids": [
+        "S-01"
+      ],
+      "evidence_state": "official"
+    },
+    {
+      "name": "Norway",
+      "region": "Europe",
+      "status": "active",
+      "joined": "2026-05-06",
+      "source_ids": [
+        "S-01"
+      ],
+      "evidence_state": "official"
+    },
+    {
+      "name": "Panama",
+      "region": "Americas",
+      "status": "active",
+      "source_ids": [
+        "S-01"
+      ],
+      "evidence_state": "official"
+    },
+    {
+      "name": "Philippines",
+      "region": "Indo-Pacific",
+      "status": "active",
+      "joined": "2026-04-16",
+      "source_ids": [
+        "S-01",
+        "S-07"
+      ],
+      "evidence_state": "official"
+    },
+    {
+      "name": "Qatar",
+      "region": "Middle East",
+      "status": "active",
+      "source_ids": [
+        "S-01"
+      ],
+      "evidence_state": "official"
+    },
+    {
+      "name": "Republic of Korea",
+      "region": "Indo-Pacific",
+      "status": "active",
+      "founding": true,
+      "source_ids": [
+        "S-01"
+      ],
+      "evidence_state": "official"
+    },
+    {
+      "name": "Singapore",
+      "region": "Indo-Pacific",
+      "status": "active",
+      "founding": true,
+      "source_ids": [
+        "S-01"
+      ],
+      "evidence_state": "official"
+    },
+    {
+      "name": "Sweden",
+      "region": "Europe",
+      "status": "active",
+      "joined": "2026-03-17",
+      "source_ids": [
+        "S-01"
+      ],
+      "evidence_state": "official"
+    },
+    {
+      "name": "United Arab Emirates",
+      "region": "Middle East",
+      "status": "active",
+      "source_ids": [
+        "S-01"
+      ],
+      "evidence_state": "official"
+    },
+    {
+      "name": "United Kingdom",
+      "region": "Europe",
+      "status": "active",
+      "founding": true,
+      "source_ids": [
+        "S-01"
+      ],
+      "evidence_state": "official"
+    },
+    {
+      "name": "United States",
+      "region": "Americas",
+      "status": "active",
+      "founding": true,
+      "source_ids": [
+        "S-01"
+      ],
+      "evidence_state": "official"
+    }
+  ],
+  "claims": [
+    {
+      "id": "C-001",
+      "state": "official",
+      "workflow_state": "approved",
+      "text": "Pax Silica is a U.S.-led strategic initiative focused on trusted technology and AI supply chains.",
+      "source_ids": [
+        "S-01"
+      ],
+      "verified_at": "2026-08-15",
+      "public": true
+    },
+    {
+      "id": "C-002",
+      "state": "official",
+      "workflow_state": "approved",
+      "text": "The June 2026 quantum executive order directs recommendations for aligning Pax Silica with U.S. quantum priorities.",
+      "source_ids": [
+        "S-03"
+      ],
+      "verified_at": "2026-08-15",
+      "public": true
+    },
+    {
+      "id": "C-003",
+      "state": "official",
+      "workflow_state": "approved",
+      "text": "The July 2026 defense-supply-chain executive order requires supply-chain illumination from raw materials to end-use products and accelerates qualification of alternative sources.",
+      "source_ids": [
+        "S-04"
+      ],
+      "verified_at": "2026-08-15",
+      "public": true
+    },
+    {
+      "id": "C-004",
+      "state": "official",
+      "workflow_state": "approved",
+      "text": "The Pax Silica AI Assistance Project listing shows three expected awards, a $1 million minimum, a $50 million maximum, and an August 20, 2026 close date.",
+      "source_ids": [
+        "S-05",
+        "S-06"
+      ],
+      "verified_at": "2026-08-15",
+      "review_by": "2026-08-20",
+      "public": true
+    },
+    {
+      "id": "C-005",
+      "state": "official",
+      "workflow_state": "approved",
+      "text": "The Philippines joined Pax Silica alongside announced plans for a roughly 4,000-acre industrial hub in the Luzon Economic Corridor.",
+      "source_ids": [
+        "S-07"
+      ],
+      "verified_at": "2026-08-15",
+      "public": true
+    },
+    {
+      "id": "C-006",
+      "state": "reported_draft",
+      "workflow_state": "approved",
+      "text": "Reuters reported a draft U.S. approach that could pressure some partners to choose between U.S.- and China-led AI frameworks.",
+      "source_ids": [
+        "S-09"
+      ],
+      "verified_at": "2026-08-15",
+      "review_by": "2026-08-22",
+      "public": true
+    },
+    {
+      "id": "A-001",
+      "state": "bn7_analysis",
+      "workflow_state": "approved",
+      "text": "Provenance is not qualification: origin and custody do not alone establish fitness for a defined application.",
+      "source_ids": [],
+      "verified_at": "2026-08-15",
+      "public": true
+    },
+    {
+      "id": "A-002",
+      "state": "bn7_analysis",
+      "workflow_state": "approved",
+      "text": "Alternative-source resilience improves when qualification work is completed before disruption rather than after it.",
+      "source_ids": [
+        "S-04"
+      ],
+      "verified_at": "2026-08-15",
+      "public": true
+    }
+  ],
+  "events": [
+    {
+      "id": "E-001",
+      "date": "2025-12-11",
+      "title": "Pax Silica launch",
+      "summary": "Seven founding countries sign the declaration.",
+      "state": "official",
+      "source_ids": [
+        "S-01"
+      ]
+    },
+    {
+      "id": "E-002",
+      "date": "2026-04-16",
+      "title": "Philippines joins",
+      "summary": "Accession is paired with announced plans for a roughly 4,000-acre Economic Security Zone in the Luzon Economic Corridor.",
+      "state": "official",
+      "source_ids": [
+        "S-07"
+      ]
+    },
+    {
+      "id": "E-003",
+      "date": "2026-06-22",
+      "title": "Quantum alignment",
+      "summary": "Executive Order 14413 directs recommendations for aligning Pax Silica with U.S. quantum priorities.",
+      "state": "official",
+      "source_ids": [
+        "S-03"
+      ]
+    },
+    {
+      "id": "E-004",
+      "date": "2026-06-26",
+      "title": "Second Pax Silica Summit",
+      "summary": "State reports 24 declaration signatories following the summit.",
+      "state": "official",
+      "source_ids": [
+        "S-02"
+      ]
+    },
+    {
+      "id": "E-005",
+      "date": "2026-07-20",
+      "title": "Defense qualification pressure",
+      "summary": "Executive Order 14415 adds end-to-end supply-chain illumination and alternative-source qualification requirements.",
+      "state": "official",
+      "source_ids": [
+        "S-04"
+      ]
+    },
+    {
+      "id": "E-006",
+      "date": "2026-07-31",
+      "title": "Italy accession",
+      "summary": "Italy formally joins Pax Silica in Brindisi, bringing the public declaration network to 25.",
+      "state": "official",
+      "source_ids": [
+        "S-11"
+      ]
+    },
+    {
+      "id": "E-007",
+      "date": "2026-08-12",
+      "title": "AI Assistance Project",
+      "summary": "State announces the Pax Silica AI Assistance implementation program and Silicon Highway concept.",
+      "state": "official",
+      "source_ids": [
+        "S-05",
+        "S-06"
+      ]
+    },
+    {
+      "id": "E-008",
+      "date": "2026-08-14",
+      "title": "Bloc-alignment scenario reported",
+      "summary": "Reuters reports a draft U.S. approach concerning participation in competing AI frameworks.",
+      "state": "reported_draft",
+      "source_ids": [
+        "S-09"
+      ]
+    }
+  ],
+  "programs": [
+    {
+      "id": "P-001",
+      "name": "Pax Silica Artificial Intelligence Assistance Project",
+      "opportunity_id": "DFOP0019193",
+      "status": "open",
+      "close_date": "2026-08-20",
+      "expected_awards": 3,
+      "award_min_usd": 1000000,
+      "award_max_usd": 50000000,
+      "verified_at": "2026-08-15",
+      "review_by": "2026-08-20",
+      "volatility": "high",
+      "source_ids": [
+        "S-05",
+        "S-06"
+      ]
+    }
+  ]
+}

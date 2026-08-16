@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Pax Silica Intelligence Public Data",
+  "type": "object",
+  "required": [
+    "project",
+    "public_name",
+    "snapshot",
+    "signatories",
+    "claims",
+    "events",
+    "programs"
+  ],
+  "properties": {
+    "project": {
+      "const": "pax-silica"
+    },
+    "public_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "snapshot": {
+      "type": "object",
+      "required": [
+        "verified_through",
+        "status"
+      ],
+      "properties": {
+        "verified_through": {
+          "type": "string",
+          "format": "date"
+        },
+        "status": {
+          "type": "string"
+        }
+      }
+    },
+    "signatories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "region",
+          "status",
+          "source_ids"
+        ]
+      }
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "state",
+          "workflow_state",
+          "text",
+          "source_ids",
+          "verified_at",
+          "public"
+        ]
+      }
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "date",
+          "title",
+          "summary",
+          "state",
+          "source_ids"
+        ]
+      }
+    },
+    "programs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "status",
+          "verified_at",
+          "source_ids"
+        ]
+      }
+    }
+  }
+}

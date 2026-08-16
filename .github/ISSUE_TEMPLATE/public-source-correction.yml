@@ -1,0 +1,37 @@
+name: Public source correction
+description: Propose a correction using public evidence only.
+title: "[Source correction] "
+labels: ["source-correction"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Public-source corrections only. Do not submit private, proprietary, controlled, supplier-sensitive, security-sensitive, or personal information.
+  - type: input
+    id: section
+    attributes:
+      label: Claim or section
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Public source URL
+      placeholder: https://...
+    validations:
+      required: true
+  - type: input
+    id: published
+    attributes:
+      label: Publication date
+      placeholder: YYYY-MM-DD
+  - type: textarea
+    id: correction
+    attributes:
+      label: Proposed correction
+    validations:
+      required: true
+  - type: textarea
+    id: explanation
+    attributes:
+      label: Supporting explanation
