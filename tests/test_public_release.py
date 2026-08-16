@@ -4,10 +4,41 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
+
+class ScriptBodyParser(HTMLParser):
+    """Collect inline script bodies without regex-parsing HTML."""
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self._in_script = False
+        self._attrs = []
+        self._body = []
+        self.scripts = []
+
+    def handle_starttag(self, tag, attrs):
+        if tag.lower() == "script":
+            self._in_script = True
+            self._attrs = list(attrs)
+            self._body = []
+
+    def handle_data(self, data):
+        if self._in_script:
+            self._body.append(data)
+
+    def handle_endtag(self, tag):
+        if tag.lower() == "script" and self._in_script:
+            self.scripts.append(
+                (self._attrs, "".join(self._body))
+            )
+            self._in_script = False
+            self._attrs = []
+            self._body = []
+
 
 class PublicReleaseTests(unittest.TestCase):
     @classmethod
@@ -65,9 +96,14 @@ class PublicReleaseTests(unittest.TestCase):
             self.build(d)
             text = (Path(d) / 'index.html').read_text(encoding='utf-8')
             self.assertNotIn('id="sourceData"', text)
-            scripts = re.findall(r'<script([^>]*)>(.*?)</script>', text, re.I | re.S)
-            for attrs, body in scripts:
-                self.assertFalse(body.strip(), f'inline script body present: {attrs}')
+            parser = ScriptBodyParser()
+            parser.feed(text)
+            parser.close()
+            for attrs, body in parser.scripts:
+                self.assertFalse(
+                    body.strip(),
+                    f'inline script body present: {attrs}',
+                )
 
     def test_public_page_avoids_self_promotional_leadership_claims(self):
         with tempfile.TemporaryDirectory() as d:
