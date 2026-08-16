@@ -16,4 +16,14 @@ class DataTests(unittest.TestCase):
         ids=[x["id"] for x in self.data["claims"]]; self.assertEqual(len(ids),len(set(ids)))
     def test_event_ids_unique(self):
         ids=[x["id"] for x in self.data["events"]]; self.assertEqual(len(ids),len(set(ids)))
+    def test_philippines_location_source_boundary(self):
+        by_id={x["id"]:x for x in self.sources}
+        self.assertNotIn(
+            "New Clark City AI-native industrial acceleration hub",
+            by_id["S-07"]["supports"],
+        )
+        self.assertIn(
+            "New Clark City location",
+            by_id["S-10"]["supports"],
+        )
 if __name__=="__main__": unittest.main()

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.1 — Provenance correction
+
+- Correct the S-07 State Department support boundary so New Clark City is not attributed to that primary record.
+- Preserve New Clark City location support under S-10 Reuters.
+- Add a regression test protecting the Philippines location source boundary.
+
 ## 0.1.0 — Initial public release
 
 - Establish reviewed public-source Pax Silica intelligence with separate reference, change-intelligence, and Bridge Node 7 analysis layers.
