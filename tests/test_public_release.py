@@ -92,5 +92,17 @@ class PublicReleaseTests(unittest.TestCase):
             emails |= set(re.findall(r'[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}', text, re.I))
         self.assertEqual(emails, allowed)
 
+    def test_license_contains_complete_mit_grant_and_liability_text(self):
+        text = (ROOT / 'LICENSE').read_text(encoding='utf-8')
+        normalized = ' '.join(text.split())
+        self.assertIn(
+            'and to permit persons to whom the Software is furnished to do so',
+            normalized,
+        )
+        self.assertIn(
+            'IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM',
+            normalized,
+        )
+
 if __name__ == '__main__':
     unittest.main()
