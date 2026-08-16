@@ -30,3 +30,7 @@ Pax Silica-specific information visualization may be denser than a corporate pag
 At 390–480 px, declaration members may use two columns when readability is preserved. Long evidence notes may use progressive disclosure on narrow screens only when complete source detail remains keyboard-accessible through the evidence drawer. At 320 px, legibility takes priority over density.
 
 Verified evidence state should remain quiet, legible, and visually distinct.
+
+## Accessibility resilience
+
+The Pax Silica title, active controls, evidence states, and navigation must remain legible when forced colors are active. User text-spacing overrides must not create document-level horizontal overflow. Opening the evidence drawer must not cause a page-width jump.
