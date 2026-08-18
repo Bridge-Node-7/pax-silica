@@ -1,7 +1,11 @@
 # Security
 
-Report security issues to **contact@bridgenode7.com**.
+Report security issues privately.
 
-Do not use public issues to disclose credentials, vulnerabilities, private supplier intelligence, protected infrastructure details, controlled information, or other sensitive material.
+Do not post sensitive security details publicly.
+
+Use GitHub private vulnerability reporting when available. Otherwise contact **contact@bridgenode7.com** and state only that a private security report is available.
+
+Provide only the minimum information needed to understand and reproduce the issue safely.
 
 This repository contains public-source intelligence only.
