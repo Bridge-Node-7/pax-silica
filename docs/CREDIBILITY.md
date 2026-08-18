@@ -22,3 +22,7 @@ Pax Silica Intelligence is designed to make source quality visible without turni
 ## Public UX
 
 Source IDs remain small and optional at the point of use. The Evidence section exposes publisher, title, state, supported claims, evidence note, and source URL.
+
+## Freshness semantics
+
+`verified_through` identifies the reviewed snapshot date. `review_by` identifies the deadline for rechecking a time-sensitive record. Validation uses an explicit `as_of` date, defaulting to the current UTC date. A time-sensitive record fails freshness validation when its `review_by` date is earlier than `as_of`.

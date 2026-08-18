@@ -72,6 +72,12 @@ def main() -> None:
         assert page.locator("#countryName").inner_text() == "Philippines"
         page.locator('[data-network-view="roster"]').click()
         assert page.locator("#networkRoster").is_visible()
+        assert page.locator("[data-roster-country]").count() == 25
+        roster_ph = page.locator('[data-roster-country="Philippines"]')
+        roster_ph.click()
+        assert roster_ph.get_attribute("aria-pressed") == "true"
+        assert "selected" in (roster_ph.get_attribute("class") or "")
+        assert page.locator("#countryName").inner_text() == "Philippines"
         assert page.locator(".timeline-event").count() == 6
         assert page.locator(".timeline-evidence").count() == 6
         record("participants", {"country": "Philippines", "timelineEvents": 6, "rosterVisible": True})
@@ -151,6 +157,7 @@ def main() -> None:
         assert mpage.evaluate("document.documentElement.scrollWidth") <= 391
         assert mpage.locator("#networkMap").is_hidden()
         assert mpage.locator("#networkRoster").is_visible()
+        assert mpage.locator(".partner-cta").is_visible()
         mpage.screenshot(path=str(evidence / "mobile-full.png"), full_page=True)
         record("mobile", {"mapHidden": True, "rosterVisible": True})
         mobile.close()
@@ -160,6 +167,8 @@ def main() -> None:
         npage = nojs.new_page()
         npage.goto(args.base_url, wait_until="domcontentloaded")
         assert npage.locator(".noscript-fallback").is_visible()
+        assert npage.locator("#networkRoster").is_visible()
+        assert npage.locator("[data-roster-country]").count() == 25
         assert npage.locator("#evidence .source-record-actions a").count() >= 10
         record("javascript-disabled", {"fallbackVisible": True})
         nojs.close()

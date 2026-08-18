@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.2.6 — Assurance hardening
+
+- Make freshness validation depend on the validation date rather than only the reviewed snapshot date.
+- Add a scheduled read-only freshness check for time-sensitive public records.
+- Restore second-person, heading-length, and sentence-length readability controls with negative regression fixtures.
+- Detect ordinary and serialized Windows user paths at the public boundary.
+- Require exact identity between canonical active declaration signatories, rendered map markers, and rendered roster entries.
+- Restore the existing Partner action on responsive layouts.
+- Preserve the roster for desktop no-JavaScript use while retaining the existing map-first JavaScript experience.
+- Add persistent roster selection semantics.
+- Add Firefox and WebKit smoke coverage alongside the existing full Chromium Browser UAT.
+- Preserve the approved public learning path, visible copy, links, evidence data, evidence taxonomy, and deterministic static-site architecture.
+
 ## 0.2.5 — Frontier intelligence public UX
 
 - Reframe the public journey around concrete sections: Participants, Technology, Capability, Philippines, Sustainability, Readiness, Resilience, and Sources.

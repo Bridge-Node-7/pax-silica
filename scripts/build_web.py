@@ -122,7 +122,7 @@ def render_roster(active: list[dict]) -> str:
         buttons = []
         for x in members:
             buttons.append(
-                f'<button class="roster-person" data-roster-country="{html.escape(x["name"], quote=True)}">'
+                f'<button aria-pressed="false" class="roster-person" data-roster-country="{html.escape(x["name"], quote=True)}" type="button">'
                 f'<strong>{html.escape(x["name"])}</strong>'
                 f'<small>{html.escape(joined_label(x))}</small></button>'
             )
