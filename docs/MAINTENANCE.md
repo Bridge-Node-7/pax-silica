@@ -23,7 +23,7 @@ Changes to `web/`, build logic, or interaction logic require browser validation.
 
 ## Public boundary
 
-Public maintenance documentation should contain only what is necessary to reproduce and validate the public artifact. Nonpublic research, internal operating material, personal working context, and sensitive configuration do not belong in this repository.
+Only material approved for public release belongs in the repository. Keep maintenance guidance focused on reproducibility, validation, and user-relevant limitations.
 
 ## Cross-platform text encoding
 
