@@ -79,6 +79,7 @@ class PublicReleaseTests(unittest.TestCase):
             self.assertIn("Pax Silica", hero)
             self.assertIn("Pax Silica is a U.S.-led strategic initiative focused on trusted technology and AI supply chains.", hero)
             self.assertIn("Bridge Node 7 transforms public evidence into intelligence for industrial capability.", hero)
+            self.assertIn("Reviewed snapshot 15 Aug 2026", hero)
             self.assertNotIn("Latest official signal", hero)
             self.assertNotIn("Live intelligence", hero)
             self.assertNotIn("Verified through", hero)
@@ -125,6 +126,84 @@ class PublicReleaseTests(unittest.TestCase):
             text = p.read_text(encoding="utf-8", errors="ignore")
             emails |= set(re.findall(r"[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}", text, re.I))
         self.assertEqual(emails, allowed)
+
+    def test_public_operating_surface_is_minimized(self):
+        rels = (
+            "README.md",
+            "CHANGELOG.md",
+            "NOTICE",
+            "SECURITY.md",
+            "docs/CREDIBILITY.md",
+            "docs/INTELLIGENCE_MODEL.md",
+            "docs/MAINTENANCE.md",
+            "docs/PUBLIC_BOUNDARY.md",
+            "docs/RELEASE_ENGINEERING.md",
+            "docs/SOURCE_STATES.md",
+            "docs/VISUAL_CONTRACT.md",
+            "analysis/philippines-capability-accumulation.md",
+            "analysis/provenance-vs-qualification.md",
+            "analysis/time-to-switch.md",
+            "web/index.template.html",
+        )
+
+        allowed_hosts = {
+            "bridgenode7.com",
+            "www.bridgenode7.com",
+            "github.com",
+            "www.github.com",
+        }
+
+        personal_profile_markers = (
+            "personal biography",
+            "personal profile",
+            "curriculum vitae",
+            "alma mater",
+            "linkedin.com",
+            "pepperdine",
+            "graziadio",
+            " seer ",
+            " university ",
+            " college ",
+        )
+
+        for rel in rels:
+            text = (
+                ROOT / rel
+            ).read_text(
+                encoding="utf-8",
+            )
+
+            for url in re.findall(
+                r"https://[^\s<>)\]\"';]+",
+                text,
+            ):
+                host = (
+                    urlsplit(url).hostname
+                    or ""
+                ).lower()
+
+                self.assertIn(
+                    host,
+                    allowed_hosts,
+                    f"{rel}: {url}",
+                )
+
+            normalized = (
+                " "
+                + " ".join(
+                    text.lower().split()
+                )
+                + " "
+            )
+
+            for marker in (
+                personal_profile_markers
+            ):
+                self.assertNotIn(
+                    marker,
+                    normalized,
+                    rel,
+                )
 
     def test_license_contains_complete_mit_text(self):
         normalized = " ".join((ROOT / "LICENSE").read_text(encoding="utf-8").split())

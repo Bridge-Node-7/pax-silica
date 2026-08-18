@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.8 — Public surface sanitization
+
+- Remove nonessential affiliation and attribution references from the public repository and site.
+- Make the reviewed snapshot date visible so the static intelligence product remains honest when left untouched.
+- Reduce scheduled freshness checks to a monthly read-only signal while preserving hard stale-record validation.
+- Add regression protection against unnecessary personal-profile and non-evidence external-reference exposure.
+- Preserve canonical intelligence, evidence provenance, product identity, deterministic builds, accessibility, and visual quality.
+
 ## 0.2.7 — Maintainable luxury UX
 
 - Fix the desktop Sustainability heading collision without redesigning the approved learning path.
@@ -9,7 +17,7 @@
 - Decouple freshness regression fixtures from live intelligence dates and derive browser roster expectations from canonical data.
 - Move the active-signatory floor into the evidence baseline and geographic display metadata into presentation data so verified network growth does not require count-code edits.
 - Tighten declaration-signatory semantics, expose institutional signatory type, and clarify unknown accession dates.
-- Attribute the People · Planet · Profits · Product framework to Pepperdine SEER while preserving Bridge Node 7 application as analysis.
+- Clarify People · Planet · Profits · Product as analytical lenses while preserving Bridge Node 7 application as analysis.
 - Remove stale `.nav-cta` selector residue and document lightweight human visual sign-off for interface-affecting releases.
 - Preserve reviewed intelligence data, source URLs, the approved eight-stage learning path, static-site architecture, and production evidence boundaries.
 

@@ -49,3 +49,11 @@ External authoritative sites can be temporarily unavailable. URL structure, HTTP
 ## Visual maintenance
 
 Interface-affecting changes require machine geometry checks plus review of the retained 390 px and 1440 px Chromium screenshots. Machine checks establish invariants; human review judges hierarchy, breathing room, typography, coherence, and visual polish.
+
+## Dormant operation
+
+The published site is a static reviewed snapshot and remains usable without routine edits. The visible snapshot date makes evidence age explicit. Scheduled freshness validation is read-only: it can flag aging time-sensitive records, but it does not mutate, unpublish, or rewrite production.
+
+## Public minimization
+
+Keep only evidence provenance, public product identity, the approved contact channel, and instructions required to build, validate, and publish. Do not add individual background, unrelated affiliations, social profiles, or non-evidence external references.
