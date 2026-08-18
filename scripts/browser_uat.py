@@ -53,9 +53,17 @@ def main() -> None:
         assert "Verified through" not in hero
         record("hero", {"fakeLiveMetadata": False})
 
-        nav = page.locator(".local-nav a").all_inner_texts()
-        assert nav == ["Participants","Technology","Capability","Philippines","Sustainability","Readiness","Resilience","Sources"]
-        record("navigation", {"labels": nav})
+        # Validate semantic navigation labels from textContent. The visual
+        # treatment intentionally uses CSS text-transform: uppercase, so
+        # innerText is presentation-dependent and is not the right contract.
+        nav_links = page.locator(".local-nav a")
+        nav = nav_links.evaluate_all("(els)=>els.map(e=>(e.textContent||'').trim())")
+        nav_hrefs = nav_links.evaluate_all("(els)=>els.map(e=>e.getAttribute('href'))")
+        expected_nav = ["Participants","Technology","Capability","Philippines","Sustainability","Readiness","Resilience","Sources"]
+        expected_hrefs = ["#network","#technology","#capability","#philippines","#four-p","#readiness","#switching","#evidence"]
+        assert nav == expected_nav, nav
+        assert nav_hrefs == expected_hrefs, nav_hrefs
+        record("navigation", {"labels": nav, "hrefs": nav_hrefs})
 
         # Network map and roster.
         marker = page.locator('[data-map-marker="Philippines"]')
