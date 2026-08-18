@@ -1,0 +1,10 @@
+{
+  "release": "v0.2.5",
+  "minimum_source_count": 10,
+  "required_rendered_states": [
+    "official",
+    "secondary",
+    "reported_draft"
+  ],
+  "purpose": "Prevent silent evidence-base or evidence-taxonomy regression."
+}

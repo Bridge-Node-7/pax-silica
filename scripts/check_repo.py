@@ -30,6 +30,7 @@ REQUIRED = {
     "analysis/philippines-capability-accumulation.md",
     "analysis/provenance-vs-qualification.md",
     "analysis/time-to-switch.md",
+    "data/evidence-baseline.json",
     "data/pax-silica.json",
     "data/schemas/pax-silica.schema.json",
     "data/schemas/sources.schema.json",
@@ -45,6 +46,7 @@ REQUIRED = {
     "scripts/audit_readability.py",
     "scripts/browser_uat.py",
     "scripts/build_web.py",
+    "scripts/check_evidence_integrity.py",
     "scripts/check_public_boundary.py",
     "scripts/check_repo.py",
     "scripts/serve_preview.py",
@@ -67,7 +69,7 @@ def files_digest(root):
     root = Path(root)
     return {
         p.relative_to(root).as_posix():
-            hashlib.sha256(p.read_bytes()).hexdigest()
+        hashlib.sha256(p.read_bytes()).hexdigest()
         for p in root.rglob("*")
         if p.is_file()
     }
@@ -92,13 +94,21 @@ def main():
     run(ROOT / "scripts/check_public_boundary.py")
     run(ROOT / "scripts/audit_readability.py")
 
-    with tempfile.TemporaryDirectory() as a,          tempfile.TemporaryDirectory() as b:
+    with tempfile.TemporaryDirectory() as a, \
+         tempfile.TemporaryDirectory() as b:
         run(ROOT / "scripts/build_web.py", "--output", a)
         run(ROOT / "scripts/build_web.py", "--output", b)
         if files_digest(a) != files_digest(b):
             raise SystemExit("non-deterministic build")
 
+        run(
+            ROOT / "scripts/check_evidence_integrity.py",
+            "--root", ROOT,
+            "--build-html", Path(a) / "index.html",
+        )
+
     print("PASS - deterministic build")
+    print("PASS - evidence integrity")
 
     subprocess.check_call(
         [

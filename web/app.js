@@ -1,85 +1,65 @@
-(()=>{"use strict";
-const $=(s,p=document)=>p.querySelector(s),$$=(s,p=document)=>[...p.querySelectorAll(s)];
-const layers=[
-["Critical Materials","Physical inputs used across semiconductors, electronics, magnets, energy systems, sensing, and advanced manufacturing.","Mining, refining, separation, processing, quality control, logistics, and application specifications.","Origin alone is insufficient. Capacity, quality, ownership, processing dependency, substitution, and application specifications remain material."],
-["Processing & Manufacturing","Transforms feedstocks into engineered materials, chemicals, substrates, components, and industrial output.","Feedstock quality, process know-how, equipment, energy, water, chemicals, standards, and qualified operators.","A diversified source base can still share one processor, precursor, toolchain, energy source, or process dependency."],
-["Semiconductors","Connects materials, fabrication, packaging, test, electronics, and the compute stack.","Materials, chemicals, gases, equipment, packaging, test, energy, firmware, logistics, and skilled production.","Fab geography does not establish independence from vulnerable gases, chemicals, equipment, packaging, firmware, or test capacity."],
-["Energy & Infrastructure","Power, water, logistics, communications, ports, and physical infrastructure convert nominal capacity into usable capacity.","Permits, generation, transmission, water, communications, transport, maintenance, and physical continuity.","Industrial resilience depends on throughput, permits, transmission, continuity, utilities, and physical chokepoints."],
-["Compute & Networks","Chips, storage, networking, data centers, cooling, connectivity, and trusted systems create accessible computing capacity.","Chips, power, cooling, storage, networks, security, software, data centers, and operations.","Installed hardware is not equivalent to dependable compute without power, cooling, networks, security, utilization, and continuity."],
-["AI & Software","Models, software, data, deployment systems, and services convert compute into economic and strategic applications.","Compute, data, models, evaluation, integration, security, governance, skills, and application context.","Model access remains bounded by data, integration, evaluation, reliability, security, governance, skills, and application fitness."],
-["Critical Systems","Defense, sensing, communications, space, energy, healthcare, transport, and other end uses create mission pull.","Qualified components, integration, certification, reliability, procurement acceptance, sustainment, and mission requirements.","Upstream availability does not establish successful insertion, certification, reliability, procurement acceptance, or system performance."]
-];
-$$(`[data-layer]`).forEach((b,i)=>b.addEventListener("click",()=>{$$(`[data-layer]`).forEach(x=>x.setAttribute("aria-pressed","false"));b.setAttribute("aria-pressed","true");$("#layerTitle").textContent=layers[i][0];$("#layerFunction").textContent=layers[i][1];$("#layerDepends").textContent=layers[i][2];$("#layerEvidence").textContent=layers[i][3]}));
-$$(".filters [data-region]").forEach(b=>b.addEventListener("click",()=>{$$(".filters [data-region]").forEach(x=>x.setAttribute("aria-pressed","false"));b.setAttribute("aria-pressed","true");const r=b.dataset.region;$$(".member").forEach(m=>m.hidden=!(r==="All"||m.dataset.region===r))}));
-const sliders=$$(".control input"),stageLabels=["Detect","Decide","Contract","Tooling","Qualification","Regulatory","Logistics","Ramp"],baseline=[3,5,14,30,75,20,10,45];
-const prequalified=[1,3,7,12,25,18,8,35],baselineTotal=baseline.reduce((a,b)=>a+b,0);let ttsMode="BASELINE";
-function same(a,b){return a.every((v,i)=>v===b[i])}
-function tts(){
-  const v=sliders.map(s=>+s.value),total=v.reduce((a,b)=>a+b,0);
-  v.forEach((n,i)=>$("#out"+i).textContent=n+"d");
-  $("#ttsTotal").textContent=total;
-  if(same(v,baseline))ttsMode="BASELINE";else if(same(v,prequalified))ttsMode="PREQUALIFIED";else ttsMode="MODIFIED";
-  $("#ttsModelState").textContent=ttsMode;
-  $("#scenarioName").textContent=ttsMode==="BASELINE"?"Baseline":ttsMode==="PREQUALIFIED"?"Prequalified":"Modified";
-  $("#summaryTotal").textContent=total+" days";
-  const delta=total-baselineTotal,pct=Math.round(Math.abs(delta)/baselineTotal*100);
-  $("#deltaValue").textContent=delta===0?"—":`${delta<0?"−":"+"}${Math.abs(delta)} days · ${delta<0?"−":"+"}${pct}%`;
-  const mx=Math.max(...v),i=v.indexOf(mx);
-  $("#largestDelay").textContent=`${stageLabels[i]} · ${mx} days`;
-  $("#delayNote").textContent=(i===4?"Application qualification is the largest modeled constraint.":`${stageLabels[i]} is the largest modeled constraint.`);
-}
-sliders.forEach(s=>s.addEventListener("input",tts));
-$("#prequalify").addEventListener("click",()=>{prequalified.forEach((v,i)=>sliders[i].value=v);tts()});
-$("#resetTTS").addEventListener("click",()=>{baseline.forEach((v,i)=>sliders[i].value=v);tts()});
-tts();
-const drawer=$("#drawer"),back=$("#backdrop"),close=$("#drawerClose");let prior=null;
-const inertTargets=[$(".site-nav"),$("#main"),$(".bn7"),$(".footer")].filter(Boolean);
-function setModalState(on){
-  inertTargets.forEach(el=>{if(on)el.setAttribute("inert","");else el.removeAttribute("inert")});
-  document.body.classList.toggle("drawer-open",on);
-}
-function drawerFocusables(){
-  return $$('button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])',drawer)
-    .filter(el=>el.offsetParent!==null);
-}
-function openSource(id){
-  const card=$("#source-"+id);if(!card)return;
+(()=>{"use strict";const $=(s,p=document)=>p.querySelector(s),$$=(s,p=document)=>[...p.querySelectorAll(s)];
+function selectCountry(g){if(!g)return;const nd=$('.network-detail');if(nd)nd.hidden=false;$$('[data-map-marker]').forEach(x=>x.classList.toggle('selected',x===g));$$('.world-land').forEach(p=>p.classList.toggle('map-selected',p.dataset.mapCountry===g.dataset.mapName));$('#countryName').textContent=g.dataset.mapMarker;$('#countryRegion').textContent=g.dataset.region;$('#countryStatus').textContent=g.dataset.status;$('#countryJoined').textContent=g.dataset.joined}
+$$('[data-map-marker]').forEach(g=>{g.addEventListener('click',()=>selectCountry(g));g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectCountry(g)}})});
+$$('[data-roster-country]').forEach(b=>b.addEventListener('click',()=>selectCountry($(`[data-map-marker="${CSS.escape(b.dataset.rosterCountry)}"]`))));
+$$('[data-network-view]').forEach(b=>b.addEventListener('click',()=>{const v=b.dataset.networkView;$$('[data-network-view]').forEach(x=>{x.classList.toggle('active',x===b);x.setAttribute('aria-pressed',String(x===b))});$('#networkMap').hidden=v!=='map';$('#networkRoster').hidden=v!=='roster'}));
+const layerData={materials:["Critical Materials","Provides the physical inputs used across semiconductors, electronics, magnets, energy systems, sensing, and advanced manufacturing.","Mining, refining, separation, processing, quality control, logistics, and application requirements.","Separate evidence is required for usable capacity, quality, processing independence, substitution, and application fitness."],processing:["Processing & Manufacturing","Transforms feedstocks into engineered materials, chemicals, substrates, components, and industrial output.","Feedstock quality, process knowledge, equipment, energy, water, chemicals, standards, and qualified operators.","A diversified source base can still share one processor, precursor, toolchain, energy source, or process dependency."],semiconductors:["Semiconductors","Turns specialized materials and manufacturing processes into the chips used across modern technology.","Materials, chemicals, equipment, energy, packaging, testing, logistics, software, and skilled production.","A semiconductor factory can still depend on vulnerable external materials, equipment, packaging, testing, or other inputs."],infrastructure:["Energy & Infrastructure","Provides the power, water, communications, transport, ports, and physical systems that turn nominal capacity into usable capacity.","Permits, generation, transmission, water, communications, transport, maintenance, and continuity.","Separate evidence is required for dependable output, including utilities, throughput, permits, maintenance, and physical continuity."],compute:["Compute & Networks","Combines chips, storage, networking, data centers, cooling, connectivity, and trusted systems into accessible computing capacity.","Chips, power, cooling, storage, networks, security, software, data centers, and operations.","Installed hardware is not dependable compute without power, cooling, networks, security, utilization, and continuity."],software:["Artificial Intelligence & Software","Converts computing capacity, data, models, and software into economic and strategic applications.","Compute, data, models, evaluation, integration, security, governance, skills, and application context.","Separate evidence is required for reliable application performance, including evaluation, integration, data, security, governance, and operational fitness."],systems:["Critical Systems","Creates the end uses that turn technical capability into mission or market demand.","Qualified components, integration, certification, reliability, procurement acceptance, sustainment, and system requirements.","Separate evidence is required for successful integration, certification, reliability, procurement acceptance, and system performance."]};
+$$('.layer').forEach(b=>b.addEventListener('click',()=>{$$('.layer').forEach(x=>{x.classList.remove('active');x.setAttribute('aria-pressed','false')});b.classList.add('active');b.setAttribute('aria-pressed','true');const d=layerData[b.dataset.layer];$('#layerName').textContent=d[0];$('#layerDoes').textContent=d[1];$('#layerNeeds').textContent=d[2];$('#layerLimit').textContent=d[3]}));
+const actorData={policy:["Policy & Diplomacy","Creates the legal, diplomatic, security, trade, standards, and technology environment in which industrial capability can develop."],demand:["Demand & Procurement","Turns requirements into durable demand, purchasing, acceptance criteria, and long-term market or mission pull."],industry:["Industry & Manufacturing","Converts inputs, equipment, process knowledge, quality systems, and workforce capability into repeatable production."],capital:["Capital & Finance","Funds facilities, equipment, scale, working capital, commercialization, and expansion. Capital can create capacity, but capacity is not the same as qualification."],research:["Research & Qualification","Generates evidence, validates performance, tests application fitness, and reduces uncertainty before demanding use."],infrastructure:["Infrastructure & Logistics","Keeps energy, data, water, transport, communications, maintenance, and material movement available over time."]};
+$$('.actor').forEach(b=>b.addEventListener('click',()=>{$$('.actor').forEach(x=>{x.classList.remove('active');x.setAttribute('aria-pressed','false')});b.classList.add('active');b.setAttribute('aria-pressed','true');const d=actorData[b.dataset.actor];$('#actorName').textContent=d[0];$('#actorText').textContent=d[1]}));
+const pathData={resources:["Access to physical inputs that may support later industrial activity.","Resource mapping, permitted operations, verified output, quality data, and credible supply records.","Separate evidence is required for domestic processing, qualified materials, components, and export capability."],processing:["Ability to refine, separate, purify, or otherwise transform raw inputs into higher-value industrial feedstocks.","Operating processing capacity, process control, throughput, quality data, energy and water access, and qualified operators.","Separate evidence is required for engineered material quality, component production, and application qualification."],materials:["Ability to create controlled materials with specifications suitable for advanced manufacturing.","Repeatable composition, purity, structure, process control, lot data, customer specifications, and qualification evidence.","Separate evidence is required for component yield, system integration, and market acceptance."],components:["Ability to turn engineered materials into functional parts used inside larger systems.","Repeatable manufacturing, quality control, test data, yield, traceability, and customer acceptance.","Separate evidence is required for packaging, integration, system qualification, and sustained demand."],packaging:["Ability to integrate, package, test, and validate components closer to final system use.","Operating facilities, repeatable processes, accepted test results, skilled technical teams, yield data, and customer qualification.","Operating and qualified capability require separate evidence beyond an announcement."],engineering:["Ability to solve process, integration, reliability, yield, and product problems locally.","Experienced engineering teams, process ownership, design authority, failure analysis, reliability data, and sustained improvement.","Product ownership, intellectual property, and export competitiveness require separate evidence beyond engineering headcount."],research:["Ability to create new know-how, designs, processes, materials, and protected intellectual property.","Research programs, patents, publications, prototypes, technical transfer, industry collaboration, and commercialization evidence.","Scalable production, customer adoption, and export capability require separate evidence beyond research activity."],export:["Ability to compete internationally with qualified products, reliable supply, commercial scale, and sustained customer demand.","Qualified output, repeat customers, export records, capacity, quality performance, logistics, pricing, and durable demand.","Supply-chain independence and resilience require separate evidence beyond export activity."]};
+$$('.path-stage').forEach(b=>b.addEventListener('click',()=>{$$('.path-stage').forEach(x=>{x.classList.remove('active');x.setAttribute('aria-pressed','false')});b.classList.add('active');b.setAttribute('aria-pressed','true');const d=pathData[b.dataset.stage];$('#pathAdds').textContent=d[0];$('#pathEvidence').textContent=d[1];$('#pathLimit').textContent=d[2]}));
+const pData={people:["People","Do Filipino workers gain deeper skills, safer work, and more technical responsibility over time?","Technical roles, training, retention, safety, engineering responsibility, and local leadership."],planet:["Planet","Can growth protect the land, water, energy systems, and communities it depends on?","Energy, water, land use, waste, permitting, monitoring, recycling, and lifecycle performance."],profits:["Profits","Does more of the economic value stay and compound in the Philippines?","Local investment, productivity, supplier development, repeat demand, scale, and long-term customer commitments."],product:["Product","Can Philippine-made products meet demanding specifications again and again?","Specification compliance, repeatability, reliability, traceability, qualification, supportability, and application acceptance."]};
+$$('.p-card').forEach(b=>b.addEventListener('click',()=>{$$('.p-card').forEach(x=>{x.classList.remove('active');x.setAttribute('aria-pressed','false')});b.classList.add('active');b.setAttribute('aria-pressed','true');const d=pData[b.dataset.p];$('#pName').textContent=d[0];$('#pQuestion').textContent=d[1];$('#pEvidence').textContent=d[2]}));
+const readyData={announced:["Announced","A reviewed public announcement establishes that the planned Economic Security Zone has been publicly stated.","Funding, construction, operations, qualification, and production each require their own supporting evidence."],funded:["Funded","Committed funding, award documentation, financing agreements, or equivalent authoritative evidence would support this stage.","Construction, operations, qualification, and production each require their own evidence after funding."],building:["Building","Contracts, permits, construction activity, hiring, equipment installation, or comparable authoritative evidence would support execution.","Operating, qualified, and producing capability each require their own evidence after construction."],operating:["Operating","Evidence that facilities, programs, or production systems are functioning would support this stage.","Application qualification and sustained production require their own evidence after operations begin."],qualified:["Qualified","Evidence that defined technical, customer, regulatory, or mission requirements have been demonstrated would support this stage.","Sustained production volume and broader market resilience require additional evidence after qualification."],producing:["Producing","Evidence of actual output, repeat production, shipments, customer delivery, or equivalent operating records would support this stage.","Supply-chain independence, resilience, and long-term economics require evidence beyond production output."]};
+$$('.ready-stage').forEach(b=>b.addEventListener('click',()=>{$$('.ready-stage').forEach(x=>{x.classList.remove('active');x.setAttribute('aria-pressed','false')});b.classList.add('active');b.setAttribute('aria-pressed','true');const d=readyData[b.dataset.ready];$('#readyName').textContent=d[0];$('#readySupport').textContent=d[1];$('#readyOpen').textContent=d[2]}));
+const drawer=$('#evidenceDrawer'),backdrop=$('#evidenceBackdrop'),close=$('#drawerClose');let prior=null;
+function openEvidence(sourceId){
+  const row=$(`.source-record[data-source-id="${CSS.escape(sourceId)}"]`);
+  if(!row)return;
   prior=document.activeElement;
-  const title=$("h3",card),state=$(".state",card),dates=$(".evidence-dates",card),supports=$(".evidence-supports",card),note=$(".evidence-note",card),link=$("a",card);
-  $("#drawerId").textContent=id;
-  $("#drawerTitle").textContent=title?title.textContent:"Evidence source";
-  $("#drawerState").textContent=state?state.textContent:"";
-  $("#drawerDates").textContent=dates?dates.innerText.replace(/\n+/g," · "):"";
-  $("#drawerSupports").textContent=supports?supports.textContent.replace(/^Supports:\s*/,""):"";
-  $("#drawerNote").textContent=note?note.textContent:"";
-  $("#drawerLink").href=link?link.href:"#";
-  drawer.removeAttribute("inert");
-  back.hidden=false;
-  drawer.classList.add("open");
-  drawer.setAttribute("aria-hidden","false");
-  setModalState(true);
-  close.focus();
+  const title=$('.source-record-main h4',row);
+  const publisher=row.dataset.publisher||'Public source';
+  const type=$('.state',row);
+  const reviewed=$('.source-meta',row);
+  const detail=$('.source-record-detail',row);
+  const supports=[...detail.querySelectorAll('p')].find(p=>!p.classList.contains('source-meta')&&!p.classList.contains('source-limit'));
+  const limit=$('.source-limit',row);
+  const link=$('.source-record-actions a',row);
+  $('#drawerPublisher').textContent=publisher;
+  $('#drawerType').textContent=type?type.textContent.trim():'Public source';
+  $('#drawerReviewed').textContent=reviewed?reviewed.textContent.trim():'';
+  $('#drawerRecord').textContent=sourceId;
+  $('#drawerSupports').textContent=supports?supports.textContent.trim():'';
+  $('#drawerLimit').textContent=limit?limit.textContent.trim():'';
+  $('#drawerLink').href=link?link.href:'#';
+  $('#drawerTitle').textContent=title?title.textContent.trim():publisher;
+  drawer.removeAttribute('inert');
+  drawer.setAttribute('aria-hidden','false');
+  drawer.classList.add('open');
+  backdrop.hidden=false;
+  document.body.classList.add('drawer-open');
+  close.focus()
 }
 function shut(){
-  drawer.classList.remove("open");
-  drawer.setAttribute("aria-hidden","true");
-  back.hidden=true;
-  setModalState(false);
-  if(prior&&document.contains(prior))prior.focus();
-  drawer.setAttribute("inert","");
+  drawer.classList.remove('open');
+  drawer.setAttribute('aria-hidden','true');
+  drawer.setAttribute('inert','');
+  backdrop.hidden=true;
+  document.body.classList.remove('drawer-open');
+  if(prior&&document.contains(prior))prior.focus()
 }
-$$(`[data-source]`).forEach(b=>b.addEventListener("click",()=>openSource(b.dataset.source)));
-close.addEventListener("click",shut);
-back.addEventListener("click",shut);
-document.addEventListener("keydown",e=>{
-  if(!drawer.classList.contains("open"))return;
-  if(e.key==="Escape"){e.preventDefault();shut();return}
-  if(e.key!=="Tab")return;
-  const f=drawerFocusables();
-  if(!f.length){e.preventDefault();close.focus();return}
+$$('[data-open-evidence]').forEach(b=>b.addEventListener('click',()=>openEvidence(b.dataset.openEvidence)));
+close.addEventListener('click',shut);
+backdrop.addEventListener('click',shut);
+document.addEventListener('keydown',e=>{
+  if(!drawer.classList.contains('open'))return;
+  if(e.key==='Escape'){e.preventDefault();shut();return}
+  if(e.key!=='Tab')return;
+  const f=$$('button:not([disabled]),a[href],[tabindex]:not([tabindex="-1"])',drawer).filter(x=>x.offsetParent!==null);
+  if(!f.length)return;
   const first=f[0],last=f[f.length-1],active=document.activeElement;
   if(e.shiftKey&&active===first){e.preventDefault();last.focus()}
   else if(!e.shiftKey&&active===last){e.preventDefault();first.focus()}
 });
-const links=$$(".local a"),sections=$$(".section");if("IntersectionObserver"in window){const io=new IntersectionObserver(es=>{const e=es.filter(x=>x.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];if(!e)return;links.forEach(a=>a.setAttribute("aria-current",String(a.hash==="#"+e.target.id)));const c=links.find(a=>a.getAttribute("aria-current")==="true");if(c)c.scrollIntoView({block:"nearest",inline:"nearest"})},{rootMargin:"-20% 0px -68% 0px",threshold:[0,.2,.5]});sections.forEach(s=>io.observe(s))}
-})();
+const navLinks=$$('.local-nav a'),sections=navLinks.map(a=>$(a.getAttribute('href'))).filter(Boolean);if('IntersectionObserver' in window){const io=new IntersectionObserver(entries=>{const active=entries.filter(x=>x.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];if(!active)return;navLinks.forEach(a=>{const isActive=a.getAttribute('href')==='#'+active.target.id;a.classList.toggle('active',isActive);if(isActive)a.setAttribute('aria-current','location');else a.removeAttribute('aria-current')})},{rootMargin:'-20% 0px -65% 0px',threshold:[0,.2,.5]});sections.forEach(s=>io.observe(s))}})();
