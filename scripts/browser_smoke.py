@@ -9,6 +9,64 @@ from playwright.sync_api import (
     sync_playwright,
 )
 
+ROOT = (
+    Path(__file__)
+    .resolve()
+    .parents[1]
+)
+
+
+def canonical_active_count():
+    data = json.loads(
+        (
+            ROOT
+            / "data/pax-silica.json"
+        ).read_text(
+            encoding="utf-8"
+        )
+    )
+
+    return sum(
+        record.get("status")
+        == "active"
+        for record
+        in data["signatories"]
+    )
+
+
+def assert_section_heads_clear(
+    page,
+    minimum_gap=20,
+):
+    violations = page.locator(
+        ".section-head"
+    ).evaluate_all(
+        """(heads, gap) => heads.map((head, index) => {
+          const title = head.querySelector("h2");
+          const intro = head.querySelector(":scope > .section-intro");
+          if (!title || !intro) return null;
+          const a = title.getBoundingClientRect();
+          const b = intro.getBoundingClientRect();
+          const horizontal =
+            a.right + gap <= b.left ||
+            b.right + gap <= a.left;
+          const vertical =
+            a.bottom + gap <= b.top ||
+            b.bottom + gap <= a.top;
+          if (horizontal || vertical) return null;
+          return {
+            index,
+            title: (title.textContent || "").trim(),
+          };
+        }).filter(Boolean)""",
+        minimum_gap,
+    )
+
+    assert not violations, (
+        "section-header collision(s): "
+        + repr(violations)
+    )
+
 
 def main() -> None:
     parser = argparse.ArgumentParser()
@@ -44,6 +102,9 @@ def main() -> None:
     )
 
     results = []
+    expected_signatories = (
+        canonical_active_count()
+    )
 
     def record(
         name,
@@ -105,6 +166,9 @@ def main() -> None:
             assert page.locator(
                 "#hero-title"
             ).is_visible()
+
+            if width == 1440:
+                assert_section_heads_clear(page)
 
             if width == 390:
                 assert page.locator(
@@ -176,7 +240,7 @@ def main() -> None:
 
         assert page.locator(
             "[data-roster-country]"
-        ).count() == 25
+        ).count() == expected_signatories
 
         roster = page.locator(
             '[data-roster-country="Philippines"]'
@@ -229,7 +293,7 @@ def main() -> None:
             "core-interactions",
             {
                 "nav": nav,
-                "rosterCount": 25,
+                "rosterCount": expected_signatories,
                 "selected": "Philippines",
                 "evidenceDrawer": True,
             },
@@ -264,9 +328,14 @@ def main() -> None:
 
         npage.goto(
             args.base_url,
-            wait_until=(
-                "domcontentloaded"
-            ),
+            wait_until="load",
+        )
+
+        npage.locator(
+            "#hero-title"
+        ).wait_for(
+            state="visible",
+            timeout=5000,
         )
 
         assert npage.locator(
@@ -283,7 +352,7 @@ def main() -> None:
 
         assert npage.locator(
             "[data-roster-country]"
-        ).count() == 25
+        ).count() == expected_signatories
 
         assert npage.locator(
             "#evidence .source-record-actions a"
@@ -295,7 +364,7 @@ def main() -> None:
                 "heroVisible": True,
                 "navigationVisible": True,
                 "rosterVisible": True,
-                "rosterCount": 25,
+                "rosterCount": expected_signatories,
                 "evidenceLinksAvailable": True,
             },
         )

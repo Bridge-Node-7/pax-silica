@@ -9,8 +9,10 @@ The analytical ladder is:
 
 Resources → Processing → Materials → Components → Packaging & Test → Engineering → IP & R&D → Export Capability.
 
-SEER adds four simultaneous lenses:
+Pepperdine Graziadio's SEER framework adds four simultaneous lenses:
 
 People · Planet · Profits · Product.
+
+Framework basis: https://bschool.pepperdine.edu/seer/
 
 The objective is not simply more activity. It is increasing local capability, bankable demand, environmental viability, and technically qualified output without hidden burden transfer.

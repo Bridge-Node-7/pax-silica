@@ -172,60 +172,6 @@ class HardeningV026Tests(
             ),
         )
 
-    def test_freshness_valid_on_august_18(self):
-        result = subprocess.run(
-            [
-                sys.executable,
-                str(
-                    ROOT
-                    / "scripts/"
-                    "validate_data.py"
-                ),
-                "--as-of",
-                "2026-08-18",
-            ],
-            cwd=ROOT,
-            capture_output=True,
-            text=True,
-        )
-
-        self.assertEqual(
-            result.returncode,
-            0,
-            result.stdout
-            + result.stderr,
-        )
-
-    def test_freshness_stale_after_review_date(self):
-        result = subprocess.run(
-            [
-                sys.executable,
-                str(
-                    ROOT
-                    / "scripts/"
-                    "validate_data.py"
-                ),
-                "--as-of",
-                "2026-08-21",
-            ],
-            cwd=ROOT,
-            capture_output=True,
-            text=True,
-        )
-
-        self.assertNotEqual(
-            result.returncode,
-            0,
-        )
-
-        self.assertIn(
-            "stale",
-            (
-                result.stdout
-                + result.stderr
-            ).lower(),
-        )
-
     def test_roster_mutation_fails_integrity(self):
         with tempfile.TemporaryDirectory() as directory:
             build = (

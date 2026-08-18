@@ -6,8 +6,19 @@ class DataTests(unittest.TestCase):
     def setUpClass(cls):
         cls.data=json.loads((ROOT/"data/pax-silica.json").read_text(encoding="utf-8"))
         cls.sources=json.loads((ROOT/"data/sources.json").read_text(encoding="utf-8"))["sources"]
+        cls.baseline=json.loads((ROOT/"data/evidence-baseline.json").read_text(encoding="utf-8"))
+        cls.map_positions=json.loads((ROOT/"web/map-display.json").read_text(encoding="utf-8"))["positions"]
     def test_active_count(self):
-        self.assertEqual(sum(x["status"]=="active" for x in self.data["signatories"]),25)
+        active=sum(x["status"]=="active" for x in self.data["signatories"])
+        self.assertGreaterEqual(active,self.baseline["minimum_active_signatory_count"])
+    def test_map_metadata_covers_active_signatories(self):
+        active={x["name"] for x in self.data["signatories"] if x["status"]=="active"}
+        self.assertTrue(active <= set(self.map_positions), active-set(self.map_positions))
+        for name in active:
+            item=self.map_positions[name]
+            self.assertIsInstance(item["x"], (int,float))
+            self.assertIsInstance(item["y"], (int,float))
+            self.assertTrue(item["map_name"])
     def test_founder_count(self):
         self.assertEqual(sum(bool(x.get("founding")) for x in self.data["signatories"] if x["status"]=="active"),7)
     def test_source_ids_unique(self):

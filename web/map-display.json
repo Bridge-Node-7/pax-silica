@@ -1,0 +1,130 @@
+{
+  "positions": {
+    "Argentina": {
+      "x": 355.7,
+      "y": 392.3,
+      "map_name": "Argentina"
+    },
+    "Australia": {
+      "x": 958.8,
+      "y": 352.3,
+      "map_name": "Australia"
+    },
+    "Chile": {
+      "x": 334.0,
+      "y": 377.1,
+      "map_name": "Chile"
+    },
+    "Costa Rica": {
+      "x": 293.3,
+      "y": 245.2,
+      "map_name": "Costa Rica"
+    },
+    "El Salvador": {
+      "x": 277.4,
+      "y": 233.1,
+      "map_name": "El Salvador"
+    },
+    "European Union": {
+      "x": 563.3,
+      "y": 119.6,
+      "map_name": "European Union"
+    },
+    "Finland": {
+      "x": 629.4,
+      "y": 79.4,
+      "map_name": "Finland"
+    },
+    "Germany": {
+      "x": 581.8,
+      "y": 118.6,
+      "map_name": "Germany"
+    },
+    "Greece": {
+      "x": 616.6,
+      "y": 155.5,
+      "map_name": "Greece"
+    },
+    "India": {
+      "x": 791.1,
+      "y": 212.1,
+      "map_name": "India"
+    },
+    "Israel": {
+      "x": 656.3,
+      "y": 180.3,
+      "map_name": "Israel"
+    },
+    "Italy": {
+      "x": 588.2,
+      "y": 144.2,
+      "map_name": "Italy"
+    },
+    "Japan": {
+      "x": 972.6,
+      "y": 164.4,
+      "map_name": "Japan"
+    },
+    "Kazakhstan": {
+      "x": 754.7,
+      "y": 128.3,
+      "map_name": "Kazakhstan"
+    },
+    "Netherlands": {
+      "x": 566.2,
+      "y": 115.8,
+      "map_name": "Netherlands"
+    },
+    "Norway": {
+      "x": 574.4,
+      "y": 88.6,
+      "map_name": "Norway"
+    },
+    "Panama": {
+      "x": 303.1,
+      "y": 249.0,
+      "map_name": "Panama"
+    },
+    "Philippines": {
+      "x": 922.2,
+      "y": 235.6,
+      "map_name": "Philippines"
+    },
+    "Qatar": {
+      "x": 706.4,
+      "y": 197.7,
+      "map_name": "Qatar"
+    },
+    "Republic of Korea": {
+      "x": 940.8,
+      "y": 163.5,
+      "map_name": "South Korea"
+    },
+    "Singapore": {
+      "x": 867.2,
+      "y": 270.9,
+      "map_name": "Singapore"
+    },
+    "Sweden": {
+      "x": 595.8,
+      "y": 85.6,
+      "map_name": "Sweden"
+    },
+    "United Arab Emirates": {
+      "x": 716.2,
+      "y": 200.8,
+      "map_name": "United Arab Emirates"
+    },
+    "United Kingdom": {
+      "x": 540.8,
+      "y": 108.5,
+      "map_name": "United Kingdom"
+    },
+    "United States": {
+      "x": 249.0,
+      "y": 154.3,
+      "map_name": "United States of America"
+    }
+  },
+  "purpose": "Geographic display metadata only; declaration membership and evidence status remain canonical in data/pax-silica.json."
+}

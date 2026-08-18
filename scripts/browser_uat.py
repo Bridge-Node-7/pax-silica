@@ -8,6 +8,112 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 WIDTHS = (320, 390, 768, 1024, 1440, 1920)
+ROOT = (
+    Path(__file__)
+    .resolve()
+    .parents[1]
+)
+
+
+def canonical_active_count():
+    data = json.loads(
+        (
+            ROOT
+            / "data/pax-silica.json"
+        ).read_text(
+            encoding="utf-8"
+        )
+    )
+
+    return sum(
+        record.get("status")
+        == "active"
+        for record
+        in data["signatories"]
+    )
+
+
+def assert_section_heads_clear(
+    page,
+    minimum_gap=20,
+):
+    violations = page.locator(
+        ".section-head"
+    ).evaluate_all(
+        """(heads, gap) => heads.map((head, index) => {
+          const title = head.querySelector("h2");
+          const intro = head.querySelector(":scope > .section-intro");
+          if (!title || !intro) return null;
+          const a = title.getBoundingClientRect();
+          const b = intro.getBoundingClientRect();
+          const horizontal =
+            a.right + gap <= b.left ||
+            b.right + gap <= a.left;
+          const vertical =
+            a.bottom + gap <= b.top ||
+            b.bottom + gap <= a.top;
+          if (horizontal || vertical) return null;
+          return {
+            index,
+            title: (title.textContent || "").trim(),
+            heading: {left:a.left,right:a.right,top:a.top,bottom:a.bottom},
+            intro: {left:b.left,right:b.right,top:b.top,bottom:b.bottom},
+          };
+        }).filter(Boolean)""",
+        minimum_gap,
+    )
+
+    assert not violations, (
+        "section-header collision(s): "
+        + repr(violations)
+    )
+
+
+def exercise_controls(
+    page,
+    selector,
+    output_selector,
+):
+    controls = page.locator(selector)
+    observed = []
+
+    assert controls.count() > 0
+
+    for index in range(
+        controls.count()
+    ):
+        control = controls.nth(index)
+        control.scroll_into_view_if_needed()
+        control.click()
+
+        assert (
+            control.get_attribute(
+                "aria-pressed"
+            )
+            == "true"
+        )
+
+        assert page.locator(
+            selector
+            + '[aria-pressed="true"]'
+        ).count() == 1
+
+        value = page.locator(
+            output_selector
+        ).inner_text().strip()
+
+        assert value
+        observed.append(value)
+
+    assert (
+        len(observed)
+        == len(set(observed))
+    ), (
+        selector,
+        observed,
+    )
+
+    return observed
 
 def main() -> None:
     ap = argparse.ArgumentParser()
@@ -18,6 +124,9 @@ def main() -> None:
     evidence = Path(args.evidence)
     evidence.mkdir(parents=True, exist_ok=True)
     results = []
+    expected_signatories = (
+        canonical_active_count()
+    )
 
     def record(name, observed):
         results.append({"test": name, "pass": True, "observed": observed})
@@ -39,8 +148,15 @@ def main() -> None:
             page.goto(args.base_url, wait_until="networkidle")
             scroll_width = page.evaluate("document.documentElement.scrollWidth")
             assert scroll_width <= width + 1, (width, scroll_width)
+            if width in (1024, 1440, 1920):
+                assert_section_heads_clear(page)
             record(f"reflow-{width}", {"viewport": width, "scrollWidth": scroll_width})
             context.close()
+
+        record(
+            "section-head-geometry",
+            {"viewports": [1024, 1440, 1920]},
+        )
 
         context = browser.new_context(viewport={"width": 1440, "height": 1000}, reduced_motion="reduce")
         page = context.new_page()
@@ -63,6 +179,24 @@ def main() -> None:
         expected_hrefs = ["#network","#technology","#capability","#philippines","#four-p","#readiness","#switching","#evidence"]
         assert nav == expected_nav, nav
         assert nav_hrefs == expected_hrefs, nav_hrefs
+
+        for index, href in enumerate(
+            nav_hrefs
+        ):
+            link = nav_links.nth(index)
+            link.click()
+            page.wait_for_timeout(80)
+
+            target = page.locator(href)
+            assert target.count() == 1
+
+            assert target.evaluate(
+                """(el) => {
+                  const r = el.getBoundingClientRect();
+                  return r.bottom > 0 && r.top < window.innerHeight;
+                }"""
+            )
+
         record("navigation", {"labels": nav, "hrefs": nav_hrefs})
 
         # Network map and roster.
@@ -72,36 +206,130 @@ def main() -> None:
         assert page.locator("#countryName").inner_text() == "Philippines"
         page.locator('[data-network-view="roster"]').click()
         assert page.locator("#networkRoster").is_visible()
-        assert page.locator("[data-roster-country]").count() == 25
-        roster_ph = page.locator('[data-roster-country="Philippines"]')
-        roster_ph.click()
-        assert roster_ph.get_attribute("aria-pressed") == "true"
-        assert "selected" in (roster_ph.get_attribute("class") or "")
-        assert page.locator("#countryName").inner_text() == "Philippines"
-        assert page.locator(".timeline-event").count() == 6
-        assert page.locator(".timeline-evidence").count() == 6
-        record("participants", {"country": "Philippines", "timelineEvents": 6, "rosterVisible": True})
+        assert page.locator("[data-roster-country]").count() == expected_signatories
+        roster_controls = page.locator(
+            "[data-roster-country]"
+        )
 
-        # Core learning interactions.
-        page.locator('[data-layer="semiconductors"]').click()
-        assert page.locator("#layerName").inner_text() == "Semiconductors"
-        page.locator('[data-actor="research"]').click()
-        assert page.locator("#actorName").inner_text() == "Research & Qualification"
-        page.locator('[data-stage="engineering"]').click()
-        assert page.locator('[data-stage="engineering"]').get_attribute("aria-pressed") == "true"
-        page.locator('[data-p="profits"]').click()
-        assert page.locator("#pName").inner_text() == "Profits"
-        page.locator('[data-ready="operating"]').click()
-        assert page.locator("#readyName").inner_text() == "Operating"
-        assert page.locator(".readiness-current-pill").inner_text() == "Announced"
-        record("learning-interactions", {
-            "technology": "Semiconductors",
-            "capability": "Research & Qualification",
-            "philippines": "Engineering",
-            "sustainability": "Profits",
-            "readinessExplored": "Operating",
-            "readinessCurrent": "Announced",
-        })
+        roster_names = []
+
+        for index in range(
+            roster_controls.count()
+        ):
+            roster = roster_controls.nth(index)
+            name = roster.get_attribute(
+                "data-roster-country"
+            )
+
+            assert name
+            roster.click()
+
+            assert (
+                roster.get_attribute(
+                    "aria-pressed"
+                )
+                == "true"
+            )
+
+            assert page.locator(
+                '[data-roster-country][aria-pressed="true"]'
+            ).count() == 1
+
+            assert (
+                page.locator(
+                    "#countryName"
+                ).inner_text()
+                == name
+            )
+
+            expected_entity = (
+                "Institution"
+                if name
+                == "European Union"
+                else "Country"
+            )
+
+            assert (
+                page.locator(
+                    "#countryEntity"
+                ).inner_text()
+                == expected_entity
+            )
+
+            roster_names.append(name)
+
+        assert (
+            len(roster_names)
+            == expected_signatories
+        )
+
+        assert page.locator(
+            ".timeline-event"
+        ).count() == 6
+
+        assert page.locator(
+            ".timeline-evidence"
+        ).count() == 6
+
+        record(
+            "participants",
+            {
+                "rosterCount": len(roster_names),
+                "entityTypesVerified": True,
+                "timelineEvents": 6,
+                "rosterVisible": True,
+            },
+        )
+
+        # Exercise every state that shares the public interaction renderers.
+        layers = exercise_controls(
+            page,
+            ".layer",
+            "#layerName",
+        )
+
+        actors = exercise_controls(
+            page,
+            ".actor",
+            "#actorName",
+        )
+
+        pathways = exercise_controls(
+            page,
+            ".path-stage",
+            "#pathAdds",
+        )
+
+        sustainability = exercise_controls(
+            page,
+            ".p-card",
+            "#pName",
+        )
+
+        readiness = exercise_controls(
+            page,
+            ".ready-stage",
+            "#readyName",
+        )
+
+        assert (
+            page.locator(
+                ".readiness-current-pill"
+            ).inner_text()
+            == "Announced"
+        )
+
+        record(
+            "learning-interactions",
+            {
+                "technologyStates": len(layers),
+                "capabilityStates": len(actors),
+                "philippinesStates": len(pathways),
+                "sustainabilityStates": len(sustainability),
+                "readinessStates": len(readiness),
+                "readinessCurrent": "Announced",
+            },
+        )
 
         # Supply Resilience is intentionally explanatory, not model theater.
         resilience = page.locator("#switching").inner_text()
@@ -111,19 +339,107 @@ def main() -> None:
         assert "202" not in resilience
         record("resilience", {"interactiveControls": 0, "public202Model": False})
 
-        # Evidence taxonomy and drawer.
+        # Evidence taxonomy, every drawer trigger, and focus restoration.
         assert page.locator("#evidence .source-record").count() >= 10
         groups = page.locator("#evidence [data-evidence-group]").evaluate_all(
             "(els)=>els.map(e=>e.getAttribute('data-evidence-group'))"
         )
         assert {"official","secondary","reported_draft"} <= set(groups)
         assert "Reported Development" in page.locator("#evidence").inner_text()
-        page.locator('[data-open-evidence="S-03"]').first.click()
-        assert page.locator("#evidenceDrawer").get_attribute("aria-hidden") == "false"
-        assert page.locator("#drawerRecord").inner_text() == "S-03"
-        page.keyboard.press("Escape")
-        assert page.locator("#evidenceDrawer").get_attribute("aria-hidden") == "true"
-        record("evidence", {"groups": groups, "drawerRecord": "S-03"})
+
+        triggers = page.locator(
+            "[data-open-evidence]"
+        )
+
+        assert triggers.count() > 0
+
+        trigger_ids = []
+
+        for index in range(
+            triggers.count()
+        ):
+            trigger = triggers.nth(index)
+            source_id = (
+                trigger.get_attribute(
+                    "data-open-evidence"
+                )
+            )
+
+            assert source_id
+            trigger_ids.append(source_id)
+
+            trigger.scroll_into_view_if_needed()
+            trigger.click()
+
+            assert page.locator(
+                "#evidenceDrawer"
+            ).get_attribute(
+                "aria-hidden"
+            ) == "false"
+
+            assert page.locator(
+                "#drawerRecord"
+            ).inner_text() == source_id
+
+            page.keyboard.press("Escape")
+
+            assert page.locator(
+                "#evidenceDrawer"
+            ).get_attribute(
+                "aria-hidden"
+            ) == "true"
+
+            assert trigger.evaluate(
+                "(el)=>document.activeElement===el"
+            )
+
+        record(
+            "evidence",
+            {
+                "groups": groups,
+                "drawerTriggers": len(trigger_ids),
+                "focusRestored": True,
+            },
+        )
+
+        disclosures = page.locator(
+            "details.credibility-note"
+        )
+
+        assert disclosures.count() >= 3
+
+        for index in range(
+            disclosures.count()
+        ):
+            detail = disclosures.nth(index)
+            summary = detail.locator(
+                "summary"
+            )
+
+            summary.click()
+
+            assert (
+                detail.get_attribute(
+                    "open"
+                )
+                is not None
+            )
+
+            summary.click()
+
+            assert (
+                detail.get_attribute(
+                    "open"
+                )
+                is None
+            )
+
+        record(
+            "disclosures",
+            {
+                "count": disclosures.count(),
+            },
+        )
 
         # Closing balance.
         cards = page.locator(".bn7-links-equal > a")
@@ -157,9 +473,137 @@ def main() -> None:
         assert mpage.evaluate("document.documentElement.scrollWidth") <= 391
         assert mpage.locator("#networkMap").is_hidden()
         assert mpage.locator("#networkRoster").is_visible()
+        assert mpage.locator("[data-roster-country]").count() == expected_signatories
         assert mpage.locator(".partner-cta").is_visible()
+
+        target_selector = ",".join(
+            (
+                ".partner-cta",
+                ".enter",
+                ".local-nav a",
+                "[data-network-view]",
+                "[data-roster-country]",
+                ".layer",
+                ".actor",
+                ".path-stage",
+                ".p-card",
+                ".ready-stage",
+                ".timeline-evidence",
+                ".source-record-actions a",
+                "details.credibility-note summary",
+                ".credibility-note .text-button",
+                ".bn7-links-equal>a",
+            )
+        )
+
+        targets = mpage.locator(
+            target_selector
+        )
+
+        checked_targets = []
+
+        for index in range(
+            targets.count()
+        ):
+            target = targets.nth(index)
+
+            if not target.is_visible():
+                continue
+
+            box = target.bounding_box()
+
+            assert box is not None
+            assert box["width"] >= 43.5, (
+                target.evaluate(
+                    "(el)=>el.outerHTML"
+                ),
+                box,
+            )
+            assert box["height"] >= 43.5, (
+                target.evaluate(
+                    "(el)=>el.outerHTML"
+                ),
+                box,
+            )
+
+            checked_targets.append(
+                target.evaluate(
+                    "(el)=>el.tagName + ':' + "
+                    "(el.textContent || '').trim().slice(0,40)"
+                )
+            )
+
+        assert checked_targets
+
+        mobile_drawer_triggers = mpage.locator(
+            "[data-open-evidence]"
+        )
+
+        drawer_trigger = None
+
+        for index in range(
+            mobile_drawer_triggers.count()
+        ):
+            candidate = mobile_drawer_triggers.nth(index)
+
+            if candidate.is_visible():
+                drawer_trigger = candidate
+                break
+
+        assert drawer_trigger is not None, (
+            "no visible mobile evidence trigger available"
+        )
+
+        drawer_source_id = drawer_trigger.get_attribute(
+            "data-open-evidence"
+        )
+
+        assert drawer_source_id
+
+        drawer_trigger.scroll_into_view_if_needed()
+        drawer_trigger.click()
+
+        assert mpage.locator(
+            "#evidenceDrawer"
+        ).get_attribute(
+            "aria-hidden"
+        ) == "false"
+
+        assert mpage.locator(
+            "#drawerRecord"
+        ).inner_text() == drawer_source_id
+
+        for selector in (
+            "#drawerClose",
+            "#drawerLink",
+        ):
+            box = mpage.locator(
+                selector
+            ).bounding_box()
+
+            assert box is not None
+            assert box["width"] >= 43.5, (
+                selector,
+                box,
+            )
+            assert box["height"] >= 43.5, (
+                selector,
+                box,
+            )
+
+        mpage.keyboard.press("Escape")
+
         mpage.screenshot(path=str(evidence / "mobile-full.png"), full_page=True)
-        record("mobile", {"mapHidden": True, "rosterVisible": True})
+        record(
+            "mobile",
+            {
+                "mapHidden": True,
+                "rosterVisible": True,
+                "rosterCount": expected_signatories,
+                "targetFloor": 44,
+                "targetsChecked": len(checked_targets) + 2,
+            },
+        )
         mobile.close()
 
         # JavaScript disabled: public record still exists.
@@ -168,7 +612,7 @@ def main() -> None:
         npage.goto(args.base_url, wait_until="domcontentloaded")
         assert npage.locator(".noscript-fallback").is_visible()
         assert npage.locator("#networkRoster").is_visible()
-        assert npage.locator("[data-roster-country]").count() == 25
+        assert npage.locator("[data-roster-country]").count() == expected_signatories
         assert npage.locator("#evidence .source-record-actions a").count() >= 10
         record("javascript-disabled", {"fallbackVisible": True})
         nojs.close()
