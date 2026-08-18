@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.2.7 — Maintainable luxury UX
+
+- Fix the desktop Sustainability heading collision without redesigning the approved learning path.
+- Add section-header geometry regression checks across Chromium, Firefox, and WebKit.
+- Expand Chromium UAT to traverse every shared interactive state and verify evidence-drawer focus restoration.
+- Make freshness validation report all stale records together and emit due-soon warnings before hard deadlines.
+- Decouple freshness regression fixtures from live intelligence dates and derive browser roster expectations from canonical data.
+- Move the active-signatory floor into the evidence baseline and geographic display metadata into presentation data so verified network growth does not require count-code edits.
+- Tighten declaration-signatory semantics, expose institutional signatory type, and clarify unknown accession dates.
+- Attribute the People · Planet · Profits · Product framework to Pepperdine SEER while preserving Bridge Node 7 application as analysis.
+- Remove stale `.nav-cta` selector residue and document lightweight human visual sign-off for interface-affecting releases.
+- Preserve reviewed intelligence data, source URLs, the approved eight-stage learning path, static-site architecture, and production evidence boundaries.
+
 ## 0.2.6 — Assurance hardening
 
 - Make freshness validation depend on the validation date rather than only the reviewed snapshot date.

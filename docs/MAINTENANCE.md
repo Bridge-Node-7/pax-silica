@@ -32,3 +32,20 @@ Repository Python text I/O is explicitly UTF-8. Validation runs on supported Win
 ## Freshness execution
 
 The repository runs a read-only scheduled freshness check in addition to pull-request and push validation. The scheduled check evaluates existing reviewed records only. It does not collect new intelligence, promote evidence states, edit canonical data, or publish content.
+
+
+## Low-resistance maintenance
+
+Evidence-only changes stay data-first: update canonical records, run the repository gate, inspect the generated output, and publish only reviewed changes. Interface changes add browser validation but do not require intelligence data to change.
+
+The evidence baseline is a floor, not a frozen current count. Canonical active signatories determine the rendered count; map and roster identity must remain exactly aligned with that canonical set. Geographic display coordinates live in `web/map-display.json`, so a reviewed network addition updates data rather than Python code.
+
+Freshness validation reports every stale record in one run. A due-soon notice is informational; the `review_by` date remains the hard re-review boundary.
+
+Source identifiers are persistent and may be non-contiguous. Never reuse an identifier. Record retirement or supersession only when a record actually existed and its evidence state changes.
+
+External authoritative sites can be temporarily unavailable. URL structure, HTTPS, allowed-host policy, source identity, and internal evidence linkage remain hard checks. Remote reachability is not a required release gate.
+
+## Visual maintenance
+
+Interface-affecting changes require machine geometry checks plus review of the retained 390 px and 1440 px Chromium screenshots. Machine checks establish invariants; human review judges hierarchy, breathing room, typography, coherence, and visual polish.

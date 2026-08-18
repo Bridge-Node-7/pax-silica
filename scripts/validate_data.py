@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from datetime import date, datetime, timezone
 from pathlib import Path
 from urllib.parse import urlsplit
@@ -76,13 +77,44 @@ def parse_args() -> argparse.Namespace:
         ),
     )
 
+    parser.add_argument(
+        "--root",
+        default=str(ROOT),
+        help="Repository root. Defaults to the current repository.",
+    )
+
+    parser.add_argument(
+        "--warn-days",
+        "--warning-days",
+        dest="warning_days",
+        type=int,
+        default=3,
+        help=(
+            "Emit a non-failing due-soon warning when a review deadline "
+            "is within this many days."
+        ),
+    )
+
+    parser.add_argument(
+        "--github-annotations",
+        action="store_true",
+        help="Emit GitHub Actions warning annotations for due-soon records.",
+    )
+
     return parser.parse_args()
 
 
-def validate(as_of: date) -> None:
+def validate(
+    as_of: date,
+    root: Path = ROOT,
+    warning_days: int = 3,
+    github_annotations: bool = False,
+) -> None:
+    if warning_days < 0:
+        raise AssertionError("warning_days must be non-negative")
     data = json.loads(
         (
-            ROOT
+            root
             / "data/pax-silica.json"
         ).read_text(
             encoding="utf-8"
@@ -91,12 +123,49 @@ def validate(as_of: date) -> None:
 
     sources = json.loads(
         (
-            ROOT
+            root
             / "data/sources.json"
         ).read_text(
             encoding="utf-8"
         )
     )["sources"]
+
+    baseline = json.loads(
+        (
+            root
+            / "data/evidence-baseline.json"
+        ).read_text(
+            encoding="utf-8"
+        )
+    )
+
+    freshness_errors: list[str] = []
+    freshness_warnings: list[str] = []
+
+    def check_review_deadline(
+        kind: str,
+        identifier: str,
+        review_by: date,
+    ) -> None:
+        days_remaining = (
+            review_by
+            - as_of
+        ).days
+
+        if days_remaining < 0:
+            freshness_errors.append(
+                f"stale {kind} {identifier}: "
+                f"review_by {review_by.isoformat()} "
+                f"< as_of {as_of.isoformat()}"
+            )
+            return
+
+        if days_remaining <= warning_days:
+            freshness_warnings.append(
+                f"due soon {kind} {identifier}: "
+                f"review_by {review_by.isoformat()} "
+                f"({days_remaining} day(s) remaining)"
+            )
 
     ids = [
         source["id"]
@@ -194,14 +263,10 @@ def validate(as_of: date) -> None:
                 f"{sid}"
             )
 
-            assert (
-                review_by >= as_of
-            ), (
-                f"stale source {sid}: "
-                f"review_by "
-                f"{source['review_by']} "
-                f"< as_of "
-                f"{as_of.isoformat()}"
+            check_review_deadline(
+                "source",
+                sid,
+                review_by,
             )
 
     for group in (
@@ -267,15 +332,10 @@ def validate(as_of: date) -> None:
                     f"{record.get('id')}"
                 )
 
-                assert (
-                    review_by >= as_of
-                ), (
-                    "stale record "
-                    f"{record.get('id')}: "
-                    "review_by "
-                    f"{record['review_by']} "
-                    "< as_of "
-                    f"{as_of.isoformat()}"
+                check_review_deadline(
+                    "record",
+                    str(record.get("id")),
+                    review_by,
                 )
 
     def source_states(record):
@@ -397,10 +457,20 @@ def validate(as_of: date) -> None:
         for signatory in active
     ]
 
-    assert len(active) == 25, (
-        "seed snapshot expected "
-        "25 active signatories, "
-        f"got {len(active)}"
+    minimum_active = int(
+        baseline[
+            "minimum_active_signatory_count"
+        ]
+    )
+
+    assert (
+        len(active)
+        >= minimum_active
+    ), (
+        "active signatory count "
+        "fell below evidence baseline: "
+        f"{len(active)} < "
+        f"{minimum_active}"
     )
 
     assert (
@@ -421,6 +491,32 @@ def validate(as_of: date) -> None:
     ) == 7, (
         "expected 7 founders"
     )
+
+    for warning in freshness_warnings:
+        if (
+            github_annotations
+            or
+            os.getenv("GITHUB_ACTIONS")
+            == "true"
+        ):
+            print(
+                "::warning "
+                "title=Pax Silica freshness::"
+                + warning
+            )
+        else:
+            print(
+                "WARN - "
+                + warning
+            )
+
+    if freshness_errors:
+        raise AssertionError(
+            "freshness failures:\n- "
+            + "\n- ".join(
+                freshness_errors
+            )
+        )
 
     print(
         "PASS - data integrity"
@@ -445,7 +541,12 @@ def main() -> None:
         else utc_today()
     )
 
-    validate(as_of)
+    validate(
+        as_of,
+        root=Path(args.root).resolve(),
+        warning_days=args.warning_days,
+        github_annotations=args.github_annotations,
+    )
 
 
 if __name__ == "__main__":

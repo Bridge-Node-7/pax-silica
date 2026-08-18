@@ -72,3 +72,12 @@ The final Bridge Node 7 handoff is centered and balanced:
 **Materials-to-Mission · Frontier Decision Engine · Partner**
 
 No one pathway receives artificial visual precedence. **Advancing a Golden Age** closes the experience before the quiet Bridge Node 7 footer.
+
+
+## Section-header geometry
+
+A section heading and its explanatory introduction must never overlap. At wide layouts they remain separated by a visible gap; at narrower layouts they stack cleanly. Long editorial headings must wrap rather than force neighboring content to collide.
+
+## Visual sign-off
+
+Automated browser checks establish geometry and interaction invariants. Interface-affecting releases also retain one human review of the 390 px and 1440 px Chromium screenshots for hierarchy, negative space, typography, coherence, and obvious rendering defects.

@@ -25,4 +25,9 @@ Source IDs remain small and optional at the point of use. The Evidence section e
 
 ## Freshness semantics
 
-`verified_through` identifies the reviewed snapshot date. `review_by` identifies the deadline for rechecking a time-sensitive record. Validation uses an explicit `as_of` date, defaulting to the current UTC date. A time-sensitive record fails freshness validation when its `review_by` date is earlier than `as_of`.
+`verified_through` identifies the reviewed snapshot date. `review_by` identifies the deadline for rechecking a time-sensitive record. Validation uses an explicit `as_of` date, defaulting to the current UTC date. Records within the configured warning window emit a non-failing due-soon notice. Records fail freshness validation when `review_by` is earlier than `as_of`, and all stale records are reported together.
+
+
+## Source identifier continuity
+
+Source identifiers are persistent and may be non-contiguous. An unused number does not establish that a source was withdrawn. Identifiers are not reused; a retirement or supersession marker is added only when a record actually existed and its evidence state changes.

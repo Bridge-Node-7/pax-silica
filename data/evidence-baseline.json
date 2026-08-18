@@ -1,10 +1,11 @@
 {
-  "release": "v0.2.5",
+  "release": "v0.2.7",
   "minimum_source_count": 10,
   "required_rendered_states": [
     "official",
     "secondary",
     "reported_draft"
   ],
-  "purpose": "Prevent silent evidence-base or evidence-taxonomy regression."
+  "purpose": "Prevent silent evidence-base, evidence-taxonomy, or declaration-network regression.",
+  "minimum_active_signatory_count": 25
 }

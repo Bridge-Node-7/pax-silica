@@ -24,35 +24,6 @@ GROUP_ORDER = ("official", "secondary", "reported_draft")
 
 REGION_ORDER = ("Americas", "Europe", "Indo-Pacific", "Middle East", "Central Asia")
 
-# Geographic display metadata only. Canonical membership and status come from data/pax-silica.json.
-MAP_POSITIONS = {
-    "Argentina": (355.7, 392.3, "Argentina"),
-    "Australia": (958.8, 352.3, "Australia"),
-    "Chile": (334.0, 377.1, "Chile"),
-    "Costa Rica": (293.3, 245.2, "Costa Rica"),
-    "El Salvador": (277.4, 233.1, "El Salvador"),
-    "European Union": (563.3, 119.6, "European Union"),
-    "Finland": (629.4, 79.4, "Finland"),
-    "Germany": (581.8, 118.6, "Germany"),
-    "Greece": (616.6, 155.5, "Greece"),
-    "India": (791.1, 212.1, "India"),
-    "Israel": (656.3, 180.3, "Israel"),
-    "Italy": (588.2, 144.2, "Italy"),
-    "Japan": (972.6, 164.4, "Japan"),
-    "Kazakhstan": (754.7, 128.3, "Kazakhstan"),
-    "Netherlands": (566.2, 115.8, "Netherlands"),
-    "Norway": (574.4, 88.6, "Norway"),
-    "Panama": (303.1, 249.0, "Panama"),
-    "Philippines": (922.2, 235.6, "Philippines"),
-    "Qatar": (706.4, 197.7, "Qatar"),
-    "Republic of Korea": (940.8, 163.5, "South Korea"),
-    "Singapore": (867.2, 270.9, "Singapore"),
-    "Sweden": (595.8, 85.6, "Sweden"),
-    "United Arab Emirates": (716.2, 200.8, "United Arab Emirates"),
-    "United Kingdom": (540.8, 108.5, "United Kingdom"),
-    "United States": (249.0, 154.3, "United States of America"),
-}
-
 # Editorially selected milestones for the public learning path.
 # Selection basis: material changes to participation, policy alignment, or implementation.
 TIMELINE_IDS = ("E-001", "E-003", "E-004", "E-005", "E-006", "E-007")
@@ -82,20 +53,56 @@ def joined_label(record: dict) -> str:
         months = ("January", "February", "March", "April", "May", "June",
                   "July", "August", "September", "October", "November", "December")
         return f"Joined {months[m - 1]} {y}"
-    return "Public declaration network"
+    return "Accession date not established in reviewed record"
 
 
-def render_markers(active: list[dict]) -> str:
-    missing = sorted(x["name"] for x in active if x["name"] not in MAP_POSITIONS)
+def roster_label(record: dict) -> str:
+    label = joined_label(record)
+
+    if (
+        record.get("entity_type")
+        == "institution"
+    ):
+        return (
+            "Institution · "
+            + label
+        )
+
+    return label
+
+
+def entity_type_label(record: dict) -> str:
+    if (
+        record.get("entity_type")
+        == "institution"
+    ):
+        return "Institution"
+
+    return "Country"
+
+
+def status_label(record: dict) -> str:
+    return (
+        "Founding signatory"
+        if record.get("founding")
+        else "Declaration signatory"
+    )
+
+
+def render_markers(active: list[dict], map_positions: dict) -> str:
+    missing = sorted(x["name"] for x in active if x["name"] not in map_positions)
     if missing:
         raise SystemExit("map metadata missing for active signatories: " + ", ".join(missing))
     rows = []
     for x in sorted(active, key=lambda r: r["name"]):
         name = x["name"]
-        px, py, map_name = MAP_POSITIONS[name]
+        meta = map_positions[name]
+        px = float(meta["x"])
+        py = float(meta["y"])
+        map_name = str(meta["map_name"])
         founding = bool(x.get("founding"))
         css = "map-node founding" if founding else "map-node"
-        status = "Founding signatory" if founding else "Declaration signatory"
+        status = status_label(x)
         joined = joined_label(x)
         rows.append(
             f'<g aria-label="{html.escape(name, quote=True)}" class="{css}" '
@@ -103,6 +110,7 @@ def render_markers(active: list[dict]) -> str:
             f'data-map-marker="{html.escape(name, quote=True)}" '
             f'data-map-name="{html.escape(map_name, quote=True)}" '
             f'data-region="{html.escape(x["region"], quote=True)}" '
+            f'data-entity-type="{html.escape(entity_type_label(x), quote=True)}" '
             f'data-status="{status}" role="button" tabindex="0" '
             f'transform="translate({px:.1f} {py:.1f})">'
             '<circle class="halo" r="13"></circle><circle class="dot" r="5"></circle>'
@@ -122,9 +130,10 @@ def render_roster(active: list[dict]) -> str:
         buttons = []
         for x in members:
             buttons.append(
-                f'<button aria-pressed="false" class="roster-person" data-roster-country="{html.escape(x["name"], quote=True)}" type="button">'
+                f'<button aria-pressed="false" class="roster-person" data-roster-country="{html.escape(x["name"], quote=True)}" '
+                f'data-entity-type="{html.escape(entity_type_label(x), quote=True)}" type="button">'
                 f'<strong>{html.escape(x["name"])}</strong>'
-                f'<small>{html.escape(joined_label(x))}</small></button>'
+                f'<small>{html.escape(roster_label(x))}</small></button>'
             )
         sections.append(
             f'<section><h3>{html.escape(region)}</h3>'
@@ -208,6 +217,7 @@ def main() -> None:
 
     data = json.loads((ROOT / "data/pax-silica.json").read_text(encoding="utf-8"))
     sources = json.loads((ROOT / "data/sources.json").read_text(encoding="utf-8"))["sources"]
+    map_positions = json.loads((ROOT / "web/map-display.json").read_text(encoding="utf-8"))["positions"]
     claims = {c["id"]: c for c in data["claims"]}
     active = [x for x in data["signatories"] if x.get("status") == "active"]
 
@@ -231,7 +241,7 @@ def main() -> None:
     repl = {
         "{{CLAIM_C001}}": html.escape(claims["C-001"]["text"]),
         "{{SIGNATORY_COUNT}}": str(len(active)),
-        "{{MAP_MARKERS}}": render_markers(active),
+        "{{MAP_MARKERS}}": render_markers(active, map_positions),
         "{{NETWORK_ROSTER}}": render_roster(active),
         "{{NETWORK_TIMELINE}}": render_timeline(data),
         "{{PHILIPPINES_INTRO}}": html.escape(philippines_intro),

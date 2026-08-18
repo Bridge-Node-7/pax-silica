@@ -24,4 +24,4 @@ jobs:
           python-version: "3.12"
 
       - name: Validate current public-record freshness
-        run: python scripts/validate_data.py
+        run: python scripts/validate_data.py --warn-days 3 --github-annotations

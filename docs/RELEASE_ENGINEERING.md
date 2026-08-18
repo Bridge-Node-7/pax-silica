@@ -25,3 +25,10 @@ GitHub Pages deployment builds a fresh `_site`, verifies the exact artifact set 
 ## Assistive-technology evidence boundary
 
 Automated browser, keyboard, forced-color, reflow, and no-JavaScript checks do not establish real screen-reader behavior. A release record may claim NVDA or VoiceOver coverage only when a human-run assistive-technology session has been completed and retained as release evidence.
+
+
+## Visual release evidence
+
+For interface-affecting changes, Browser UAT must prove responsive geometry, interaction behavior, no-JavaScript resilience, and section-header separation. The retained Chromium `mobile-full.png` and `desktop-full.png` images receive one human visual review before public merge.
+
+A machine PASS does not by itself establish luxurious visual quality. Human visual review is deliberately narrow: hierarchy, spacing, typography, coherence, and obvious rendering defects.
