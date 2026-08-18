@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.2.5 — Frontier intelligence public UX
+
+- Reframe the public journey around concrete sections: Participants, Technology, Capability, Philippines, Sustainability, Readiness, Resilience, and Sources.
+- Add the global declaration-signatory map and balanced roster as the primary network view.
+- Replace abstract section titles and the public 202-day switching model with clearer Technology Dependencies, Industrial Capability, Capability Readiness, and Supply Resilience teaching layers.
+- Preserve the Philippines as a sourced country lens while separating public record, Bridge Node 7 analysis, sustainability, and readiness.
+- Simplify public evidence language to Official Sources, Secondary Sources, and Reported Development.
+- Make the final Bridge Node 7 handoff visually balanced across Materials-to-Mission, Frontier Decision Engine, and Partner.
+- Add a deterministic evidence-integrity ratchet so source coverage and evidence-state taxonomy cannot silently regress.
+- Preserve reviewed canonical intelligence, human promotion authority, the strict public/private boundary, CSP, deterministic builds, and fail-closed release gates.
+
 ## 0.2.4 — First-time learning luxury UX
 
 - Reorder the public journey around first-time understanding: Overview, Signals, Architecture, Network, Ecosystem, Philippines, Qualification, Evidence.

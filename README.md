@@ -1,6 +1,6 @@
 # Pax Silica Intelligence
 
-**Independent public-source intelligence on trusted technology ecosystems from critical materials to advanced computing, AI, quantum-enabling systems, qualification, and resilient supply.**
+**Independent public-source intelligence on trusted technology, industrial capability, readiness, resilience, and the evidence behind them.**
 
 **Explore:** [Live experience](https://bridgenode7.com/pax-silica/) · [Public data](data/) · [Credibility](docs/CREDIBILITY.md) · [Source correction](https://github.com/Bridge-Node-7/pax-silica/issues/new?template=public-source-correction.yml)
 
@@ -12,8 +12,8 @@ Published by **Bridge Node 7**. Not affiliated with or endorsed by the U.S. Depa
 
 This repository publishes:
 
-- reviewed Pax Silica public-source reference records
-- signatory and event state
+- reviewed Pax Silica public-source records
+- declaration-signatory and event state
 - public program and policy records
 - evidence and claim lineage
 - Bridge Node 7 public analysis
@@ -38,6 +38,23 @@ REFERENCE           CHANGE INTELLIGENCE          BN7 ANALYSIS
 
 Sources and claims are separate records. Counts are derived. Time-sensitive facts include review dates. Historical states are superseded rather than silently erased.
 
+## Public experience
+
+The public learning path is:
+
+```text
+Participants
+→ Technology
+→ Capability
+→ Philippines
+→ Sustainability
+→ Readiness
+→ Resilience
+→ Sources
+```
+
+The declaration-signatory map is explicitly scoped to declaration signatories. Broader participant categories require separate evidence and schema treatment.
+
 ## Validate
 
 Requires Python 3.11+.
@@ -54,6 +71,7 @@ PASS - freshness
 PASS - public boundary
 PASS - spoken-language audit
 PASS - deterministic build
+PASS - evidence integrity
 PASS - tests
 PASS - repository gate
 ```
@@ -69,7 +87,11 @@ Then open `http://127.0.0.1:8765/`.
 
 ## Evidence states
 
-`OFFICIAL` · `SECONDARY` · `REPORTED / DRAFT` · `BN7 ANALYSIS` · `UNKNOWN` · `SUPERSEDED`
+Canonical machine states remain:
+
+`OFFICIAL` · `SECONDARY` · `REPORTED_DRAFT` · `BN7_ANALYSIS` · `UNKNOWN` · `SUPERSEDED`
+
+The public site renders `reported_draft` as **Reported Development** so credible reporting remains visibly distinct without presenting it as settled official policy.
 
 ## Public boundary
 

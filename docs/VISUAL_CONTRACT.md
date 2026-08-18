@@ -8,37 +8,67 @@ Pax Silica Intelligence uses a restrained Bridge Node 7 visual system:
 - selective gold accent
 - thin high-quality borders
 - generous negative space
-- seven-layer strategic constellation
 - information-first language
 - evidence states visible at the point of use
 - no chatbot tone
 - no decorative motion
 - reduced-motion support
 - strong text contrast
-- mobile page width must never exceed viewport width
+- mobile page width never exceeds viewport width
 
 Luxury means precision, restraint, legibility, coherence, and reliable interaction.
 
 ## Corporate inheritance
 
-This experience inherits the BridgeNode7.com v1.2.x corporate visual family: navy/space field, gold primary accent, blue/violet frontier accents, 1160px corporate reading width, orbital 7 mark, three-door navigation, and governed footer hierarchy.
+The experience inherits the Bridge Node 7 corporate visual family: navy/space field, gold primary accent, blue/violet frontier accents, orbital 7 mark, Materials-to-Mission and Partner navigation, and a governed closing hierarchy.
 
 Pax Silica-specific information visualization may be denser than a corporate page, but it must not establish a separate brand language.
 
-## Mobile intelligence density
+## Public learning contract
 
-At 390–480 px, declaration members may use two columns when readability is preserved. Long evidence notes may use progressive disclosure on narrow screens only when complete source detail remains keyboard-accessible through the evidence drawer. At 320 px, legibility takes priority over density.
+Design for an intelligent visitor encountering Pax Silica for the first time.
 
-Verified evidence state should remain quiet, legible, and visually distinct.
+The public sequence is:
+
+**Participants → Technology → Capability → Philippines → Sustainability → Readiness → Resilience → Sources**
+
+Primary section titles must state what each section actually contains:
+
+- The Pax Silica Network
+- Technology Dependencies
+- Industrial Capability
+- Philippines in Pax Silica
+- People. Planet. Profits. Product.
+- Capability Readiness
+- Supply Resilience
+- Sources & Evidence
+
+Every visible sentence must orient, teach, distinguish evidence, enable inspection, or be removed.
+
+## Visual intelligence
+
+The participant map is a declaration-signatory view, not a general geopolitical relationship map. A roster remains available as the accessible and compact alternative.
+
+Interactions must produce understanding rather than decoration. Technology, industrial capability, Philippines capability development, sustainability, and readiness may expose deeper explanatory states.
+
+Supply Resilience is intentionally explanatory in this release. Do not add an illustrative switching-time model merely to create interaction.
+
+## Evidence
+
+Official Sources, Secondary Sources, and Reported Development remain visibly distinct.
+
+Source-level publication, review, support, and limitation information remains inspectable. Internal evidence IDs may support traceability without becoming unexplained primary-page labels.
 
 ## Accessibility resilience
 
+At 390–480 px, readability takes priority over visual density. At 320 px, content must remain usable without document-level horizontal overflow.
+
 The Pax Silica title, active controls, evidence states, and navigation must remain legible when forced colors are active. User text-spacing overrides must not create document-level horizontal overflow. Opening the evidence drawer must not cause a page-width jump.
 
-## First-time learning contract
+## Closing contract
 
-Design for an intelligent visitor encountering Pax Silica for the first time. The page must answer the next natural question in order: what it is, what changed, how the system fits together, who participates, who creates capability, how the Philippines case applies, when an alternative becomes usable, and how to verify the record.
+The final Bridge Node 7 handoff is centered and balanced:
 
-Every visible sentence must orient, teach, distinguish evidence, enable action, or be removed. Every interaction must produce understanding rather than decoration. Public record, reported developments, BN7 analysis, and illustrative models must remain visually distinct at the point of use.
+**Materials-to-Mission · Frontier Decision Engine · Partner**
 
-The experience should support two depths without a mode switch: a clear learning surface and an inspectable evidence layer. Section forms may differ by meaning: chronology for Signals, connected architecture for system layers, filtered roster for Network, role model for Ecosystem, pathway for Philippines, instrument for Qualification, and documentary rows for Evidence.
+No one pathway receives artificial visual precedence. **Advancing a Golden Age** closes the experience before the quiet Bridge Node 7 footer.
