@@ -401,7 +401,7 @@ class HardeningV027Tests(
                 + result.stderr,
             )
 
-    def test_public_signatory_semantics_and_seer(
+    def test_public_signatory_semantics_and_sustainability(
         self,
     ):
         template = (
@@ -435,13 +435,13 @@ class HardeningV027Tests(
         )
 
         self.assertIn(
-            "https://bschool."
-            "pepperdine.edu/seer/",
+            "Analytical basis",
             template,
         )
 
         self.assertIn(
-            "Pepperdine SEER",
+            "People, Planet, Profits, "
+            "and Product provide four lenses",
             template,
         )
 
@@ -542,6 +542,11 @@ class HardeningV027Tests(
         self.assertIn(
             "--warn-days 3 "
             "--github-annotations",
+            workflow,
+        )
+
+        self.assertIn(
+            'cron: "23 15 1 * *"',
             workflow,
         )
 

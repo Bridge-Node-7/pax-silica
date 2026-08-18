@@ -240,6 +240,9 @@ def main() -> None:
 
     repl = {
         "{{CLAIM_C001}}": html.escape(claims["C-001"]["text"]),
+        "{{SNAPSHOT_DATE}}": html.escape(
+            fmt_date(data["snapshot"]["verified_through"])
+        ),
         "{{SIGNATORY_COUNT}}": str(len(active)),
         "{{MAP_MARKERS}}": render_markers(active, map_positions),
         "{{NETWORK_ROSTER}}": render_roster(active),
