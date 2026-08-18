@@ -210,7 +210,7 @@ h1{font-size:clamp(72px,11vw,150px);line-height:.82;letter-spacing:-.075em;margi
 .drawer .primary-button{display:inline-flex;margin-top:18px}
 
 @media (max-width:980px){
-  .global-nav a:not(.nav-cta){display:none}
+  .global-nav a:not(.partner-cta){display:none}
   .hero{min-height:620px;padding-top:90px}
   .orientation-grid,.section-head,.architecture,.bn7-grid{grid-template-columns:1fr;gap:28px}
   .network-visual{min-height:820px}
@@ -305,7 +305,7 @@ h1{font-size:clamp(72px,11vw,150px);line-height:.82;letter-spacing:-.075em;margi
 .roster-people{display:flex;flex-wrap:wrap;gap:7px}
 .roster-person{border:1px solid var(--line);border-radius:999px;padding:8px 11px;min-height:44px;background:rgba(255,255,255,.018)}
 .roster-person small{display:none}
-.roster-person:hover,.roster-person:focus-visible{border-color:rgba(120,215,255,.52);background:rgba(120,215,255,.05)}
+.roster-person:hover,.roster-person:focus-visible,.roster-person.selected{border-color:rgba(120,215,255,.52);background:rgba(120,215,255,.05)}
 .switch-method{border:1px solid var(--line);border-radius:26px;padding:24px;background:rgba(7,16,29,.58);margin-bottom:12px}
 .switch-method-head{display:flex;justify-content:space-between;gap:24px;align-items:end;margin-bottom:16px}
 .switch-method-head p{margin:0;color:var(--muted);max-width:640px}

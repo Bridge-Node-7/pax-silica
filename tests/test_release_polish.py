@@ -87,7 +87,18 @@ class ReleasePolishTests(unittest.TestCase):
     def test_browser_uat_is_required(self):
         text = (ROOT / ".github/workflows/browser-uat.yml").read_text(encoding="utf-8")
         self.assertIn("name: Browser UAT required", text)
-        self.assertIn("needs: chromium", text)
+        self.assertIn(
+            "needs:\n      - chromium\n      - cross-browser",
+            text,
+        )
+        self.assertIn(
+            'test "${{ needs.chromium.result }}" = "success"',
+            text,
+        )
+        self.assertIn(
+            'test "${{ needs.cross-browser.result }}" = "success"',
+            text,
+        )
         self.assertNotIn("  pull_request:\n    paths:", text)
 
     def test_public_boundary_policy_and_evidence_gate(self):

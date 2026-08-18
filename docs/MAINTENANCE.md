@@ -28,3 +28,7 @@ Only material approved for public release belongs in the repository. Keep mainte
 ## Cross-platform text encoding
 
 Repository Python text I/O is explicitly UTF-8. Validation runs on supported Windows and Linux environments.
+
+## Freshness execution
+
+The repository runs a read-only scheduled freshness check in addition to pull-request and push validation. The scheduled check evaluates existing reviewed records only. It does not collect new intelligence, promote evidence states, edit canonical data, or publish content.
