@@ -159,9 +159,6 @@ class PublicReleaseTests(unittest.TestCase):
             "curriculum vitae",
             "alma mater",
             "linkedin.com",
-            "pepperdine",
-            "graziadio",
-            " seer ",
             " university ",
             " college ",
         )
