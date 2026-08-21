@@ -1,23 +1,13 @@
-# Pax Silica Intelligence
+# BN7 Pax Silica v0.3.0 Actual Upgrade Payload
 
-Independent public-source intelligence on trusted technology, industrial capability, readiness, resilience, and supporting evidence.
+Purpose:
+Add the Intelligence Foundation layer to Bridge-Node-7/pax-silica.
 
-[Live experience](https://bridgenode7.com/pax-silica/) · [Public data](data/) · [Source correction](https://github.com/Bridge-Node-7/pax-silica/issues/new?template=public-source-correction.yml)
+Scope:
+Only v0.3.0 foundation content.
 
-Reviewed snapshot: **2026-08-15**
-
-Published by **Bridge Node 7**. Not affiliated with or endorsed by the U.S. Department of State, the U.S. Government, or the Pax Silica initiative.
-
-## Scope
-
-Reviewed public-source records, evidence, and clearly labeled analysis.
-
-Public inclusion does not establish qualification, certification, mission readiness, government endorsement, or access to nonpublic information.
-
-## Validation
-
-`python scripts/check_repo.py`
-
-## License
-
-Software and documentation are MIT licensed unless otherwise noted. Bridge Node 7 names, marks, website copy, and visual identity are excluded from that license.
+Principles:
+- preserve existing repository history
+- no unrelated changes
+- no deletion of unknown files
+- evidence-first intelligence architecture
