@@ -306,8 +306,8 @@
         "S-05",
         "S-06"
       ],
-      "verified_at": "2026-08-15",
-      "review_by": "2026-08-20",
+      "verified_at": "2026-08-21",
+      "review_by": "2026-09-21",
       "public": true
     },
     {
@@ -447,8 +447,8 @@
       "expected_awards": 3,
       "award_min_usd": 1000000,
       "award_max_usd": 50000000,
-      "verified_at": "2026-08-15",
-      "review_by": "2026-08-20",
+      "verified_at": "2026-08-21",
+      "review_by": "2026-09-21",
       "volatility": "high",
       "source_ids": [
         "S-05",
