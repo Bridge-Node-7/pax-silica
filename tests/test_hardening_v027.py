@@ -435,6 +435,11 @@ class HardeningV027Tests(
         )
 
         self.assertIn(
+            "Evidence context",
+            template,
+        )
+
+        self.assertNotIn(
             "Analytical basis",
             template,
         )

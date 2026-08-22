@@ -43,11 +43,19 @@ class ReleasePolishTests(unittest.TestCase):
             "Capability Readiness",
             "Supply Resilience",
             "Sources &amp; Evidence",
-            "Bridge Node 7 Analysis",
+            "Capability pathway",
+            "Readiness evidence",
+            "Public assessment",
             "From Intelligence to Decision",
             "Advancing a Golden Age",
         ):
             self.assertIn(phrase, tpl)
+        for retired in (
+            "Bridge Node 7 Analysis",
+            "Analytical Foundations",
+            "Analytical basis",
+        ):
+            self.assertNotIn(retired, tpl)
 
     def test_public_language_contract(self):
         with tempfile.TemporaryDirectory() as d:

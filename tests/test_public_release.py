@@ -219,6 +219,23 @@ class PublicReleaseTests(unittest.TestCase):
         self.assertIn(f"## {version}\n", changelog)
         self.assertEqual(baseline["release"], f"v{version}")
 
+    def test_public_experience_uses_user_facing_evidence_language(self):
+        template = (ROOT / "web/index.template.html").read_text(encoding="utf-8")
+        styles = (ROOT / "web/styles.css").read_text(encoding="utf-8")
+        self.assertIn("Capability pathway", template)
+        self.assertIn("Readiness evidence", template)
+        self.assertIn("Public assessment", template)
+        self.assertIn("Evidence context", template)
+        self.assertNotIn("Bridge Node 7 Analysis", template)
+        self.assertNotIn("Analytical Foundations", template)
+        self.assertNotIn("Analytical basis", template)
+        self.assertNotIn("Bridge Node 7 capability pathway", template)
+        self.assertNotIn("Bridge Node 7 evidence ladder", template)
+        self.assertNotIn('class="analytical-foundations"', template)
+        self.assertNotIn(".analytical-foundations", styles)
+        self.assertNotIn(".foundation-item", styles)
+        self.assertNotIn(".evidence-group-label", styles)
+
     def test_license_contains_complete_mit_text(self):
         normalized = " ".join((ROOT / "LICENSE").read_text(encoding="utf-8").split())
         self.assertIn("and to permit persons to whom the Software is furnished to do so", normalized)
