@@ -134,15 +134,7 @@ class PublicReleaseTests(unittest.TestCase):
             "NOTICE",
             "SECURITY.md",
             "docs/CREDIBILITY.md",
-            "docs/INTELLIGENCE_MODEL.md",
-            "docs/MAINTENANCE.md",
-            "docs/PUBLIC_BOUNDARY.md",
-            "docs/RELEASE_ENGINEERING.md",
             "docs/SOURCE_STATES.md",
-            "docs/VISUAL_CONTRACT.md",
-            "analysis/philippines-capability-accumulation.md",
-            "analysis/provenance-vs-qualification.md",
-            "analysis/time-to-switch.md",
             "web/index.template.html",
         )
 
@@ -201,6 +193,31 @@ class PublicReleaseTests(unittest.TestCase):
                     normalized,
                     rel,
                 )
+
+    def test_unnecessary_public_operating_surfaces_are_absent(self):
+        for rel in (
+            "ROADMAP.md",
+            "PROJECT_FACTS.json",
+            "MANIFEST.json",
+            "analysis",
+            "intelligence",
+            "governance",
+            "docs/INTELLIGENCE_MODEL.md",
+            "docs/MAINTENANCE.md",
+            "docs/PUBLIC_BOUNDARY.md",
+            "docs/RELEASE_ENGINEERING.md",
+            "docs/VISUAL_CONTRACT.md",
+        ):
+            self.assertFalse((ROOT / rel).exists(), rel)
+
+    def test_release_identity_is_consistent(self):
+        version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+        changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
+        baseline = json.loads(
+            (ROOT / "data/evidence-baseline.json").read_text(encoding="utf-8")
+        )
+        self.assertIn(f"## {version}\n", changelog)
+        self.assertEqual(baseline["release"], f"v{version}")
 
     def test_license_contains_complete_mit_text(self):
         normalized = " ".join((ROOT / "LICENSE").read_text(encoding="utf-8").split())

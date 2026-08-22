@@ -1,5 +1,5 @@
 # Security
 
-Report security concerns responsibly.
+Please report suspected security vulnerabilities through GitHub's supported private vulnerability-reporting channel when available.
 
-Pax Silica maintains controlled intelligence research artifacts.
+Do not include secrets, personal information, or non-public material in public issues.

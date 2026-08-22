@@ -104,8 +104,9 @@ class ReleasePolishTests(unittest.TestCase):
     def test_public_boundary_policy_and_evidence_gate(self):
         boundary = (ROOT / "scripts/check_public_boundary.py").read_text(encoding="utf-8")
         gate = (ROOT / "scripts/check_repo.py").read_text(encoding="utf-8")
-        self.assertIn("PUBLIC_SURFACE", boundary)
-        self.assertIn("NONPUBLIC_DISCLOSURE_PATTERNS", boundary)
+        self.assertIn("tracked_candidate_files", boundary)
+        self.assertIn("DISCLOSURE_PATTERNS", boundary)
+        self.assertIn("FORBIDDEN_PREFIXES", boundary)
         self.assertIn("check_evidence_integrity.py", gate)
 
 if __name__ == "__main__":

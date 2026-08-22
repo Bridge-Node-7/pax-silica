@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.1
+- Refined the public product surface and repository documentation.
+- Reconciled release identity across the maintained public release files.
+- Re-reviewed a time-sensitive reported development without changing its evidence state.
+- Strengthened repository-wide public-boundary validation while preserving public evidence and provenance.
+
 ## 0.2.8
 - Public surface and maintenance cleanup.
 
