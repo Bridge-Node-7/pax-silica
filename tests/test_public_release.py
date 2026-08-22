@@ -134,15 +134,7 @@ class PublicReleaseTests(unittest.TestCase):
             "NOTICE",
             "SECURITY.md",
             "docs/CREDIBILITY.md",
-            "docs/INTELLIGENCE_MODEL.md",
-            "docs/MAINTENANCE.md",
-            "docs/PUBLIC_BOUNDARY.md",
-            "docs/RELEASE_ENGINEERING.md",
             "docs/SOURCE_STATES.md",
-            "docs/VISUAL_CONTRACT.md",
-            "analysis/philippines-capability-accumulation.md",
-            "analysis/provenance-vs-qualification.md",
-            "analysis/time-to-switch.md",
             "web/index.template.html",
         )
 
@@ -201,6 +193,48 @@ class PublicReleaseTests(unittest.TestCase):
                     normalized,
                     rel,
                 )
+
+    def test_unnecessary_public_operating_surfaces_are_absent(self):
+        for rel in (
+            "ROADMAP.md",
+            "PROJECT_FACTS.json",
+            "MANIFEST.json",
+            "analysis",
+            "intelligence",
+            "governance",
+            "docs/INTELLIGENCE_MODEL.md",
+            "docs/MAINTENANCE.md",
+            "docs/PUBLIC_BOUNDARY.md",
+            "docs/RELEASE_ENGINEERING.md",
+            "docs/VISUAL_CONTRACT.md",
+        ):
+            self.assertFalse((ROOT / rel).exists(), rel)
+
+    def test_release_identity_is_consistent(self):
+        version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+        changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
+        baseline = json.loads(
+            (ROOT / "data/evidence-baseline.json").read_text(encoding="utf-8")
+        )
+        self.assertIn(f"## {version}\n", changelog)
+        self.assertEqual(baseline["release"], f"v{version}")
+
+    def test_public_experience_uses_user_facing_evidence_language(self):
+        template = (ROOT / "web/index.template.html").read_text(encoding="utf-8")
+        styles = (ROOT / "web/styles.css").read_text(encoding="utf-8")
+        self.assertIn("Capability pathway", template)
+        self.assertIn("Readiness evidence", template)
+        self.assertIn("Public assessment", template)
+        self.assertIn("Evidence context", template)
+        self.assertNotIn("Bridge Node 7 Analysis", template)
+        self.assertNotIn("Analytical Foundations", template)
+        self.assertNotIn("Analytical basis", template)
+        self.assertNotIn("Bridge Node 7 capability pathway", template)
+        self.assertNotIn("Bridge Node 7 evidence ladder", template)
+        self.assertNotIn('class="analytical-foundations"', template)
+        self.assertNotIn(".analytical-foundations", styles)
+        self.assertNotIn(".foundation-item", styles)
+        self.assertNotIn(".evidence-group-label", styles)
 
     def test_license_contains_complete_mit_text(self):
         normalized = " ".join((ROOT / "LICENSE").read_text(encoding="utf-8").split())
