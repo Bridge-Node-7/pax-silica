@@ -545,13 +545,17 @@ class HardeningV027Tests(
         )
 
         self.assertIn(
-            "--warn-days 3 "
-            "--github-annotations",
+            "workflow_dispatch:",
             workflow,
         )
 
-        self.assertIn(
-            'cron: "23 15 1 * *"',
+        self.assertNotIn(
+            "schedule:",
+            workflow,
+        )
+
+        self.assertNotIn(
+            "cron:",
             workflow,
         )
 

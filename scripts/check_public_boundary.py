@@ -2,10 +2,14 @@
 from __future__ import annotations
 
 from pathlib import Path
+import os
 import re
 import unicodedata
 
-ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(
+    os.getenv("BN7_SCAN_ROOT", str(DEFAULT_ROOT))
+).resolve()
 SELF = Path(__file__).resolve()
 
 TEXT_EXT = {
@@ -34,6 +38,30 @@ SECRET_PATTERNS = (
     (re.compile(r"sk-[A-Za-z0-9_-]{20,}"), "API secret"),
     (re.compile(r"[A-Za-z]:\\{1,2}Users\\{1,2}[^\\\r\n]+"), "Windows user path"),
     (re.compile(r"/home/[^/\s]+/"), "home path"),
+
+    (
+        re.compile(
+            r"(?i)\b(?:api[_-]?key|client[_-]?secret|"
+            r"access[_-]?token|password|passwd)"
+            r"\s*[:=]\s*[\"']?"
+            r"[A-Za-z0-9_./+=-]{20,}"
+        ),
+        "credential assignment",
+    ),
+    (
+        re.compile(
+            r"https?://[^/\s:@]+:[^@\s/]+@"
+        ),
+        "credential-bearing URL",
+    ),
+    (
+        re.compile(
+            r"(?i)https?://[^\s?#]+[?&]"
+            r"(?:token|api[_-]?key|access[_-]?token|secret)="
+            r"[^&#\s]{12,}"
+        ),
+        "credential-bearing URL",
+    ),
 )
 
 DISCLOSURE_PATTERNS = (
@@ -52,11 +80,50 @@ BIDI_AND_INVISIBLE = {
 }
 
 
+CONFUSABLE_ASCII = str.maketrans({
+    "а": "a",
+    "е": "e",
+    "о": "o",
+    "р": "p",
+    "с": "c",
+    "х": "x",
+    "у": "y",
+    "і": "i",
+    "һ": "h",
+    "Α": "A",
+    "Β": "B",
+    "Ε": "E",
+    "Η": "H",
+    "Ι": "I",
+    "Κ": "K",
+    "Μ": "M",
+    "Ν": "N",
+    "Ο": "O",
+    "Ρ": "P",
+    "Τ": "T",
+    "Χ": "X",
+    "Υ": "Y",
+})
+
+
+def normalize_for_scan(text: str) -> str:
+    return unicodedata.normalize(
+        "NFKC",
+        text,
+    ).translate(
+        CONFUSABLE_ASCII
+    )
+
+
 def secret_labels(text: str) -> set[str]:
+    scan_text = normalize_for_scan(
+        text
+    )
+
     return {
         label
         for regex, label in SECRET_PATTERNS
-        if regex.search(text)
+        if regex.search(scan_text)
     }
 
 def tracked_candidate_files():
@@ -85,9 +152,10 @@ def main() -> None:
 
         rel = path.relative_to(ROOT).as_posix()
         text = path.read_text(encoding="utf-8", errors="ignore")
+        scan_text = normalize_for_scan(text)
 
         for regex, label in SECRET_PATTERNS:
-            if regex.search(text):
+            if regex.search(scan_text):
                 errors.append(f"{rel}: {label}")
 
         emails = set(
@@ -102,7 +170,7 @@ def main() -> None:
             errors.append(f"{rel}: unapproved email(s) {sorted(bad)}")
 
         for regex, label in DISCLOSURE_PATTERNS:
-            if regex.search(text):
+            if regex.search(scan_text):
                 errors.append(f"{rel}: {label}")
 
         for ch in BIDI_AND_INVISIBLE:

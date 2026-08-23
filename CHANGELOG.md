@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.2
+- Converted the public experience to durable evidence-snapshot semantics.
+- Removed public future-review deadlines and clarified dated status observations.
+- Removed the public scheduled review cadence.
+- Strengthened public-boundary scanning and outbound privacy controls.
+- Preserved evidence taxonomy, deterministic generation, and production verification.
+
 ## 0.3.1
 - Refined the public product surface and repository documentation.
 - Reconciled release identity across the maintained public release files.

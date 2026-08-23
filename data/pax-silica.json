@@ -301,13 +301,12 @@
       "id": "C-004",
       "state": "official",
       "workflow_state": "approved",
-      "text": "The Pax Silica AI Assistance Project listing shows three expected awards, a $1 million minimum, a $50 million maximum, and an August 20, 2026 close date.",
+      "text": "The Pax Silica AI Assistance Project listing reviewed on August 21, 2026 showed three expected awards, a $1 million minimum, a $50 million maximum, and an August 20, 2026 close date.",
       "source_ids": [
         "S-05",
         "S-06"
       ],
       "verified_at": "2026-08-21",
-      "review_by": "2026-09-21",
       "public": true
     },
     {
@@ -330,7 +329,6 @@
         "S-09"
       ],
       "verified_at": "2026-08-22",
-      "review_by": "2026-08-29",
       "public": true
     },
     {
@@ -448,12 +446,12 @@
       "award_min_usd": 1000000,
       "award_max_usd": 50000000,
       "verified_at": "2026-08-21",
-      "review_by": "2026-09-21",
       "volatility": "high",
       "source_ids": [
         "S-05",
         "S-06"
-      ]
+      ],
+      "status_as_of": "2026-08-21"
     }
   ]
 }

@@ -6,7 +6,7 @@ Pax Silica Intelligence turns reviewed public evidence into an inspectable view 
 
 ## Public experience
 
-Explore the current reviewed experience at:
+Explore the reviewed public-evidence snapshot at:
 
 https://bridgenode7.com/pax-silica/
 
@@ -21,7 +21,7 @@ The public record distinguishes:
 - **Unknown** — not adequately established.
 - **Superseded** — a historical state replaced by a newer record.
 
-The overall public snapshot date identifies the corpus review boundary. Individual time-sensitive records may carry later verification and review dates.
+The overall public snapshot date identifies the corpus review boundary. Individual evidence records show when they were reviewed. Time-sensitive status fields are dated observations, not continuously live status. Later developments are not implied.
 
 ## Trust boundary
 
