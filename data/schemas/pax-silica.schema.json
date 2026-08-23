@@ -84,6 +84,7 @@
           "id",
           "name",
           "status",
+          "status_as_of",
           "verified_at",
           "source_ids"
         ]

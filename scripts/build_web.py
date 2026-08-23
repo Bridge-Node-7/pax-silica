@@ -176,8 +176,6 @@ def render_evidence(sources: list[dict]) -> str:
             if s.get("published"):
                 meta.append("Published " + fmt_date(s["published"]))
             meta.append("Reviewed " + fmt_date(s["verified_at"]))
-            if s.get("review_by"):
-                meta.append("Review by " + fmt_date(s["review_by"]))
             supports = "; ".join(s.get("supports", []))
             limit = s.get("note", "")
             label = STATE_LABELS[state]
@@ -193,7 +191,7 @@ def render_evidence(sources: list[dict]) -> str:
                 f'<p>{html.escape(supports)}</p>'
                 f'<p class="source-limit">{html.escape(limit)}</p></div>'
                 '<div class="source-record-actions">'
-                f'<a href="{html.escape(s["url"], quote=True)}" target="_blank" rel="noopener">Open original ↗</a>'
+                f'<a href="{html.escape(s["url"], quote=True)}" target="_blank" rel="noopener noreferrer">Open original ↗</a>'
                 '</div></article>'
             )
         sections.append(

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -147,8 +148,29 @@ def main():
             "--build-html", Path(a) / "index.html",
         )
 
+        public_env = os.environ.copy()
+
+        public_env[
+            "BN7_SCAN_ROOT"
+        ] = str(
+            Path(a).resolve()
+        )
+
+        subprocess.check_call(
+            [
+                sys.executable,
+                str(
+                    ROOT
+                    / "scripts/check_public_boundary.py"
+                ),
+            ],
+            cwd=ROOT,
+            env=public_env,
+        )
+
     print("PASS - deterministic build")
     print("PASS - evidence integrity")
+    print("PASS - generated public boundary")
 
     subprocess.check_call(
         [

@@ -84,7 +84,6 @@
       "url": "https://simpler.grants.gov/search?query=DFOP0019193",
       "published": "2026-07-17",
       "verified_at": "2026-08-21",
-      "review_by": "2026-09-21",
       "volatility": "high",
       "supports": [
         "opportunity status",
@@ -94,7 +93,7 @@
         "expected awards",
         "eligibility"
       ],
-      "note": "Official federal opportunity search record for DFOP0019193. Time-sensitive fields must be reverified by the review date."
+      "note": "Official federal opportunity search record for DFOP0019193. Time-sensitive fields reflect the reviewed listing as observed on the verification date, not continuously live status."
     },
     {
       "id": "S-07",
@@ -118,7 +117,6 @@
       "url": "https://www.reuters.com/world/china/us-tell-partners-they-must-pick-sides-ai-race-with-china-2026-08-14/",
       "published": "2026-08-14",
       "verified_at": "2026-08-22",
-      "review_by": "2026-08-29",
       "volatility": "high",
       "supports": [
         "reported draft technology-bloc alignment approach"

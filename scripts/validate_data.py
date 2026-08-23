@@ -311,6 +311,7 @@ def validate(
                 "date",
                 "verified_at",
                 "review_by",
+                "status_as_of",
                 "joined",
                 "close_date",
             ):
@@ -402,6 +403,14 @@ def validate(
         ), (
             "program lacks "
             "official source: "
+            f"{program['id']}"
+        )
+
+        assert program.get(
+            "status_as_of"
+        ), (
+            "program status lacks "
+            "observation date: "
             f"{program['id']}"
         )
 

@@ -1,3 +1,4 @@
+import json
 import re
 import subprocess
 import sys
@@ -25,7 +26,9 @@ class ReleasePolishTests(unittest.TestCase):
             self.assertNotIn("REPORTED / DRAFT", text)
             self.assertIn("Published ", text)
             self.assertIn("Reviewed ", text)
-            self.assertIn("Review by ", text)
+            self.assertNotIn("Review by ", text)
+            self.assertIn('content="no-referrer"', text)
+            self.assertIn('rel="noopener noreferrer"', text)
             self.assertEqual(text.count('class="source-record"'), 10)
 
     def test_final_taxonomy(self):
@@ -64,6 +67,8 @@ class ReleasePolishTests(unittest.TestCase):
             visible = re.sub(r"<script[\s\S]*?</script>|<style[\s\S]*?</style>|<[^>]+>", " ", text, flags=re.I)
             self.assertIsNone(re.search(r"\b(?:you|your|yours|yourself|yourselves)\b", visible, re.I))
             self.assertNotIn("—", visible)
+            self.assertNotIn("Current public evidence", visible)
+            self.assertNotIn("Current evidence status", visible)
 
     def test_no_public_202_day_model(self):
         tpl = (ROOT / "web/index.template.html").read_text(encoding="utf-8")
@@ -116,6 +121,81 @@ class ReleasePolishTests(unittest.TestCase):
         self.assertIn("DISCLOSURE_PATTERNS", boundary)
         self.assertIn("FORBIDDEN_PREFIXES", boundary)
         self.assertIn("check_evidence_integrity.py", gate)
+
+
+    def test_durable_snapshot_contract(self):
+        def contains_review_by(value):
+            if isinstance(value, dict):
+                if "review_by" in value:
+                    return True
+
+                return any(
+                    contains_review_by(v)
+                    for v in value.values()
+                )
+
+            if isinstance(value, list):
+                return any(
+                    contains_review_by(v)
+                    for v in value
+                )
+
+            return False
+
+        data = json.loads(
+            (
+                ROOT
+                / "data/pax-silica.json"
+            ).read_text(
+                encoding="utf-8"
+            )
+        )
+
+        sources = json.loads(
+            (
+                ROOT
+                / "data/sources.json"
+            ).read_text(
+                encoding="utf-8"
+            )
+        )
+
+        self.assertFalse(
+            contains_review_by(data)
+        )
+
+        self.assertFalse(
+            contains_review_by(sources)
+        )
+
+        for program in data["programs"]:
+            self.assertIn(
+                "status_as_of",
+                program,
+            )
+
+        workflow = (
+            ROOT
+            / ".github/workflows/freshness.yml"
+        ).read_text(
+            encoding="utf-8"
+        )
+
+        self.assertIn(
+            "workflow_dispatch:",
+            workflow,
+        )
+
+        self.assertNotIn(
+            "schedule:",
+            workflow,
+        )
+
+        self.assertNotIn(
+            "cron:",
+            workflow,
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
