@@ -241,6 +241,14 @@ def validate(
             source["verified_at"]
         )
 
+        assert (
+            verified_at <= snapshot
+        ), (
+            "source verification postdates snapshot: "
+            f"{sid} {verified_at.isoformat()} > "
+            f"{snapshot.isoformat()}"
+        )
+
         if source.get("published"):
             assert (
                 verified_at
@@ -317,6 +325,23 @@ def validate(
             ):
                 if record.get(key):
                     iso(record[key])
+
+            if record.get("verified_at"):
+                verified_at = iso(
+                    record["verified_at"]
+                )
+                identifier = str(
+                    record.get("id")
+                    or record.get("name")
+                    or "<unnamed>"
+                )
+                assert (
+                    verified_at <= snapshot
+                ), (
+                    "record verification postdates snapshot: "
+                    f"{identifier} {verified_at.isoformat()} > "
+                    f"{snapshot.isoformat()}"
+                )
 
             if record.get(
                 "review_by"
