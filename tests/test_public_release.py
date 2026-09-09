@@ -79,7 +79,7 @@ class PublicReleaseTests(unittest.TestCase):
             self.assertIn("Pax Silica", hero)
             self.assertIn("Pax Silica is a U.S.-led strategic initiative focused on trusted technology and AI supply chains.", hero)
             self.assertIn("Bridge Node 7 transforms public evidence into intelligence for industrial capability.", hero)
-            self.assertIn("Reviewed snapshot 15 Aug 2026", hero)
+            self.assertIn("Reviewed snapshot 22 Aug 2026", hero)
             self.assertNotIn("Latest official signal", hero)
             self.assertNotIn("Live intelligence", hero)
             self.assertNotIn("Verified through", hero)
