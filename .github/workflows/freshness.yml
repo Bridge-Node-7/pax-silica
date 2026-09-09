@@ -2,6 +2,22 @@ name: Snapshot Audit
 
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - "data/**"
+      - "scripts/check_repo.py"
+      - "scripts/validate_data.py"
+      - "tests/**"
+      - ".github/workflows/freshness.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "data/**"
+      - "scripts/check_repo.py"
+      - "scripts/validate_data.py"
+      - "tests/**"
+      - ".github/workflows/freshness.yml"
 
 permissions:
   contents: read
