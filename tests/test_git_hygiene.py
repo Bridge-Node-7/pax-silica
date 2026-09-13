@@ -1,6 +1,7 @@
 import unittest
 from pathlib import Path
 
+EXCLUDE_PARTS = {".git", "build", "dist", "__pycache__", ".venv", "venv", ".mypy_cache", ".pytest_cache"}
 ROOT = Path(__file__).resolve().parents[1]
 TEXT_EXTENSIONS = {'.md', '.py', '.json', '.html', '.css', '.js', '.yml', '.yaml', '.txt', '.lock', '.cff'}
 
@@ -8,8 +9,8 @@ TEXT_EXTENSIONS = {'.md', '.py', '.json', '.html', '.css', '.js', '.yml', '.yaml
 class GitHygieneTests(unittest.TestCase):
     def test_text_files_have_no_trailing_whitespace_and_one_final_newline(self):
         offenders = []
-        for path in sorted(ROOT.rglob('*')):
-            if not path.is_file() or '.git' in path.parts or '__pycache__' in path.parts:
+        for path in sorted(p for p in ROOT.rglob('*') if not (EXCLUDE_PARTS & set(p.parts))):
+            if not path.is_file():
                 continue
             if path.suffix.lower() not in TEXT_EXTENSIONS and path.name not in {'VERSION', 'NOTICE', 'LICENSE', 'Makefile', '.gitignore', '.gitattributes', '.editorconfig'}:
                 continue

@@ -38,7 +38,6 @@ SECRET_PATTERNS = (
     (re.compile(r"sk-[A-Za-z0-9_-]{20,}"), "API secret"),
     (re.compile(r"[A-Za-z]:\\{1,2}Users\\{1,2}[^\\\r\n]+"), "Windows user path"),
     (re.compile(r"/home/[^/\s]+/"), "home path"),
-
     (
         re.compile(
             r"(?i)\b(?:api[_-]?key|client[_-]?secret|"
@@ -49,9 +48,7 @@ SECRET_PATTERNS = (
         "credential assignment",
     ),
     (
-        re.compile(
-            r"https?://[^/\s:@]+:[^@\s/]+@"
-        ),
+        re.compile(r"https?://[^/\s:@]+:[^@\s/]+@"),
         "credential-bearing URL",
     ),
     (
@@ -79,60 +76,31 @@ BIDI_AND_INVISIBLE = {
     "\u200b", "\u200c", "\u200d", "\ufeff",
 }
 
-
 CONFUSABLE_ASCII = str.maketrans({
-    "а": "a",
-    "е": "e",
-    "о": "o",
-    "р": "p",
-    "с": "c",
-    "х": "x",
-    "у": "y",
-    "і": "i",
-    "һ": "h",
-    "Α": "A",
-    "Β": "B",
-    "Ε": "E",
-    "Η": "H",
-    "Ι": "I",
-    "Κ": "K",
-    "Μ": "M",
-    "Ν": "N",
-    "Ο": "O",
-    "Ρ": "P",
-    "Τ": "T",
-    "Χ": "X",
-    "Υ": "Y",
+    "а": "a", "е": "e", "о": "o", "р": "p", "с": "c", "х": "x", "у": "y", "і": "i", "һ": "h",
+    "Α": "A", "Β": "B", "Ε": "E", "Η": "H", "Ι": "I", "Κ": "K", "Μ": "M", "Ν": "N", "Ο": "O", "Ρ": "P", "Τ": "T", "Χ": "X", "Υ": "Y",
 })
+
+EXCLUDE_PARTS = {".git", "build", "__pycache__", ".venv", "venv", "dist", ".mypy_cache", ".pytest_cache"}
 
 
 def normalize_for_scan(text: str) -> str:
-    return unicodedata.normalize(
-        "NFKC",
-        text,
-    ).translate(
-        CONFUSABLE_ASCII
-    )
+    return unicodedata.normalize("NFKC", text).translate(CONFUSABLE_ASCII)
 
 
 def secret_labels(text: str) -> set[str]:
-    scan_text = normalize_for_scan(
-        text
-    )
+    scan_text = normalize_for_scan(text)
+    return {label for regex, label in SECRET_PATTERNS if regex.search(scan_text)}
 
-    return {
-        label
-        for regex, label in SECRET_PATTERNS
-        if regex.search(scan_text)
-    }
 
 def tracked_candidate_files():
     for p in ROOT.rglob("*"):
         if not p.is_file():
             continue
-        if ".git" in p.parts or "build" in p.parts or "__pycache__" in p.parts:
+        if EXCLUDE_PARTS & set(p.parts):
             continue
         yield p
+
 
 def main() -> None:
     errors = []
@@ -158,13 +126,7 @@ def main() -> None:
             if regex.search(scan_text):
                 errors.append(f"{rel}: {label}")
 
-        emails = set(
-            re.findall(
-                r"[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}",
-                text,
-                re.I,
-            )
-        )
+        emails = set(re.findall(r"[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}", text, re.I))
         bad = emails - ALLOWED_EMAILS
         if bad:
             errors.append(f"{rel}: unapproved email(s) {sorted(bad)}")
@@ -175,15 +137,11 @@ def main() -> None:
 
         for ch in BIDI_AND_INVISIBLE:
             if ch in text:
-                errors.append(
-                    f"{rel}: unsafe invisible/bidirectional character U+{ord(ch):04X}"
-                )
+                errors.append(f"{rel}: unsafe invisible/bidirectional character U+{ord(ch):04X}")
 
         for ch in text:
             if unicodedata.bidirectional(ch) in {"RLO", "LRO", "RLE", "LRE", "PDF"}:
-                errors.append(
-                    f"{rel}: unsafe bidi control U+{ord(ch):04X}"
-                )
+                errors.append(f"{rel}: unsafe bidi control U+{ord(ch):04X}")
                 break
 
     if errors:
