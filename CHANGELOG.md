@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.3
+- Excluded local virtualenv and tool-cache directories from repository/public-release scans without weakening governed public-source checks.
+- Replaced expected child-process tracebacks in the repository gate with bounded, actionable failure summaries.
+- Added clean-adopter validation hardening while preserving evidence taxonomy, temporal integrity, deterministic generation, browser UAT, and public-boundary controls.
+
 ## 0.3.2
 - Converted the public experience to durable evidence-snapshot semantics.
 - Removed public future-review deadlines and clarified dated status observations.
