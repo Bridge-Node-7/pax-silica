@@ -22,11 +22,12 @@ def load_check_repo():
 
 class CloseoutV033Tests(unittest.TestCase):
     def test_local_virtualenv_is_outside_public_boundary_but_real_source_is_not(self):
+        fake_key = "AK" + "IA" + "1234567890ABCDEF"
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
             local = root / ".venv/lib/python/site-packages/example.txt"
             local.parent.mkdir(parents=True)
-            local.write_text("AKIA1234567890ABCDEF\n", encoding="utf-8")
+            local.write_text(fake_key + "\n", encoding="utf-8")
             env = os.environ.copy()
             env["BN7_SCAN_ROOT"] = str(root)
             clean = subprocess.run(
@@ -38,7 +39,7 @@ class CloseoutV033Tests(unittest.TestCase):
             )
             self.assertEqual(clean.returncode, 0, clean.stdout + clean.stderr)
 
-            (root / "public.txt").write_text("AKIA1234567890ABCDEF\n", encoding="utf-8")
+            (root / "public.txt").write_text(fake_key + "\n", encoding="utf-8")
             finding = subprocess.run(
                 [sys.executable, str(ROOT / "scripts/check_public_boundary.py")],
                 cwd=ROOT,
