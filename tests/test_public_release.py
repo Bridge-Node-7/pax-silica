@@ -8,6 +8,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlsplit
 
+EXCLUDE_PARTS = {".git", "build", "dist", "__pycache__", ".venv", "venv", ".mypy_cache", ".pytest_cache"}
 ROOT = Path(__file__).resolve().parents[1]
 
 class ScriptBodyParser(HTMLParser):
@@ -48,10 +49,8 @@ class PublicReleaseTests(unittest.TestCase):
 
     def test_source_domains_are_deliberately_bounded(self):
         allowed = {
-            "state.gov", "www.state.gov",
-            "whitehouse.gov", "www.whitehouse.gov",
-            "simpler.grants.gov",
-            "reuters.com", "www.reuters.com",
+            "state.gov", "www.state.gov", "whitehouse.gov", "www.whitehouse.gov",
+            "simpler.grants.gov", "reuters.com", "www.reuters.com",
             "comune.brindisi.it", "www.comune.brindisi.it",
         }
         observed = {(urlsplit(s["url"]).hostname or "").lower() for s in self.sources}
@@ -100,12 +99,7 @@ class PublicReleaseTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             self.build(d)
             text = (Path(d) / "index.html").read_text(encoding="utf-8").lower()
-            for phrase in (
-                "industry leader",
-                "leading pax silica",
-                "official pax silica partner",
-                "pax silica partner of record",
-            ):
+            for phrase in ("industry leader", "leading pax silica", "official pax silica partner", "pax silica partner of record"):
                 self.assertNotIn(phrase, text)
 
     def test_repository_has_no_contributor_ceremony_files(self):
@@ -118,8 +112,8 @@ class PublicReleaseTests(unittest.TestCase):
     def test_only_approved_public_email_is_present(self):
         allowed = {"contact@bridgenode7.com"}
         emails = set()
-        for p in ROOT.rglob("*"):
-            if not p.is_file() or "build" in p.parts or "__pycache__" in p.parts:
+        for p in (q for q in ROOT.rglob("*") if not (EXCLUDE_PARTS & set(q.parts))):
+            if not p.is_file():
                 continue
             if p.suffix.lower() not in {".md",".json",".py",".html",".css",".js",".yml",".yaml",".txt",".cff"}:
                 continue
@@ -129,93 +123,35 @@ class PublicReleaseTests(unittest.TestCase):
 
     def test_public_operating_surface_is_minimized(self):
         rels = (
-            "README.md",
-            "CHANGELOG.md",
-            "NOTICE",
-            "SECURITY.md",
-            "docs/CREDIBILITY.md",
-            "docs/SOURCE_STATES.md",
-            "web/index.template.html",
+            "README.md", "CHANGELOG.md", "NOTICE", "SECURITY.md",
+            "docs/CREDIBILITY.md", "docs/SOURCE_STATES.md", "web/index.template.html",
         )
-
-        allowed_hosts = {
-            "bridgenode7.com",
-            "www.bridgenode7.com",
-            "github.com",
-            "www.github.com",
-        }
-
+        allowed_hosts = {"bridgenode7.com", "www.bridgenode7.com", "github.com", "www.github.com"}
         personal_profile_markers = (
-            "personal biography",
-            "personal profile",
-            "curriculum vitae",
-            "alma mater",
-            "linkedin.com",
-            " university ",
-            " college ",
+            "personal biography", "personal profile", "curriculum vitae", "alma mater",
+            "linkedin.com", " university ", " college ",
         )
-
         for rel in rels:
-            text = (
-                ROOT / rel
-            ).read_text(
-                encoding="utf-8",
-            )
-
-            for url in re.findall(
-                r"https://[^\s<>)\]\"';]+",
-                text,
-            ):
-                host = (
-                    urlsplit(url).hostname
-                    or ""
-                ).lower()
-
-                self.assertIn(
-                    host,
-                    allowed_hosts,
-                    f"{rel}: {url}",
-                )
-
-            normalized = (
-                " "
-                + " ".join(
-                    text.lower().split()
-                )
-                + " "
-            )
-
-            for marker in (
-                personal_profile_markers
-            ):
-                self.assertNotIn(
-                    marker,
-                    normalized,
-                    rel,
-                )
+            text = (ROOT / rel).read_text(encoding="utf-8")
+            for url in re.findall(r"https://[^\s<>)\]\"';]+", text):
+                host = (urlsplit(url).hostname or "").lower()
+                self.assertIn(host, allowed_hosts, f"{rel}: {url}")
+            normalized = " " + " ".join(text.lower().split()) + " "
+            for marker in personal_profile_markers:
+                self.assertNotIn(marker, normalized, rel)
 
     def test_unnecessary_public_operating_surfaces_are_absent(self):
         for rel in (
-            "ROADMAP.md",
-            "PROJECT_FACTS.json",
-            "MANIFEST.json",
-            "analysis",
-            "intelligence",
-            "governance",
-            "docs/INTELLIGENCE_MODEL.md",
-            "docs/MAINTENANCE.md",
-            "docs/PUBLIC_BOUNDARY.md",
-            "docs/RELEASE_ENGINEERING.md",
-            "docs/VISUAL_CONTRACT.md",
+            "ROADMAP.md", "PROJECT_FACTS.json", "MANIFEST.json", "analysis", "intelligence", "governance",
+            "docs/INTELLIGENCE_MODEL.md", "docs/MAINTENANCE.md", "docs/PUBLIC_BOUNDARY.md",
+            "docs/RELEASE_ENGINEERING.md", "docs/VISUAL_CONTRACT.md",
         ):
             self.assertFalse((ROOT / rel).exists(), rel)
 
     def test_release_identity_is_consistent(self):
         version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
         changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
-        baseline = json.loads(
-            (ROOT / "data/evidence-baseline.json").read_text(encoding="utf-8")
-        )
+        baseline = json.loads((ROOT / "data/evidence-baseline.json").read_text(encoding="utf-8"))
         self.assertIn(f"## {version}\n", changelog)
         self.assertEqual(baseline["release"], f"v{version}")
 
