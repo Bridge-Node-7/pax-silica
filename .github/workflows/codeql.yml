@@ -5,12 +5,13 @@ on:
     branches: [main]
   schedule:
     - cron: "17 9 * * 1"
+  workflow_dispatch:
 permissions:
   contents: read
   security-events: write
 jobs:
   analyze:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         language: [javascript-typescript, python]
@@ -26,7 +27,7 @@ jobs:
     name: CodeQL required
     if: always()
     needs: analyze
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Require complete CodeQL matrix
         run: |
