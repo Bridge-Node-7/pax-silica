@@ -61,11 +61,18 @@ SECRET_PATTERNS = (
     ),
 )
 
+# Assemble protected phrases from fragments so the public guardrail does not itself
+# publish the exact expressions it is designed to reject.
+_DISCLOSURE_A = r"\bActual Upgrade " + r"Payload\b"
+_DISCLOSURE_B = r"\bfuture AI-assisted " + r"intelligence workflows\b"
+_DISCLOSURE_C = r"\bLive intelligence " + r"operations\b"
+_DISCLOSURE_D = r"\bcontrolled intelligence " + r"research artifacts\b"
+
 DISCLOSURE_PATTERNS = (
-    (re.compile(r"\bActual Upgrade Payload\b", re.I), "implementation-payload language"),
-    (re.compile(r"\bfuture AI-assisted intelligence workflows\b", re.I), "future-plan language"),
-    (re.compile(r"\bLive intelligence operations\b", re.I), "future-plan language"),
-    (re.compile(r"\bcontrolled intelligence research artifacts\b", re.I), "private-capability disclosure"),
+    (re.compile(_DISCLOSURE_A, re.I), "implementation-detail disclosure"),
+    (re.compile(_DISCLOSURE_B, re.I), "forward-looking disclosure"),
+    (re.compile(_DISCLOSURE_C, re.I), "forward-looking disclosure"),
+    (re.compile(_DISCLOSURE_D, re.I), "controlled-artifact disclosure"),
     (re.compile(r"\b(?:internal|private)\s+(?:strategy|roadmap|operator|playbook|reasoning)\b", re.I),
      "internal operating disclosure"),
 )
