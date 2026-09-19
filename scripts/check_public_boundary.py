@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import hashlib
 import os
 import re
 import unicodedata
@@ -61,20 +62,26 @@ SECRET_PATTERNS = (
     ),
 )
 
-# Assemble protected phrases from fragments so the public guardrail does not itself
-# publish the exact expressions it is designed to reject.
-_DISCLOSURE_A = r"\bActual Upgrade " + r"Payload\b"
-_DISCLOSURE_B = r"\bfuture AI-assisted " + r"intelligence workflows\b"
-_DISCLOSURE_C = r"\bLive intelligence " + r"operations\b"
-_DISCLOSURE_D = r"\bcontrolled intelligence " + r"research artifacts\b"
+BLOCKED_PHRASE_SHA256 = {
+    3: {
+        "489e3a239dc51f08dde0280697a5c6a00602936e4847cadc6b39cddbb6959210",
+        "3e3997740857444c6cd70a1bea75d6476ed7aa2bbb2bdfffca708e1a13ebc8f3",
+    },
+    4: {
+        "e7b1efdf2fb28d3ec109c059d85ba09f657bb4a55f62793ac911615df311d51b",
+        "07a7854bcc7e4ccb039c5ff7f8525682b54a78e3a97434aa99948ffad38a5321",
+    },
+}
 
-DISCLOSURE_PATTERNS = (
-    (re.compile(_DISCLOSURE_A, re.I), "implementation-detail disclosure"),
-    (re.compile(_DISCLOSURE_B, re.I), "forward-looking disclosure"),
-    (re.compile(_DISCLOSURE_C, re.I), "forward-looking disclosure"),
-    (re.compile(_DISCLOSURE_D, re.I), "controlled-artifact disclosure"),
-    (re.compile(r"\b(?:internal|private)\s+(?:strategy|roadmap|operator|playbook|reasoning)\b", re.I),
-     "internal operating disclosure"),
+SURFACE_PATTERNS = (
+    (
+        re.compile(
+            r"\b(?:internal|private)\s+"
+            r"(?:strategy|roadmap|operator|playbook|reasoning)\b",
+            re.I,
+        ),
+        "non-public operating content",
+    ),
 )
 
 BIDI_AND_INVISIBLE = {
@@ -98,6 +105,20 @@ def normalize_for_scan(text: str) -> str:
 def secret_labels(text: str) -> set[str]:
     scan_text = normalize_for_scan(text)
     return {label for regex, label in SECRET_PATTERNS if regex.search(scan_text)}
+
+
+def blocked_phrase_hash_hits(text: str) -> int:
+    tokens = re.findall(r"[a-z0-9-]+", normalize_for_scan(text).lower())
+    hits = 0
+    for width, blocked in BLOCKED_PHRASE_SHA256.items():
+        if len(tokens) < width:
+            continue
+        for i in range(len(tokens) - width + 1):
+            phrase = " ".join(tokens[i:i + width])
+            digest = hashlib.sha256(phrase.encode("utf-8")).hexdigest()
+            if digest in blocked:
+                hits += 1
+    return hits
 
 
 def tracked_candidate_files():
@@ -138,7 +159,10 @@ def main() -> None:
         if bad:
             errors.append(f"{rel}: unapproved email(s) {sorted(bad)}")
 
-        for regex, label in DISCLOSURE_PATTERNS:
+        if blocked_phrase_hash_hits(text):
+            errors.append(f"{rel}: restricted release-surface content")
+
+        for regex, label in SURFACE_PATTERNS:
             if regex.search(scan_text):
                 errors.append(f"{rel}: {label}")
 
