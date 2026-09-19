@@ -71,18 +71,19 @@ BLOCKED_PHRASE_SHA256 = {
         "e7b1efdf2fb28d3ec109c059d85ba09f657bb4a55f62793ac911615df311d51b",
         "07a7854bcc7e4ccb039c5ff7f8525682b54a78e3a97434aa99948ffad38a5321",
     },
+    2: {
+        "12361854c309ea67db7e9e6eaac270f29cf9eb92088e3e9d695181ba45aa1b0a",
+        "b75f9c5876a1f6ebd56993bb114ca7eb996badc15835c06339d4f857b8d81257",
+        "89fb5eb081fefd1530c92f8aca80428fbcfd2da53a11c5377756bd5d1f9b7943",
+        "0713116b5b2257db70cea0fee2fad4e78f6e09dcea21d4919523ffac59ada992",
+        "f581ccde225c15a68ce5225b2687030b59fe621db4e339fe3967512a7b3916e4",
+        "fb12102dfa45c1b045667b06cce765131a2398b2c6be5396becf70021e870e3a",
+        "ea6f3fe30543a65b491e4a8dfb733ea5cd7209e02fc58f0be1d7ecd5c3e56945",
+        "8e858f72f77bd859b20ef267454f249f35b34cb304b4917f6d7d8efed7ddba04",
+        "e2dc63993d16fe1fb1ed51b5955b6bfd9f9c216bf31e796fa4a10f6245ce1e34",
+        "2be21a13a27625e69f047fc5fc3571c3dd361e36addd3d94dba160b22b5d055c",
+    },
 }
-
-SURFACE_PATTERNS = (
-    (
-        re.compile(
-            r"\b(?:internal|private)\s+"
-            r"(?:strategy|roadmap|operator|playbook|reasoning)\b",
-            re.I,
-        ),
-        "non-public operating content",
-    ),
-)
 
 BIDI_AND_INVISIBLE = {
     "\u202a", "\u202b", "\u202c", "\u202d", "\u202e",
@@ -161,10 +162,6 @@ def main() -> None:
 
         if blocked_phrase_hash_hits(text):
             errors.append(f"{rel}: restricted release-surface content")
-
-        for regex, label in SURFACE_PATTERNS:
-            if regex.search(scan_text):
-                errors.append(f"{rel}: {label}")
 
         for ch in BIDI_AND_INVISIBLE:
             if ch in text:
