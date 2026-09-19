@@ -39,7 +39,7 @@ Run:
 python scripts/check_repo.py
 ```
 
-The repository gate checks canonical data, public-boundary conditions, readability, deterministic generation, evidence integrity, and regression tests.
+The repository gate checks canonical data, publication checks, readability, deterministic generation, evidence integrity, and regression tests.
 
 A passing control establishes only what that control tested.
 
