@@ -20,7 +20,7 @@ def load_check_repo():
     return module
 
 
-class CloseoutV033Tests(unittest.TestCase):
+class ReleaseHygieneTests(unittest.TestCase):
     def test_local_virtualenv_is_outside_public_boundary_but_real_source_is_not(self):
         fake_key = "AK" + "IA" + "1234567890ABCDEF"
         with tempfile.TemporaryDirectory() as td:
