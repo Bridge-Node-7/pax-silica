@@ -117,7 +117,7 @@ class HardeningV026Tests(
             + slash
             + "Users"
             + slash
-            + "Lucky"
+            + "ExampleUser"
             + slash
             + "file.txt"
         )
@@ -127,7 +127,7 @@ class HardeningV026Tests(
             + slash * 2
             + "Users"
             + slash * 2
-            + "Lucky"
+            + "ExampleUser"
             + slash * 2
             + "file.txt"
         )
@@ -135,7 +135,7 @@ class HardeningV026Tests(
         unix_home = (
             "/"
             + "home"
-            + "/Lucky/"
+            + "/ExampleUser/"
             + "file.txt"
         )
 
