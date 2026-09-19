@@ -118,7 +118,11 @@ class ReleasePolishTests(unittest.TestCase):
         boundary = (ROOT / "scripts/check_public_boundary.py").read_text(encoding="utf-8")
         gate = (ROOT / "scripts/check_repo.py").read_text(encoding="utf-8")
         self.assertIn("tracked_candidate_files", boundary)
-        self.assertIn("DISCLOSURE_PATTERNS", boundary)
+        self.assertIn("BLOCKED_PHRASE_SHA256", boundary)
+        self.assertIn("blocked_phrase_hash_hits", boundary)
+        self.assertIn("SURFACE_PATTERNS", boundary)
+        self.assertNotIn("_DISCLOSURE_A", boundary)
+        self.assertNotIn("Assemble protected phrases", boundary)
         self.assertIn("FORBIDDEN_PREFIXES", boundary)
         self.assertIn("check_evidence_integrity.py", gate)
 
