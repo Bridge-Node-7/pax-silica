@@ -43,6 +43,10 @@ The repository gate checks canonical data, publication checks, readability, dete
 
 A passing control establishes only what that control tested.
 
+## Release status
+
+`main` is the current reviewed source. GitHub Releases are stable distribution milestones and may intentionally lag reviewed maintenance on `main`. A source version ahead of the latest GitHub Release is unreleased until a release is published.
+
 ## Corrections
 
 Public-source corrections may be proposed through the repository's source-correction issue form. Submit public-source information only.
