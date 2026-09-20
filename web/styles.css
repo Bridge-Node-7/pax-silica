@@ -519,7 +519,7 @@ html,body{max-width:100%;overflow-x:clip}
 @media(max-width:1100px){#network .section-intro{justify-self:start;max-width:760px}}
 
 
-/* R13 final GitHub release-candidate integrity + taxonomy */
+/* Evidence snapshot taxonomy */
 .hero-snapshot{
   margin-top:10px;
   color:var(--quiet);
