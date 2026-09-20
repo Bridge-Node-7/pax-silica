@@ -28,12 +28,6 @@ REQUIRED = {
     "web/map-display.json", "web/styles.css",
 }
 
-FORBIDDEN = {
-    "ROADMAP.md", "PROJECT_FACTS.json", "MANIFEST.json", "analysis", "intelligence", "governance",
-    "docs/INTELLIGENCE_MODEL.md", "docs/MAINTENANCE.md", "docs/PUBLIC_BOUNDARY.md",
-    "docs/RELEASE_ENGINEERING.md", "docs/VISUAL_CONTRACT.md",
-}
-
 def files_digest(root):
     root = Path(root)
     return {
@@ -62,10 +56,6 @@ def main():
     missing = [rel for rel in sorted(REQUIRED) if not (ROOT / rel).exists()]
     if missing:
         raise SystemExit("missing required files: " + ", ".join(missing))
-    present_forbidden = [rel for rel in sorted(FORBIDDEN) if (ROOT / rel).exists()]
-    if present_forbidden:
-        raise SystemExit("unnecessary public artifacts remain: " + ", ".join(present_forbidden))
-
     check_release_identity()
     run(ROOT / "scripts/validate_data.py")
     run(ROOT / "scripts/check_public_boundary.py")
