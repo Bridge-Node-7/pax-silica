@@ -3,23 +3,23 @@
 ## 0.3.3
 - Excluded local virtualenv and tool-cache directories from repository/public-release scans without weakening governed public-source checks.
 - Replaced expected child-process tracebacks in the repository gate with bounded, actionable failure summaries.
-- Added clean-adopter validation hardening while preserving evidence taxonomy, temporal integrity, deterministic generation, browser UAT, and public-boundary controls.
+- Added validation hardening while preserving evidence taxonomy, temporal integrity, deterministic generation, and browser UAT.
 
 ## 0.3.2
 - Converted the public experience to durable evidence-snapshot semantics.
 - Removed public future-review deadlines and clarified dated status observations.
 - Removed the public scheduled review cadence.
-- Strengthened public-boundary scanning and outbound privacy controls.
+- Strengthened publication validation and outbound privacy controls.
 - Preserved evidence taxonomy, deterministic generation, and production verification.
 
 ## 0.3.1
 - Refined the public product surface and repository documentation.
 - Reconciled release identity across the maintained public release files.
 - Re-reviewed a time-sensitive reported development without changing its evidence state.
-- Strengthened repository-wide public-boundary validation while preserving public evidence and provenance.
+- Strengthened repository-wide publication validation while preserving public evidence and provenance.
 
 ## 0.2.8
-- Public surface and maintenance cleanup.
+- Maintenance update.
 
 ## 0.2.7
 - UX and maintenance improvements.
