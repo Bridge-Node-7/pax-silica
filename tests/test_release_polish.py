@@ -124,7 +124,7 @@ class ReleasePolishTests(unittest.TestCase):
         self.assertNotIn("internal|private", boundary)
         self.assertNotIn("_DISCLOSURE_A", boundary)
         self.assertNotIn("Assemble protected phrases", boundary)
-        self.assertIn("FORBIDDEN_PREFIXES", boundary)
+        self.assertIn("ALLOWED_TOP_LEVEL", boundary)
         self.assertIn("check_evidence_integrity.py", gate)
 
 
