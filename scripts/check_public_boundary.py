@@ -18,16 +18,11 @@ TEXT_EXT = {
     ".yml", ".yaml", ".txt", ".cff",
 }
 
-FORBIDDEN_FILES = {
-    "ROADMAP.md",
-    "PROJECT_FACTS.json",
-    "MANIFEST.json",
+ALLOWED_TOP_LEVEL = {
+    ".editorconfig", ".gitattributes", ".github", ".gitignore",
+    "CHANGELOG.md", "LICENSE", "Makefile", "NOTICE", "README.md", "SECURITY.md", "VERSION",
+    "data", "docs", "requirements-browser.lock", "scripts", "tests", "web",
 }
-FORBIDDEN_PREFIXES = (
-    "analysis/",
-    "intelligence/",
-    "governance/",
-)
 
 ALLOWED_EMAILS = {"contact@bridgenode7.com"}
 
@@ -134,14 +129,13 @@ def tracked_candidate_files():
 def main() -> None:
     errors = []
 
-    for rel in sorted(FORBIDDEN_FILES):
-        if (ROOT / rel).exists():
-            errors.append(f"{rel}: unnecessary public artifact")
-
-    for prefix in FORBIDDEN_PREFIXES:
-        base = ROOT / prefix.rstrip("/")
-        if base.exists():
-            errors.append(f"{prefix}: unnecessary public operating surface")
+    if ROOT == DEFAULT_ROOT:
+        unexpected = sorted(
+            p.name for p in ROOT.iterdir()
+            if p.name not in ALLOWED_TOP_LEVEL and p.name not in EXCLUDE_PARTS
+        )
+        if unexpected:
+            errors.append("unexpected top-level public artifact(s): " + ", ".join(unexpected))
 
     for path in tracked_candidate_files():
         if path.resolve() == SELF or path.suffix.lower() not in TEXT_EXT:
