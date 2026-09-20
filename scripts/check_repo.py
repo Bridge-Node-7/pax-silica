@@ -21,10 +21,10 @@ REQUIRED = {
     "data/schemas/sources.schema.json", "data/sources.json", "docs/CREDIBILITY.md", "docs/SOURCE_STATES.md",
     "requirements-browser.lock", "scripts/audit_readability.py", "scripts/browser_smoke.py", "scripts/browser_uat.py",
     "scripts/build_web.py", "scripts/check_evidence_integrity.py", "scripts/check_public_boundary.py",
-    "scripts/check_repo.py", "scripts/serve_preview.py", "scripts/validate_data.py", "scripts/verify_production.py",
+    "scripts/build_release.py", "scripts/check_repo.py", "scripts/serve_preview.py", "scripts/validate_data.py", "scripts/verify_production.py",
     "tests/test_bn7_synergy.py", "tests/test_build.py", "tests/test_data.py", "tests/test_encoding_contract.py",
     "tests/test_git_hygiene.py", "tests/test_hardening_v026.py", "tests/test_hardening_v027.py", "tests/test_html.py",
-    "tests/test_public_release.py", "tests/test_release_polish.py", "web/app.js", "web/index.template.html",
+    "tests/test_public_release.py", "tests/test_release_builder.py", "tests/test_release_polish.py", "web/app.js", "web/index.template.html",
     "web/map-display.json", "web/styles.css",
 }
 
