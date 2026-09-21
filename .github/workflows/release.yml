@@ -1,0 +1,97 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Publish validated release
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact tagged source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+
+      - name: Verify tag and source identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="$(tr -d '\r\n' < VERSION)"
+          test "${GITHUB_REF_NAME}" = "v${version}"
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          git diff --check
+
+      - name: Run complete repository gate
+        run: python scripts/check_repo.py
+
+      - name: Build deterministic release evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          out="${RUNNER_TEMP}/pax-release"
+          rm -rf "${out}"
+          mkdir -p "${out}"
+          python scripts/build_release.py \
+            --root . \
+            --output-dir "${out}" \
+            --commit "${GITHUB_SHA}"
+          python - "${out}" "${GITHUB_REF_NAME}" "${GITHUB_SHA}" <<'PY'
+          import hashlib, json, pathlib, sys
+          out=pathlib.Path(sys.argv[1])
+          tag=sys.argv[2]
+          sha=sys.argv[3]
+          expected={
+              f"pax-silica-{tag}.zip",
+              "RELEASE_NOTES.md",
+              "SHA256SUMS",
+              "VALIDATION_EVIDENCE.json",
+          }
+          observed={p.name for p in out.iterdir() if p.is_file()}
+          assert observed == expected, (observed, expected)
+          evidence=json.loads((out/"VALIDATION_EVIDENCE.json").read_text(encoding="utf-8"))
+          assert evidence["tag"] == tag
+          assert evidence["source_commit"] == sha
+          archive=out/evidence["archive"]
+          digest=hashlib.sha256(archive.read_bytes()).hexdigest()
+          assert digest == evidence["archive_sha256"]
+          assert (out/"SHA256SUMS").read_text(encoding="utf-8").strip() == f"{digest}  {archive.name}"
+          print("PASS release evidence contract")
+          PY
+          (
+            cd "${out}"
+            sha256sum -c SHA256SUMS
+          )
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          out="${RUNNER_TEMP}/pax-release"
+          gh release create "${GITHUB_REF_NAME}" \
+            "${out}/pax-silica-${GITHUB_REF_NAME}.zip" \
+            "${out}/SHA256SUMS" \
+            "${out}/VALIDATION_EVIDENCE.json" \
+            "${out}/RELEASE_NOTES.md" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --verify-tag \
+            --title "Pax Silica ${GITHUB_REF_NAME}" \
+            --notes-file "${out}/RELEASE_NOTES.md"
