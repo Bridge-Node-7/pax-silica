@@ -439,6 +439,21 @@ def validate(
             f"{program['id']}"
         )
 
+        if (
+            str(program.get("status", "")).lower()
+            == "open"
+            and program.get("close_date")
+        ):
+            assert (
+                iso(program["status_as_of"])
+                <= iso(program["close_date"])
+            ), (
+                "program remains open after close date: "
+                f"{program['id']} "
+                f"{program['status_as_of']} > "
+                f"{program['close_date']}"
+            )
+
     for signatory in data[
         "signatories"
     ]:
