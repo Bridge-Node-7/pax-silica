@@ -179,6 +179,13 @@ class ReleasePolishTests(unittest.TestCase):
                 program,
             )
 
+            if program.get("status") == "open" and program.get("close_date"):
+                self.assertLessEqual(
+                    program["status_as_of"],
+                    program["close_date"],
+                    msg=f"open program is stale after close date: {program['id']}",
+                )
+
         workflow = (
             ROOT
             / ".github/workflows/freshness.yml"
