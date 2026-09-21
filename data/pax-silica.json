@@ -416,8 +416,8 @@
     {
       "id": "E-007",
       "date": "2026-08-12",
-      "title": "AI Assistance Project",
-      "summary": "State announces the Pax Silica AI Assistance implementation program and Silicon Highway concept.",
+      "title": "State AI Assistance publication",
+      "summary": "State publishes an announcement describing the Pax Silica AI Assistance implementation program and Silicon Highway concept; this date is the State publication date, not the opportunity\u2019s first-live date.",
       "state": "official",
       "source_ids": [
         "S-05",
@@ -440,7 +440,7 @@
       "id": "P-001",
       "name": "Pax Silica Artificial Intelligence Assistance Project",
       "opportunity_id": "DFOP0019193",
-      "status": "open",
+      "status": "closed",
       "close_date": "2026-08-20",
       "expected_awards": 3,
       "award_min_usd": 1000000,
