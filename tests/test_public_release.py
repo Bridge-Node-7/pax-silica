@@ -148,6 +148,20 @@ class PublicReleaseTests(unittest.TestCase):
         ):
             self.assertFalse((ROOT / rel).exists(), rel)
 
+    def test_release_workflow_is_tag_gated_and_evidence_backed(self):
+        workflow = (ROOT / ".github/workflows/release.yml").read_text(encoding="utf-8")
+        self.assertIn('tags:', workflow)
+        self.assertIn('"v*"', workflow)
+        self.assertNotIn("workflow_dispatch:", workflow)
+        self.assertIn("contents: write", workflow)
+        self.assertIn("python scripts/check_repo.py", workflow)
+        self.assertIn("scripts/build_release.py", workflow)
+        self.assertIn("VALIDATION_EVIDENCE.json", workflow)
+        self.assertIn("SHA256SUMS", workflow)
+        self.assertIn("gh release create", workflow)
+        self.assertIn("--verify-tag", workflow)
+        self.assertIn("persist-credentials: false", workflow)
+
     def test_release_identity_is_consistent(self):
         version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
         changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
