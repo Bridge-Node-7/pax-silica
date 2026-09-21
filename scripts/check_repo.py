@@ -15,7 +15,7 @@ REQUIRED = {
     ".editorconfig", ".gitattributes", ".gitignore",
     ".github/ISSUE_TEMPLATE/config.yml", ".github/ISSUE_TEMPLATE/public-source-correction.yml",
     ".github/workflows/browser-uat.yml", ".github/workflows/ci.yml", ".github/workflows/codeql.yml",
-    ".github/workflows/freshness.yml", ".github/workflows/pages.yml",
+    ".github/workflows/freshness.yml", ".github/workflows/pages.yml", ".github/workflows/release.yml",
     "CHANGELOG.md", "LICENSE", "Makefile", "NOTICE", "README.md", "SECURITY.md", "VERSION",
     "data/evidence-baseline.json", "data/pax-silica.json", "data/schemas/pax-silica.schema.json",
     "data/schemas/sources.schema.json", "data/sources.json", "docs/CREDIBILITY.md", "docs/SOURCE_STATES.md",
