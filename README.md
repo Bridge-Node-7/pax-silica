@@ -4,6 +4,10 @@ Independent public-source intelligence on Pax Silica, strategic technology suppl
 
 Pax Silica Intelligence turns reviewed public evidence into an inspectable view of participants, technology dependencies, industrial capability, readiness, resilience, and supporting sources.
 
+## Bridge Node 7 system role
+
+Pax Silica Intelligence is a **public-source intelligence implementation** within [Bridge Node 7's Frontier Assurance Architecture](https://github.com/Bridge-Node-7/Bridge-Node-7/blob/main/docs/FRONTIER_ASSURANCE_ARCHITECTURE.md). It demonstrates source/claim separation, dated evidence state, and explicit unknowns. It does not establish qualification, investment merit, mission readiness, or consequential authority.
+
 ## Public experience
 
 Explore the reviewed public-evidence snapshot at:
