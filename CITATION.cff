@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "Cite the exact tagged release when available; otherwise cite the exact commit."
+title: "Pax Silica Intelligence"
+version: "0.3.3"
+type: software
+authors:
+  - name: "Bridge Node 7"
+repository-code: "https://github.com/Bridge-Node-7/pax-silica"
+url: "https://github.com/Bridge-Node-7/pax-silica"
+license: MIT
+keywords:
+  - public-source intelligence
+  - strategic technology
+  - industrial capability
+  - evidence
