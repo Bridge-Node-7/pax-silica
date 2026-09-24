@@ -20,7 +20,7 @@ TEXT_EXT = {
 
 ALLOWED_TOP_LEVEL = {
     ".editorconfig", ".gitattributes", ".github", ".gitignore",
-    "CHANGELOG.md", "LICENSE", "Makefile", "NOTICE", "README.md", "SECURITY.md", "VERSION",
+    "CHANGELOG.md", "CITATION.cff", "LICENSE", "Makefile", "NOTICE", "README.md", "SECURITY.md", "VERSION",
     "data", "docs", "requirements-browser.lock", "scripts", "tests", "web",
 }
 
