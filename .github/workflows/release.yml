@@ -6,36 +6,49 @@ on:
       - "v*"
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: release-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
-  release:
-    name: Publish validated release
+  build:
+    name: Validate and build release candidate
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      contents: read
     steps:
       - name: Checkout exact tagged source
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           persist-credentials: false
 
       - name: Set up Python
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.12"
 
-      - name: Verify tag and source identity
+      - name: Verify signed annotated tag and source identity
+        env:
+          GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
           set -euo pipefail
           version="$(tr -d '\r\n' < VERSION)"
           test "${GITHUB_REF_NAME}" = "v${version}"
           test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          ref_json="$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/${GITHUB_REF_NAME}")"
+          tag_type="$(printf '%s' "$ref_json" | python3 -c 'import json,sys; print(json.load(sys.stdin)["object"]["type"])')"
+          tag_object="$(printf '%s' "$ref_json" | python3 -c 'import json,sys; print(json.load(sys.stdin)["object"]["sha"])')"
+          test "$tag_type" = "tag"
+          tag_json="$(gh api "repos/${GITHUB_REPOSITORY}/git/tags/${tag_object}")"
+          target="$(printf '%s' "$tag_json" | python3 -c 'import json,sys; print(json.load(sys.stdin)["object"]["sha"])')"
+          verified="$(printf '%s' "$tag_json" | python3 -c 'import json,sys; print(str(json.load(sys.stdin)["verification"]["verified"]).lower())')"
+          test "$target" = "${GITHUB_SHA}"
+          test "$verified" = "true"
           git diff --check
 
       - name: Run complete repository gate
@@ -77,21 +90,75 @@ jobs:
           (
             cd "${out}"
             sha256sum -c SHA256SUMS
+            sha256sum \
+              "pax-silica-${GITHUB_REF_NAME}.zip" \
+              SHA256SUMS \
+              VALIDATION_EVIDENCE.json \
+              RELEASE_NOTES.md \
+              > RELEASE_CANDIDATE_SHA256SUMS
+            sha256sum -c RELEASE_CANDIDATE_SHA256SUMS
           )
 
-      - name: Publish GitHub Release
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Upload validated release candidate
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: pax-stable-release-candidate
+          path: ${{ runner.temp }}/pax-release/
+          if-no-files-found: error
+          retention-days: 1
+
+  publish:
+    name: Publish validated release
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      actions: read
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Download validated release candidate
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: pax-stable-release-candidate
+          path: candidate
+
+      - name: Verify sealed candidate and annotated tag
         shell: bash
         run: |
           set -euo pipefail
-          out="${RUNNER_TEMP}/pax-release"
+          cd candidate
+          sha256sum -c RELEASE_CANDIDATE_SHA256SUMS
+          tag="$(python3 -c 'import json; print(json.load(open("VALIDATION_EVIDENCE.json"))["tag"])')"
+          source_commit="$(python3 -c 'import json; print(json.load(open("VALIDATION_EVIDENCE.json"))["source_commit"])')"
+          test "$tag" = "${GITHUB_REF_NAME}"
+          test "$source_commit" = "${GITHUB_SHA}"
+          ref_json="$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/${GITHUB_REF_NAME}")"
+          tag_type="$(printf '%s' "$ref_json" | python3 -c 'import json,sys; print(json.load(sys.stdin)["object"]["type"])')"
+          tag_object="$(printf '%s' "$ref_json" | python3 -c 'import json,sys; print(json.load(sys.stdin)["object"]["sha"])')"
+          test "$tag_type" = "tag"
+          tag_json="$(gh api "repos/${GITHUB_REPOSITORY}/git/tags/${tag_object}")"
+          target="$(printf '%s' "$tag_json" | python3 -c 'import json,sys; print(json.load(sys.stdin)["object"]["sha"])')"
+          verified="$(printf '%s' "$tag_json" | python3 -c 'import json,sys; print(str(json.load(sys.stdin)["verification"]["verified"]).lower())')"
+          test "$target" = "${GITHUB_SHA}"
+          test "$verified" = "true"
+
+      - name: Publish GitHub Release
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd candidate
+          if gh release view "${GITHUB_REF_NAME}" --repo "${GITHUB_REPOSITORY}" >/dev/null 2>&1; then
+            echo "Release already exists" >&2
+            exit 1
+          fi
           gh release create "${GITHUB_REF_NAME}" \
-            "${out}/pax-silica-${GITHUB_REF_NAME}.zip" \
-            "${out}/SHA256SUMS" \
-            "${out}/VALIDATION_EVIDENCE.json" \
-            "${out}/RELEASE_NOTES.md" \
+            "pax-silica-${GITHUB_REF_NAME}.zip" \
+            "SHA256SUMS" \
+            "VALIDATION_EVIDENCE.json" \
+            "RELEASE_NOTES.md" \
             --repo "${GITHUB_REPOSITORY}" \
             --verify-tag \
             --title "Pax Silica ${GITHUB_REF_NAME}" \
-            --notes-file "${out}/RELEASE_NOTES.md"
+            --notes-file "RELEASE_NOTES.md"
