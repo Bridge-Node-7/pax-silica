@@ -353,13 +353,12 @@
     },
     {
       "id": "C-007",
-      "state": "secondary",
+      "state": "official",
       "workflow_state": "approved",
-      "text": "September 2026 Philippine government reporting describes the New Clark City effort as a proposed long-term manufacturing investment. Preparatory work on the Clark Advanced Manufacturing Park is distinct from Pax Silica itself, and public reporting does not establish deployed AI data-center capability.",
+      "text": "September 2026 Philippine government reporting describes a proposed 1,600-hectare advanced manufacturing hub in New Clark City under Pax Silica. Officials say it is not an AI data-center project; contract negotiations, planning, regulatory approvals, and construction remain future work.",
       "source_ids": [
-        "S-12",
-        "S-13",
-        "S-14"
+        "S-15",
+        "S-16"
       ],
       "verified_at": "2026-09-29",
       "public": true
@@ -449,12 +448,13 @@
     },
     {
       "id": "E-009",
-      "date": "2026-09-21",
-      "title": "Manufacturing path clarified",
-      "summary": "Philippine officials describe the proposed New Clark City investment as a long-term manufacturing initiative; deployment remains future work.",
-      "state": "secondary",
+      "date": "2026-09-16",
+      "title": "Manufacturing scope clarified",
+      "summary": "Philippine officials describe the New Clark City hub as advanced manufacturing under Pax Silica, not an AI data-center project. Negotiations, planning, approvals, and construction remain future work.",
+      "state": "official",
       "source_ids": [
-        "S-14"
+        "S-15",
+        "S-16"
       ]
     }
   ],

@@ -194,6 +194,36 @@
         "ongoing investor discussions"
       ],
       "note": "Government news reporting of DTI and BCDA statements. Used as secondary context; long-term investment framing does not establish deployed industrial capability."
+    },
+    {
+      "id": "S-15",
+      "state": "official",
+      "publisher": "Philippine Presidential Communications Office",
+      "title": "PBBM infrastructure push positions New Clark City for high-value industries, investments",
+      "url": "https://pco.gov.ph/news_releases/pbbm-infrastructure-push-positions-new-clark-city-for-high-value-industries-investments/",
+      "published": "2026-09-13",
+      "verified_at": "2026-09-29",
+      "supports": [
+        "planned 1,600-hectare advanced manufacturing hub under Pax Silica",
+        "advanced-manufacturing rather than AI data-center scope",
+        "contract negotiations, planning, regulatory approvals, and future construction"
+      ],
+      "note": "Primary Philippine government publication describing the proposed New Clark City manufacturing hub and its remaining implementation steps."
+    },
+    {
+      "id": "S-16",
+      "state": "official",
+      "publisher": "Philippine Presidential Communications Office",
+      "title": "New Clark City seen as a magnet for high value industries, major investments — DTI",
+      "url": "https://pco.gov.ph/news_releases/new-clark-city-seen-as-a-magnet-for-high-value-industries-major-investments-dti/",
+      "published": "2026-09-16",
+      "verified_at": "2026-09-29",
+      "supports": [
+        "proposed 1,600-hectare high-tech industrial hub under Pax Silica",
+        "advanced manufacturing and component-production scope",
+        "explicit statement that the New Clark City project is not an AI data center"
+      ],
+      "note": "Primary Philippine government publication clarifying the proposed hub's industrial scope and relationship to Pax Silica."
     }
   ]
 }

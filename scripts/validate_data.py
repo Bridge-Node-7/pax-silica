@@ -35,6 +35,8 @@ OFFICIAL_HOSTS = {
     "simpler.grants.gov",
     "www.comune.brindisi.it",
     "comune.brindisi.it",
+    "pco.gov.ph",
+    "www.pco.gov.ph",
 }
 
 SECONDARY_HOSTS = {

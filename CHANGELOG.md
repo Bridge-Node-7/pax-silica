@@ -1,6 +1,7 @@
 # Changelog
 
 ## 0.3.3
+- Strengthened the September snapshot with primary Philippine government reporting that clarifies the proposed New Clark City hub as advanced manufacturing under Pax Silica, not a deployed AI data-center project.
 - Refreshed the reviewed public snapshot through 29 Sep 2026 with bounded secondary evidence on the proposed New Clark City manufacturing path while preserving proposal-versus-capability distinctions.
 - Excluded local virtualenv and tool-cache directories from repository/public-release scans without weakening governed public-source checks.
 - Replaced expected child-process tracebacks in the repository gate with bounded, actionable failure summaries.
