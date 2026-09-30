@@ -40,6 +40,8 @@ OFFICIAL_HOSTS = {
 SECONDARY_HOSTS = {
     "reuters.com",
     "www.reuters.com",
+    "pna.gov.ph",
+    "www.pna.gov.ph",
 }
 
 REPORTED_HOSTS = {
