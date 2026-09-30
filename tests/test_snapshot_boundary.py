@@ -66,6 +66,8 @@ class SnapshotBoundaryTests(unittest.TestCase):
             for source in source_doc["sources"]:
                 if source["verified_at"] > "2026-08-21":
                     source["verified_at"] = "2026-08-21"
+                if source.get("published", "") > "2026-08-21":
+                    source["published"] = "2026-08-21"
             self.write_json(sources_path, source_doc)
 
             result = self.run_validator(root)
