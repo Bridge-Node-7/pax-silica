@@ -1,6 +1,7 @@
 # Changelog
 
 ## 0.3.3
+- Refreshed the reviewed public snapshot through 29 Sep 2026 with bounded secondary evidence on the proposed New Clark City manufacturing path while preserving proposal-versus-capability distinctions.
 - Excluded local virtualenv and tool-cache directories from repository/public-release scans without weakening governed public-source checks.
 - Replaced expected child-process tracebacks in the repository gate with bounded, actionable failure summaries.
 - Added validation hardening while preserving evidence taxonomy, temporal integrity, deterministic generation, and browser UAT.
