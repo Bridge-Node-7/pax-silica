@@ -227,7 +227,7 @@ def main() -> None:
         raise SystemExit("required public claims C-001/C-005/C-007 missing")
 
     source_ids = {s["id"] for s in sources}
-    for sid in ("S-01", "S-02", "S-03", "S-04", "S-05", "S-07", "S-10", "S-11", "S-12", "S-13", "S-14"):
+    for sid in ("S-01", "S-02", "S-03", "S-04", "S-05", "S-07", "S-10", "S-11", "S-12", "S-13", "S-14", "S-15", "S-16"):
         if sid not in source_ids:
             raise SystemExit(f"required public evidence missing: {sid}")
 
