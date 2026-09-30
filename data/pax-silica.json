@@ -474,7 +474,14 @@
         "S-05",
         "S-06"
       ],
-      "status_as_of": "2026-08-21"
+      "status_as_of": "2026-08-21",
+      "eligible_applicants": [
+        "For-profit organizations other than small businesses"
+      ],
+      "eligibility_verified_at": "2026-09-30",
+      "eligibility_source_ids": [
+        "S-06"
+      ]
     }
   ]
 }
