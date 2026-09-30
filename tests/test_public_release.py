@@ -51,6 +51,7 @@ class PublicReleaseTests(unittest.TestCase):
         allowed = {
             "state.gov", "www.state.gov", "whitehouse.gov", "www.whitehouse.gov",
             "simpler.grants.gov", "reuters.com", "www.reuters.com",
+            "pna.gov.ph", "www.pna.gov.ph",
             "comune.brindisi.it", "www.comune.brindisi.it",
         }
         observed = {(urlsplit(s["url"]).hostname or "").lower() for s in self.sources}
