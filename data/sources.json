@@ -73,7 +73,7 @@
         "supply-chain credentialing",
         "provenance infrastructure"
       ],
-      "note": "Primary State Department publication describing the program; this publication date is not treated as the opportunity\u2019s first-live date.",
+      "note": "Primary State Department publication describing the program; this publication date is not treated as the opportunity’s first-live date.",
       "published": "2026-08-12"
     },
     {
@@ -151,6 +151,49 @@
         "signature in Brindisi by Italian and U.S. ambassadors"
       ],
       "note": "Official local-government record of the signing event that formalized Italy’s accession."
+    },
+    {
+      "id": "S-12",
+      "state": "secondary",
+      "publisher": "Philippine News Agency",
+      "title": "Palace: No proposal yet for AI data centers in Philippines",
+      "url": "https://www.pna.gov.ph/index.php/articles/1283052",
+      "published": "2026-09-01",
+      "verified_at": "2026-09-29",
+      "supports": [
+        "Clark Advanced Manufacturing Park scope",
+        "distinction between manufacturing ecosystem and AI data-center deployment"
+      ],
+      "note": "Government news reporting of Palace statements. Used as secondary context for current project scope; it does not establish deployed capability."
+    },
+    {
+      "id": "S-13",
+      "state": "secondary",
+      "publisher": "Philippine News Agency",
+      "title": "BCDA updates census in area eyed for Clark manufacturing park",
+      "url": "https://www.pna.gov.ph/articles/1283366",
+      "published": "2026-09-04",
+      "verified_at": "2026-09-29",
+      "supports": [
+        "preparatory activity for the proposed Clark Advanced Manufacturing Park",
+        "explicit distinction between CAMP preparation and Pax Silica activity"
+      ],
+      "note": "Government news reporting of BCDA statements. Used as secondary context for preparatory status and project-boundary distinction."
+    },
+    {
+      "id": "S-14",
+      "state": "secondary",
+      "publisher": "Philippine News Agency",
+      "title": "Pax Silica simply a manufacturing investment – trade exec",
+      "url": "https://www.pna.gov.ph/articles/1284530",
+      "published": "2026-09-21",
+      "verified_at": "2026-09-29",
+      "supports": [
+        "long-horizon manufacturing-investment framing",
+        "New Clark City technology-manufacturing objective",
+        "ongoing investor discussions"
+      ],
+      "note": "Government news reporting of DTI and BCDA statements. Used as secondary context; long-term investment framing does not establish deployed industrial capability."
     }
   ]
 }
