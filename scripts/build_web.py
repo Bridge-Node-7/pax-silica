@@ -26,7 +26,7 @@ REGION_ORDER = ("Americas", "Europe", "Indo-Pacific", "Middle East", "Central As
 
 # Editorially selected milestones for the public learning path.
 # Selection basis: material changes to participation, policy alignment, or implementation.
-TIMELINE_IDS = ("E-001", "E-003", "E-004", "E-005", "E-006", "E-007")
+TIMELINE_IDS = ("E-001", "E-003", "E-004", "E-005", "E-006", "E-007", "E-009")
 TIMELINE_TITLES = {
     "E-001": "Pax Silica launches",
     "E-003": "Quantum alignment",
@@ -34,6 +34,7 @@ TIMELINE_TITLES = {
     "E-005": "Defense supply-chain alignment",
     "E-006": "Italy joins",
     "E-007": "Implementation expands",
+    "E-009": "Manufacturing path clarified",
 }
 
 
@@ -222,18 +223,19 @@ def main() -> None:
     # R17 is explicitly a declaration-signatory map. Do not silently mix evidence states.
     if any(x.get("evidence_state") != "official" for x in active):
         raise SystemExit("active map contains non-official declaration membership; evolve ontology explicitly")
-    if "C-001" not in claims or "C-005" not in claims:
-        raise SystemExit("required public claims C-001/C-005 missing")
+    if "C-001" not in claims or "C-005" not in claims or "C-007" not in claims:
+        raise SystemExit("required public claims C-001/C-005/C-007 missing")
 
     source_ids = {s["id"] for s in sources}
-    for sid in ("S-01", "S-02", "S-03", "S-04", "S-05", "S-07", "S-10", "S-11"):
+    for sid in ("S-01", "S-02", "S-03", "S-04", "S-05", "S-07", "S-10", "S-11", "S-12", "S-13", "S-14"):
         if sid not in source_ids:
             raise SystemExit(f"required public evidence missing: {sid}")
 
     philippines_intro = (
         "Pax Silica is global. "
         + claims["C-005"]["text"]
-        + " Independent reporting places the planned hub in New Clark City."
+        + " "
+        + claims["C-007"]["text"]
     )
 
     repl = {

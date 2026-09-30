@@ -265,18 +265,18 @@ def main() -> None:
 
         assert page.locator(
             ".timeline-event"
-        ).count() == 6
+        ).count() == 7
 
         assert page.locator(
             ".timeline-evidence"
-        ).count() == 6
+        ).count() == 7
 
         record(
             "participants",
             {
                 "rosterCount": len(roster_names),
                 "entityTypesVerified": True,
-                "timelineEvents": 6,
+                "timelineEvents": 7,
                 "rosterVisible": True,
             },
         )

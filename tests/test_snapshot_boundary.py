@@ -64,8 +64,10 @@ class SnapshotBoundaryTests(unittest.TestCase):
 
             source_doc = json.loads(sources_path.read_text(encoding="utf-8"))
             for source in source_doc["sources"]:
-                if source["id"] == "S-09":
+                if source["verified_at"] > "2026-08-21":
                     source["verified_at"] = "2026-08-21"
+                if source.get("published", "") > "2026-08-21":
+                    source["published"] = "2026-08-21"
             self.write_json(sources_path, source_doc)
 
             result = self.run_validator(root)

@@ -51,6 +51,7 @@ class PublicReleaseTests(unittest.TestCase):
         allowed = {
             "state.gov", "www.state.gov", "whitehouse.gov", "www.whitehouse.gov",
             "simpler.grants.gov", "reuters.com", "www.reuters.com",
+            "pna.gov.ph", "www.pna.gov.ph",
             "comune.brindisi.it", "www.comune.brindisi.it",
         }
         observed = {(urlsplit(s["url"]).hostname or "").lower() for s in self.sources}
@@ -78,7 +79,7 @@ class PublicReleaseTests(unittest.TestCase):
             self.assertIn("Pax Silica", hero)
             self.assertIn("Pax Silica is a U.S.-led strategic initiative focused on trusted technology and AI supply chains.", hero)
             self.assertIn("Bridge Node 7 transforms public evidence into intelligence for industrial capability.", hero)
-            self.assertIn("Reviewed snapshot 22 Aug 2026", hero)
+            self.assertIn("Reviewed snapshot 29 Sep 2026", hero)
             self.assertNotIn("Latest official signal", hero)
             self.assertNotIn("Live intelligence", hero)
             self.assertNotIn("Verified through", hero)

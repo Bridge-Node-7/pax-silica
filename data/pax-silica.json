@@ -2,7 +2,7 @@
   "project": "pax-silica",
   "public_name": "Pax Silica Intelligence",
   "snapshot": {
-    "verified_through": "2026-08-22",
+    "verified_through": "2026-09-29",
     "status": "reviewed_public_snapshot"
   },
   "evidence_states": [
@@ -350,6 +350,19 @@
       ],
       "verified_at": "2026-08-15",
       "public": true
+    },
+    {
+      "id": "C-007",
+      "state": "secondary",
+      "workflow_state": "approved",
+      "text": "September 2026 Philippine government reporting describes the New Clark City effort as a proposed long-term manufacturing investment. Preparatory work on the Clark Advanced Manufacturing Park is distinct from Pax Silica itself, and public reporting does not establish deployed AI data-center capability.",
+      "source_ids": [
+        "S-12",
+        "S-13",
+        "S-14"
+      ],
+      "verified_at": "2026-09-29",
+      "public": true
     }
   ],
   "events": [
@@ -417,7 +430,7 @@
       "id": "E-007",
       "date": "2026-08-12",
       "title": "State AI Assistance publication",
-      "summary": "State publishes an announcement describing the Pax Silica AI Assistance implementation program and Silicon Highway concept; this date is the State publication date, not the opportunity\u2019s first-live date.",
+      "summary": "State publishes an announcement describing the Pax Silica AI Assistance implementation program and Silicon Highway concept; this date is the State publication date, not the opportunity’s first-live date.",
       "state": "official",
       "source_ids": [
         "S-05",
@@ -432,6 +445,16 @@
       "state": "reported_draft",
       "source_ids": [
         "S-09"
+      ]
+    },
+    {
+      "id": "E-009",
+      "date": "2026-09-21",
+      "title": "Manufacturing path clarified",
+      "summary": "Philippine officials describe the proposed New Clark City investment as a long-term manufacturing initiative; deployment remains future work.",
+      "state": "secondary",
+      "source_ids": [
+        "S-14"
       ]
     }
   ],
