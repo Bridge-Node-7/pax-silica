@@ -1,3 +1,4 @@
+import re
 import subprocess
 import sys
 import tempfile
@@ -44,6 +45,9 @@ class SynergyTests(unittest.TestCase):
         for token in ("--bg:#050914", "--gold:#f1c86b", "--gold2:#fff0b3", "--aqua:#78d7ff", "--violet:#c6a7ff"):
             self.assertIn(token, css)
         self.assertIn("--max:1180px", css)
+        self.assertIn("color-scheme:dark", css)
+        self.assertIsNone(re.search(r"(?:^|[;{])\\s*color\\s*:\\s*transparent", css))
+        self.assertNotIn("-webkit-text-fill-color:transparent", css)
 
 if __name__ == "__main__":
     unittest.main()
