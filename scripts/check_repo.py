@@ -19,7 +19,7 @@ REQUIRED = {
     "CHANGELOG.md", "LICENSE", "Makefile", "NOTICE", "README.md", "SECURITY.md", "VERSION",
     "data/evidence-baseline.json", "data/pax-silica.json", "data/schemas/pax-silica.schema.json",
     "data/schemas/sources.schema.json", "data/sources.json", "docs/CREDIBILITY.md", "docs/SOURCE_STATES.md",
-    "requirements-browser.lock", "scripts/audit_readability.py", "scripts/browser_smoke.py", "scripts/browser_uat.py",
+    "requirements-browser.txt", "scripts/audit_readability.py", "scripts/browser_smoke.py", "scripts/browser_uat.py",
     "scripts/build_web.py", "scripts/check_evidence_integrity.py", "scripts/check_public_boundary.py",
     "scripts/build_release.py", "scripts/check_repo.py", "scripts/serve_preview.py", "scripts/validate_data.py", "scripts/verify_production.py",
     "tests/test_bn7_synergy.py", "tests/test_build.py", "tests/test_data.py", "tests/test_encoding_contract.py",
