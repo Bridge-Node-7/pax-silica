@@ -7,8 +7,28 @@ import html
 import json
 import re
 from pathlib import Path
+from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_PUBLIC_URL = "https://bridgenode7.com/pax-silica/"
+
+
+def normalize_public_url(value: str) -> str:
+    candidate = str(value).strip()
+    parsed = urlparse(candidate)
+    if (
+        parsed.scheme != "https"
+        or not parsed.hostname
+        or parsed.username
+        or parsed.password
+        or parsed.query
+        or parsed.fragment
+    ):
+        raise SystemExit(
+            "STOP - public URL must be an absolute HTTPS URL without credentials, query, or fragment"
+        )
+    return candidate.rstrip("/") + "/"
+
 
 STATE_LABELS = {
     "official": "Official public source",
@@ -207,7 +227,9 @@ def render_evidence(sources: list[dict]) -> str:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--output", default="build/web")
+    ap.add_argument("--public-url", default=DEFAULT_PUBLIC_URL)
     args = ap.parse_args()
+    public_url = normalize_public_url(args.public_url)
 
     out = Path(args.output)
     out = out if out.is_absolute() else ROOT / out
@@ -252,6 +274,12 @@ def main() -> None:
     }
 
     text = (ROOT / "web/index.template.html").read_text(encoding="utf-8")
+    self_url_count = text.count(DEFAULT_PUBLIC_URL)
+    if self_url_count != 2:
+        raise SystemExit(
+            f"STOP - Pax Silica self URL count changed: expected 2, observed {self_url_count}"
+        )
+    text = text.replace(DEFAULT_PUBLIC_URL, public_url)
     for key, value in repl.items():
         text = text.replace(key, value)
 

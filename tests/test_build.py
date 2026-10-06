@@ -16,4 +16,16 @@ class BuildTests(unittest.TestCase):
             observed={p.relative_to(root).as_posix() for p in root.rglob("*") if p.is_file()}
             expected={"index.html","styles.css","app.js","data/pax-silica.json","data/sources.json","WEB_MANIFEST.sha256"}
             self.assertEqual(observed,expected)
+    def test_public_url_changes_only_self_metadata(self):
+        with tempfile.TemporaryDirectory() as a:
+            public_url="https://portable.example/pax-silica/"
+            subprocess.check_call([
+                sys.executable,str(ROOT/"scripts/build_web.py"),
+                "--output",a,
+                "--public-url",public_url,
+            ],cwd=ROOT)
+            text=(Path(a)/"index.html").read_text(encoding="utf-8")
+            self.assertEqual(text.count(public_url),2)
+            self.assertNotIn("https://bridgenode7.com/pax-silica/",text)
+            self.assertIn("https://bridgenode7.com/assets/images/social-preview.png",text)
 if __name__=="__main__": unittest.main()
