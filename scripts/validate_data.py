@@ -426,6 +426,46 @@ def validate(
             )
 
     for program in data["programs"]:
+        program_id: str = str(program["id"])
+        if "eligibility_source_ids" in program:
+            raw_refs: object = program["eligibility_source_ids"]
+            if not isinstance(raw_refs, list):
+                raise AssertionError(
+                    f"{program_id}.eligibility_source_ids must be an array, "
+                    f"got {raw_refs!r}"
+                )
+            eligibility_refs: list[object] = raw_refs
+            for index, source_ref in enumerate(eligibility_refs):
+                if not isinstance(source_ref, str) or not source_ref.strip():
+                    raise AssertionError(
+                        f"{program_id}.eligibility_source_ids[{index}] "
+                        f"must be a nonempty source ID, got {source_ref!r}"
+                    )
+                if source_ref not in source_map:
+                    raise AssertionError(
+                        f"orphan source {source_ref!r} in "
+                        f"{program_id}.eligibility_source_ids[{index}]"
+                    )
+
+        if "eligibility_verified_at" in program:
+            eligibility_value: object = program["eligibility_verified_at"]
+            if not isinstance(eligibility_value, str) or not eligibility_value.strip():
+                raise AssertionError(
+                    f"{program_id}.eligibility_verified_at must be a "
+                    f"YYYY-MM-DD date, got {eligibility_value!r}"
+                )
+            try:
+                eligibility_date: date = iso(eligibility_value)
+            except AssertionError as exc:
+                raise AssertionError(
+                    f"{program_id}.eligibility_verified_at: {exc}"
+                ) from exc
+            if eligibility_value != eligibility_date.isoformat():
+                raise AssertionError(
+                    f"{program_id}.eligibility_verified_at must be a "
+                    f"YYYY-MM-DD date, got {eligibility_value!r}"
+                )
+
         assert (
             "official"
             in source_states(program)
