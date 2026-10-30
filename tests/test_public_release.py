@@ -194,7 +194,13 @@ class PublicReleaseTests(unittest.TestCase):
         version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
         changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
         baseline = json.loads((ROOT / "data/evidence-baseline.json").read_text(encoding="utf-8"))
-        self.assertIn(f"## {version}\n", changelog)
+        self.assertTrue(
+            any(
+                line == f"## {version}" or line.startswith(f"## [{version}]")
+                for line in changelog.splitlines()
+            ),
+            "CHANGELOG missing version heading",
+        )
         self.assertEqual(baseline["release"], f"v{version}")
 
     def test_public_experience_uses_user_facing_evidence_language(self):

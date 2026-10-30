@@ -24,14 +24,22 @@ def tracked_files(root: Path) -> list[str]:
 
 def release_notes(root: Path, version: str) -> str:
     lines = (root / "CHANGELOG.md").read_text(encoding="utf-8").splitlines()
-    marker = f"## {version}"
-    start = lines.index(marker)
-    end = next((i for i in range(start + 1, len(lines)) if lines[i].startswith("## ")), len(lines))
-    body = "\n".join(lines[start + 1 : end]).strip()
-    if not body:
-        raise ValueError(f"CHANGELOG entry {marker!r} has no release notes")
-    return f"# Pax Silica v{version}\n\n{body}\n"
-
+    start = None
+    for idx, line in enumerate(lines):
+        if line == f"## {version}" or line.startswith(f"## [{version}]"):
+            start = idx
+            break
+    if start is None:
+        raise ValueError(f"CHANGELOG entry for {version!r} not found")
+    end = len(lines)
+    for idx in range(start + 1, len(lines)):
+        if lines[idx].startswith("## "):
+            end = idx
+            break
+    notes = "\n".join(lines[start + 1:end]).strip()
+    if not notes:
+        raise ValueError(f"CHANGELOG entry for {version!r} has no release notes")
+    return notes
 
 def build(root: Path, output: Path, commit: str) -> dict[str, str]:
     root, output = root.resolve(), output.resolve()
