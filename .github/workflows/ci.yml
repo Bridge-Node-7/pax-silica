@@ -38,6 +38,7 @@ jobs:
           set -euo pipefail
           python -m pip install --disable-pip-version-check 'coverage>=7,<8'
           mkdir -p build
+          export COVERAGE_FILE="${RUNNER_TEMP}/.coverage"
           python -m coverage run --source=scripts -m unittest discover -s tests -p 'test_*.py'
           python -m coverage report | tee build/coverage-report.txt
           python -m coverage xml -o build/coverage.xml
