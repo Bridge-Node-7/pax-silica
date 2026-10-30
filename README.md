@@ -1,18 +1,8 @@
 # Pax Silica Intelligence
 
-[![Release](https://img.shields.io/github/v/release/Bridge-Node-7/pax-silica?display_name=tag)](https://github.com/Bridge-Node-7/pax-silica/releases/latest)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![CI](https://img.shields.io/github/actions/workflow/status/Bridge-Node-7/pax-silica/ci.yml?branch=main&label=CI)](https://github.com/Bridge-Node-7/pax-silica/actions/workflows/ci.yml)
-
 Independent public-source intelligence on Pax Silica, strategic technology supply chains, qualification, and resilient capability.
 
-| | |
-|---|---|
-| **What** | Inspectable public-source view of participants, technology dependencies, industrial capability, readiness, and supporting sources |
-| **Status** | Stable public release — latest [GitHub Release](https://github.com/Bridge-Node-7/pax-silica/releases/latest) |
-| **Quickstart** | [Open the live experience](https://bridgenode7.com/pax-silica/) · `python scripts/check_repo.py` |
-| **Architecture** | [Frontier Assurance Architecture](https://github.com/Bridge-Node-7/Bridge-Node-7/blob/main/docs/FRONTIER_ASSURANCE_ARCHITECTURE.md) |
-| **Collaboration** | [Issues](https://github.com/Bridge-Node-7/pax-silica/issues) · [Innovation Partnerships](https://bridgenode7.com/partner/) |
+Stable public release — see the latest [GitHub Release](https://github.com/Bridge-Node-7/pax-silica/releases/latest). Quickstart: `python scripts/check_repo.py`. Collaboration: [GitHub Issues](https://github.com/Bridge-Node-7/pax-silica/issues).
 
 Pax Silica Intelligence turns reviewed public evidence into an inspectable view of participants, technology dependencies, industrial capability, readiness, resilience, and supporting sources.
 
