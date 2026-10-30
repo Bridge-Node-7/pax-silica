@@ -20,8 +20,9 @@ TEXT_EXT = {
 
 ALLOWED_TOP_LEVEL = {
     ".editorconfig", ".gitattributes", ".github", ".gitignore",
+    ".release-please-manifest.json",
     "CHANGELOG.md", "LICENSE", "Makefile", "NOTICE", "README.md", "SECURITY.md", "VERSION",
-    "data", "docs", "requirements-browser.txt", "scripts", "tests", "web",
+    "data", "docs", "release-please-config.json", "requirements-browser.txt", "scripts", "tests", "web",
 }
 
 ALLOWED_EMAILS = {"contact@bridgenode7.com"}
