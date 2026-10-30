@@ -32,6 +32,32 @@ jobs:
           python scripts/check_repo.py
           git diff --check
           git diff --exit-code
+      - name: Publish test coverage summary
+        if: runner.os == 'Linux' && matrix.python == '3.12'
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check 'coverage>=7,<8'
+          mkdir -p build
+          python -m coverage run --source=scripts -m unittest discover -s tests -p 'test_*.py'
+          python -m coverage report | tee build/coverage-report.txt
+          python -m coverage xml -o build/coverage.xml
+          {
+            echo "### Test coverage (scripts/)"
+            echo ""
+            echo '```'
+            tail -n 30 build/coverage-report.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload coverage artifact
+        if: always() && runner.os == 'Linux' && matrix.python == '3.12'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: pax-coverage-py3.12
+          path: |
+            build/coverage-report.txt
+            build/coverage.xml
+          if-no-files-found: ignore
+          retention-days: 14
   required:
     name: CI required
     if: always()
