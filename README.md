@@ -2,6 +2,8 @@
 
 Independent public-source intelligence on Pax Silica, strategic technology supply chains, qualification, and resilient capability.
 
+Stable public release — see the latest [GitHub Release](https://github.com/Bridge-Node-7/pax-silica/releases/latest). Quickstart: `python scripts/check_repo.py`. Collaboration: [GitHub Issues](https://github.com/Bridge-Node-7/pax-silica/issues).
+
 Pax Silica Intelligence turns reviewed public evidence into an inspectable view of participants, technology dependencies, industrial capability, readiness, resilience, and supporting sources.
 
 ## Scope and limitations
