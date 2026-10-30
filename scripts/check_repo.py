@@ -7,6 +7,7 @@ import os
 import subprocess
 import sys
 import tempfile
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -45,7 +46,7 @@ def check_release_identity():
     if not version:
         raise SystemExit("empty VERSION")
     changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
-    if f"## {version}\n" not in changelog:
+    if not re.search(rf"(?m)^##\s+\[?{re.escape(version)}\]?\b", changelog):
         raise SystemExit("CHANGELOG does not contain current VERSION")
     baseline = json.loads((ROOT / "data/evidence-baseline.json").read_text(encoding="utf-8"))
     if baseline.get("release") != f"v{version}":
