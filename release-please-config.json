@@ -11,7 +11,8 @@
           "type": "generic",
           "path": "VERSION"
         }
-      ]
+      ],
+      "version-file": "VERSION"
     }
   },
   "changelog-sections": [
