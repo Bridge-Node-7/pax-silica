@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.3.5] (2026-10-31)
+
+
+### Bug Fixes
+
+* **release:** set version-file to VERSION for release-please simple ([#68](https://github.com/Bridge-Node-7/pax-silica/issues/68)) ([9c1abfb](https://github.com/Bridge-Node-7/pax-silica/commit/9c1abfbba38edd7d601d91e298df88bc5fba3e75))
+* **release:** use generic extra-file type for VERSION ([#66](https://github.com/Bridge-Node-7/pax-silica/issues/66)) ([ee52755](https://github.com/Bridge-Node-7/pax-silica/commit/ee527550e152bb6d1d55bdd0f247f4b21a20b365))
+
+
+### Documentation
+
+* deepen README with layout and local preview ([#70](https://github.com/Bridge-Node-7/pax-silica/issues/70)) ([e915496](https://github.com/Bridge-Node-7/pax-silica/commit/e915496882ca1caf265181ad0815a61dbcb57411))
+* partner-ready front door, citation, coverage summary ([#69](https://github.com/Bridge-Node-7/pax-silica/issues/69)) ([48bbed4](https://github.com/Bridge-Node-7/pax-silica/commit/48bbed481da1957a89eaa37677c7dff09cc20bae))
+
 ## [0.3.4](https://github.com/Bridge-Node-7/pax-silica/compare/v0.3.2...v0.3.4) (2026-10-30)
 
 
