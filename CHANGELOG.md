@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.3.5](https://github.com/Bridge-Node-7/pax-silica/compare/v0.3.4...v0.3.5) (2026-10-31)
+## [0.3.5] (2026-10-31)
 
 
 ### Bug Fixes
