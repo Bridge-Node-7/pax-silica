@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.6](https://github.com/Bridge-Node-7/pax-silica/compare/v0.3.5...v0.3.6) (2026-10-31)
+
+
+### CI
+
+* restore concurrency group expression ([#71](https://github.com/Bridge-Node-7/pax-silica/issues/71)) ([b486c05](https://github.com/Bridge-Node-7/pax-silica/commit/b486c05245f8353bbf8e800d5e84c6e0e1c8d633))
+
 ## [0.3.5] (2026-10-31)
 
 
