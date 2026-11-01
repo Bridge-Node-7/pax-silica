@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.3.6] (2026-11-01)
+
+
+### Bug Fixes
+
+* **ci:** release-please must not preempt Stable Release publisher ([#74](https://github.com/Bridge-Node-7/pax-silica/issues/74)) ([3be9026](https://github.com/Bridge-Node-7/pax-silica/commit/3be9026a522c19fa857e0827aabf72b7bcb90ea2))
+
+
+### CI
+
+* fix docs link-check workflow syntax ([#73](https://github.com/Bridge-Node-7/pax-silica/issues/73)) ([4eb0dcc](https://github.com/Bridge-Node-7/pax-silica/commit/4eb0dcc5a9a0078384cdcfe1ad7341f7cc8f845f))
+* restore concurrency group expression ([#71](https://github.com/Bridge-Node-7/pax-silica/issues/71)) ([b486c05](https://github.com/Bridge-Node-7/pax-silica/commit/b486c05245f8353bbf8e800d5e84c6e0e1c8d633))
+
 ## [0.3.5] (2026-10-31)
 
 
