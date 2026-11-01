@@ -26,7 +26,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
         with:
           python-version: "3.12"
 
@@ -55,7 +55,7 @@ jobs:
 
           python scripts/browser_uat.py             --base-url http://127.0.0.1:8765/             --evidence build/browser-uat
 
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         if: always()
         with:
           name: pax-silica-browser-uat-chromium
@@ -84,7 +84,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
         with:
           python-version: "3.12"
 
@@ -113,7 +113,7 @@ jobs:
 
           python scripts/browser_smoke.py             --browser "${{ matrix.browser }}"             --base-url http://127.0.0.1:8765/             --evidence "build/browser-${{ matrix.browser }}"
 
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         if: always()
         with:
           name: pax-silica-browser-uat-${{ matrix.browser }}
