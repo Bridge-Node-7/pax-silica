@@ -2,6 +2,11 @@ name: Stable Release
 
 on:
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Prepare and verify only; do not create tag or publish a GitHub Release"
+        type: boolean
+        default: true
 
 permissions:
   actions: read
@@ -154,7 +159,9 @@ jobs:
   publish:
     name: Publish validated release
     needs: prepare
-    if: needs.prepare.outputs.publish_needed == 'true'
+    if: >-
+      needs.prepare.outputs.publish_needed == 'true' &&
+      inputs.dry_run != true
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
