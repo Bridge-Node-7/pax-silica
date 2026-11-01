@@ -170,6 +170,7 @@ class PublicReleaseTests(unittest.TestCase):
         self.assertIn("actions/upload-artifact@", prepare)
         self.assertIn("persist-credentials: false", prepare)
         self.assertIn("actions: read", publish)
+        self.assertIn("administration: read", publish)
         self.assertIn("contents: write", publish)
         self.assertIn("id-token: write", publish)
         self.assertIn("attestations: write", publish)
