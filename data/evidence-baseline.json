@@ -1,5 +1,5 @@
 {
-  "release": "v0.3.5",
+  "release": "v0.3.6",
   "minimum_source_count": 10,
   "required_rendered_states": [
     "official",
