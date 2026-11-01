@@ -170,7 +170,6 @@ class PublicReleaseTests(unittest.TestCase):
         self.assertIn("actions/upload-artifact@", prepare)
         self.assertIn("persist-credentials: false", prepare)
         self.assertIn("actions: read", publish)
-        self.assertIn("administration: read", publish)
         self.assertIn("contents: write", publish)
         self.assertIn("id-token: write", publish)
         self.assertIn("attestations: write", publish)
@@ -188,6 +187,7 @@ class PublicReleaseTests(unittest.TestCase):
         self.assertIn("gh release create", publish)
         self.assertIn("--verify-tag", publish)
         self.assertIn("immutable-releases", publish)
+        self.assertIn("release.immutable=true", publish)
         self.assertIn("gh release verify", verify)
         self.assertIn("gh attestation verify", verify)
 

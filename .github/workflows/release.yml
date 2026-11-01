@@ -166,7 +166,6 @@ jobs:
     timeout-minutes: 10
     permissions:
       actions: read
-      administration: read
       contents: write
       id-token: write
       attestations: write
@@ -180,9 +179,25 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          # administration:read required: GITHUB_TOKEN cannot call immutable-releases otherwise (HTTP 403).
-          enabled="$(gh api "repos/$GITHUB_REPOSITORY/immutable-releases" --jq '.enabled')"
-          test "$enabled" = "true"
+          # GITHUB_TOKEN cannot use an administration scope, so /immutable-releases
+          # often returns HTTP 403 even when the setting is enabled. Prefer a direct
+          # read when permitted; otherwise continue and fail closed after publish
+          # via release.immutable == true (and release removal on mismatch).
+          set +e
+          body="$(gh api "repos/$GITHUB_REPOSITORY/immutable-releases" 2>imm.err)"
+          rc=$?
+          set -e
+          if [[ "$rc" -eq 0 ]]; then
+            enabled="$(printf '%s' "$body" | jq -r .enabled)"
+            test "$enabled" = "true"
+            echo "PASS immutable-releases.enabled=true"
+          elif grep -Eqi 'HTTP 403|Resource not accessible|403 Forbidden' imm.err; then
+            echo "NOTE: GITHUB_TOKEN cannot read immutable-releases (403); continuing."
+            echo "Post-publish will require release.immutable=true (fail closed)."
+          else
+            cat imm.err
+            exit 1
+          fi
 
       - name: Download validated release candidate
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
