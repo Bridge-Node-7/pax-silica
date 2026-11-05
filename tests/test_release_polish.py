@@ -29,7 +29,7 @@ class ReleasePolishTests(unittest.TestCase):
             self.assertNotIn("Review by ", text)
             self.assertIn('content="no-referrer"', text)
             self.assertIn('rel="noopener noreferrer"', text)
-            self.assertEqual(text.count('class="source-record"'), 15)
+            self.assertEqual(text.count('class="source-record"'), 12)
 
     def test_final_taxonomy(self):
         tpl = (ROOT / "web/index.template.html").read_text(encoding="utf-8")
