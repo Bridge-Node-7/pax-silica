@@ -1,4 +1,4 @@
-"""t91u: release-please must not create GitHub Releases; Stable Release is sole publisher."""
+"""Release-please must not create GitHub Releases; Stable Release is sole publisher."""
 
 from __future__ import annotations
 
