@@ -6,3 +6,9 @@ _site/
 .DS_Store
 playwright-report/
 test-results/
+
+# Coverage outputs
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
