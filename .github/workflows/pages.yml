@@ -107,4 +107,4 @@ jobs:
           name: pax-silica-production-attestation
           path: production-attestation.json
           if-no-files-found: error
-          retention-days: 30
+          retention-days: 7
