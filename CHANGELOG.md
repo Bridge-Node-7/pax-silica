@@ -1,11 +1,15 @@
 # Changelog
 
-## [0.3.7] (2026-11-06)
+## [0.3.8] (2026-11-06)
 
 
 ### Bug Fixes
 
-* align the distributed public-source corpus with the reviewed source references; evidence and human-authority boundaries are unchanged ([b0b064b](https://github.com/Bridge-Node-7/pax-silica/commit/b0b064bcff6fc49c03c586b070c0f36006a85532))
+* align the distributed public-source corpus with the reviewed source references; evidence and human-authority boundaries are unchanged ([69fc6ea](https://github.com/Bridge-Node-7/pax-silica/commit/69fc6ea682a743f4042905a839f7f4977003f39b))
+
+### CI
+
+* pass workflow data through environment variables ([#86](https://github.com/Bridge-Node-7/pax-silica/issues/86)) ([3b6901e](https://github.com/Bridge-Node-7/pax-silica/commit/3b6901e2081459a48f4e148b22366b2b18279599))
 
 ## [0.3.6] (2026-11-01)
 
