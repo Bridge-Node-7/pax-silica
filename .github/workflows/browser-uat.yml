@@ -63,7 +63,7 @@ jobs:
             build/browser-uat/
             build/http.log
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 7
 
   cross-browser:
     strategy:
@@ -121,7 +121,7 @@ jobs:
             build/browser-${{ matrix.browser }}/
             build/http.log
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 7
 
   required:
     name: Browser UAT required
