@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.7] (2026-11-06)
+
+
+### Bug Fixes
+
+* align the distributed public-source corpus with the reviewed source references; evidence and human-authority boundaries are unchanged ([b0b064b](https://github.com/Bridge-Node-7/pax-silica/commit/b0b064bcff6fc49c03c586b070c0f36006a85532))
+
 ## [0.3.6] (2026-11-01)
 
 
@@ -27,7 +34,7 @@
 * deepen README with layout and local preview ([#70](https://github.com/Bridge-Node-7/pax-silica/issues/70)) ([e915496](https://github.com/Bridge-Node-7/pax-silica/commit/e915496882ca1caf265181ad0815a61dbcb57411))
 * partner-ready front door, citation, coverage summary ([#69](https://github.com/Bridge-Node-7/pax-silica/issues/69)) ([48bbed4](https://github.com/Bridge-Node-7/pax-silica/commit/48bbed481da1957a89eaa37677c7dff09cc20bae))
 
-## [0.3.4](https://github.com/Bridge-Node-7/pax-silica/compare/v0.3.2...v0.3.4) (2026-10-30)
+## [0.3.4] (2026-10-30)
 
 
 ### Bug Fixes
