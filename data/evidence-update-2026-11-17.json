@@ -1,0 +1,39 @@
+{
+  "baseline_snapshot": "2026-09-29",
+  "reviewed_at": "2026-11-17",
+  "scope": "Targeted Philippine New Clark City evidence update only. The September declaration network and older evidence remain historical; this is not a full Pax Silica revalidation.",
+  "observations": [
+    {
+      "id": "U-01",
+      "type": "reported_findings",
+      "heading": "Land and livelihoods",
+      "finding": "Human Rights Watch reported Aeta Hungey and farming-community concerns in Capas, including relocation, ancestral-domain claims, and access to land and water.",
+      "limit": "These are documented fieldwork findings and reported accounts, not a final judicial determination. Project boundaries, consultation records, and legal remedies require further verification.",
+      "source": {
+        "publisher": "Human Rights Watch",
+        "title": "Philippines: US Tech Hub to Displace Hundreds",
+        "published": "2026-11-16",
+        "url": "https://www.hrw.org/news/2026/11/16/philippines-us-tech-hub-to-displace-hundreds"
+      }
+    },
+    {
+      "id": "U-02",
+      "type": "government_position_reported",
+      "heading": "Framework and sovereignty",
+      "finding": "At a November 11 House hearing, BCDA stated that Philippine law would govern the proposed hub and that the bilateral framework was still under negotiation.",
+      "limit": "This is an attributed agency position reported by GMA News. A final signed agreement and its enforceable terms have not been reviewed here.",
+      "source": {
+        "publisher": "GMA News",
+        "title": "Pax Silica to operate under Philippine laws, BCDA",
+        "published": "2026-11-11",
+        "url": "https://www.gmanetwork.com/news/money/economy/1009135/pax-silica-to-operate-under-philippine-laws-bcda/story/"
+      }
+    }
+  ],
+  "open_checks": [
+    "Published site boundaries and land-rights determinations",
+    "Meaningful consultation, consent, and livelihood arrangements",
+    "Independent water and power capacity assessments",
+    "Signed bilateral framework, financing, and permitted facility scope"
+  ]
+}
