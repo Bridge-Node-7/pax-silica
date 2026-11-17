@@ -769,3 +769,20 @@ details[open] .disclosure-cue{transform:rotate(45deg)}
 /* v0.2.7 maintainable interaction geometry */
 .enter,.local-nav a,.source-record-actions a,.credibility-note summary,.credibility-note .text-button,.bn7-links-equal>a{min-height:44px}
 .local-nav a,.source-record-actions a,.credibility-note summary,.credibility-note .text-button{display:inline-flex;align-items:center}
+
+/* Targeted post-snapshot intelligence update. Keeps September evidence separate. */
+.november-update{margin:34px 0 48px;padding:clamp(20px,3vw,34px);border:1px solid var(--line2);border-radius:24px;background:rgba(11,22,40,.75)}
+.november-update-head h3{font-size:clamp(24px,3vw,36px);line-height:1.17;margin:8px 0 12px}
+.november-update-head>p:last-child{font-size:16px;line-height:1.6;color:var(--soft);max-width:900px}
+.november-update .update-date{color:var(--gold2);font-size:13px;line-height:1.5}
+.update-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:24px}
+.update-item{min-width:0;border:1px solid var(--line);border-radius:18px;padding:20px;background:rgba(5,9,20,.48)}
+.update-item .update-kind{font-size:12px;color:var(--gold2);text-transform:none;line-height:1.5}
+.update-item h4,.update-open h4{font-size:20px;line-height:1.3;margin:8px 0 12px}
+.update-item p{font-size:15px;line-height:1.65;color:var(--soft)}
+.update-item .update-limit{font-size:14px;color:var(--muted)}
+.update-item a{display:inline-flex;align-items:center;min-height:44px;font-size:14px;color:var(--gold2);text-underline-offset:4px;overflow-wrap:anywhere}
+.update-open{margin-top:24px;padding-top:18px;border-top:1px solid var(--line)}
+.update-open ul{padding-left:22px;margin:12px 0 0;display:grid;gap:8px}
+.update-open li{font-size:15px;line-height:1.55;color:var(--soft)}
+@media(max-width:760px){.update-grid{grid-template-columns:1fr}.november-update{padding:20px}.update-item{padding:16px}}
