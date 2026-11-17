@@ -224,6 +224,49 @@ def render_evidence(sources: list[dict]) -> str:
     return "".join(sections)
 
 
+
+def render_november_update(record: dict, historical_cutoff: str) -> str:
+    """Render a scoped post-snapshot update without changing the historical corpus."""
+    if record["baseline_snapshot"] != historical_cutoff:
+        raise SystemExit("STOP - November update baseline does not match the canonical snapshot")
+    reviewed_at = record["reviewed_at"]
+    if reviewed_at <= historical_cutoff:
+        raise SystemExit("STOP - addendum must postdate the historical snapshot")
+    rows = []
+    for item in record["observations"]:
+        source = item["source"]
+        url = source["url"]
+        parsed = urlparse(url)
+        if parsed.scheme != "https" or not parsed.hostname or parsed.username or parsed.password:
+            raise SystemExit("STOP - addendum source URL must be an uncredentialed HTTPS link")
+        rows.append(
+            '<article class="update-item">'
+            f'<p class="update-kind">{html.escape(item["type"].replace("_", " ").title())}'
+            f' · {html.escape(source["publisher"])}</p>'
+            f'<h4>{html.escape(item["heading"])}</h4>'
+            f'<p>{html.escape(item["finding"])}</p>'
+            f'<p class="update-limit"><strong>Evidence limit:</strong> {html.escape(item["limit"])}</p>'
+            f'<a href="{html.escape(url, quote=True)}" rel="noopener noreferrer" target="_blank">'
+            f'Original reporting · {html.escape(fmt_date(source["published"]))}</a>'
+            '</article>'
+        )
+    open_checks = "".join(f'<li>{html.escape(x)}</li>' for x in record["open_checks"])
+    return (
+        '<aside class="november-update" aria-labelledby="november-update-heading">'
+        '<div class="november-update-head">'
+        '<p class="section-label">Dated evidence update</p>'
+        '<h3 id="november-update-heading">Philippines: New evidence and unresolved questions</h3>'
+        f'<p class="update-date">Reviewed {html.escape(fmt_date(reviewed_at))} · '
+        f'Baseline retained: {html.escape(fmt_date(historical_cutoff))}</p>'
+        f'<p>{html.escape(record["scope"])}</p>'
+        '</div>'
+        f'<div class="update-grid">{"".join(rows)}</div>'
+        '<div class="update-open"><h4>Still requiring independent verification</h4>'
+        f'<ul>{open_checks}</ul></div>'
+        '</aside>'
+    )
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--output", default="build/web")
@@ -240,6 +283,7 @@ def main() -> None:
     sources = json.loads((ROOT / "data/sources.json").read_text(encoding="utf-8"))["sources"]
     map_positions = json.loads((ROOT / "web/map-display.json").read_text(encoding="utf-8"))["positions"]
     claims = {c["id"]: c for c in data["claims"]}
+    update = json.loads((ROOT / "data/evidence-update-2026-11-17.json").read_text(encoding="utf-8"))
     active = [x for x in data["signatories"] if x.get("status") == "active"]
 
     # R17 is explicitly a declaration-signatory map. Do not silently mix evidence states.
@@ -270,6 +314,7 @@ def main() -> None:
         "{{NETWORK_ROSTER}}": render_roster(active),
         "{{NETWORK_TIMELINE}}": render_timeline(data),
         "{{PHILIPPINES_INTRO}}": html.escape(philippines_intro),
+        "{{NOVEMBER_UPDATE}}": render_november_update(update, data["snapshot"]["verified_through"]),
         "{{EVIDENCE_LIST}}": render_evidence(sources),
     }
 
